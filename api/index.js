@@ -5,6 +5,14 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 dotenv.config();
 
+mongoose
+    .connect(process.env.MONGO_URL, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+    })
+    .then(console.log("Connected MongoDB"))
+    .catch((error) => console.log(error));
+
 app.use(cors());
 app.use(express.json());
 
