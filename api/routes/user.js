@@ -2,7 +2,7 @@ const router = require("express").Router();
 const cryptoJS = require("crypto-js");
 
 const User = require("../models/User");
-const { verifyToken, verifyTokenAndAdmin, verifyTokenAndAuthorization } = require("../middleware/verifyToken");
+const { verifyTokenAndAdmin, verifyTokenAndAuthorization } = require("../middleware/verifyToken");
 
 // UPDATE
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
@@ -84,4 +84,4 @@ router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-module.export = router;
+module.exports = router;
