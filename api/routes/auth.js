@@ -19,11 +19,11 @@ router.post("/register", async (req, res) => {
     try {
         // check for existing username
         const existName = await User.findOne({ username });
-        existName && res.status(400).json({ success: false, message: "Username already exist" });
+        if (existName) return res.status(400).json({ success: false, message: "Username already exist" });
 
         // check for existing email
         const existEmail = await User.findOne({ email });
-        existEmail && res.status(400).json({ success: false, message: "Email already exist" });
+        if (existEmail) return res.status(400).json({ success: false, message: "Email already exist" });
 
         newUser.save();
         res.status(201).json({ success: true, message: "User created successfully" });
@@ -40,12 +40,12 @@ router.post("login", async (req, res) => {
 
     try {
         const user = await User.findOne({ username: username });
-        !user && res.status(400).json({ success: false, message: "Incorrect username" });
+        if (!user) return res.status(400).json({ success: false, message: "Incorrect username" });
 
         const hashedPassword = cryptoJS.AES.decrypt(user.password, process.env.PASS_SEC);
         const originalPassword = hashedPassword.toString(cryptoJS.enc.Utf8);
-        originalPassword !== req.body.password &&
-            res.status(400).json({ success: false, message: "Incorrect password" });
+        if (originalPassword !== req.body.password)
+            return res.status(400).json({ success: false, message: "Incorrect password" });
 
         const accessToken = jwt.sign(
             {
@@ -63,3 +63,5 @@ router.post("login", async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+module.export = router;
