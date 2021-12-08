@@ -1,0 +1,32 @@
+$text-dark: #333;
+$text-hover: #6c7ae0;
+$text-dark-2: #6666;
+$text-black: #222;
+$text-color-2: #888;
+$text-color-3: #999;
+$text-color-5: #b2b2b2;
+$text-white: #fff;
+$primary-color: #717fe0;
+$header-height: 84px;
+
+$mobile-width: 480px;
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin mobile {
+    @media (max-width: #{$mobile -width - 1px}) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+        @content;
+    }
+}
