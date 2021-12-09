@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import Image from "../../constants/Image";
-import { Link } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import "./Header.scss";
-import { Badge, Button, FormControl, Input, InputAdornment, InputLabel, Modal, Slide, TextField } from "@mui/material";
+import { Badge, Button, Modal, Slide } from "@mui/material";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Image from "../../constants/Image";
+import SidebarModal from "../SidebarModal";
+import "./Header.scss";
 
 const Backdrop = styled.div`
     z-index: -1;
@@ -22,11 +23,20 @@ const Backdrop = styled.div`
 
 function Header() {
     const [openSearch, setOpenSearch] = useState(false);
+    const [openCart, setOpenCart] = useState(false);
+
     const handleOpenSearch = () => {
         setOpenSearch(true);
     };
     const handleCloseSearch = () => {
         setOpenSearch(false);
+    };
+
+    const handleOpenCart = () => {
+        setOpenCart(true);
+    };
+    const handleCloseCart = () => {
+        setOpenCart(false);
     };
 
     return (
@@ -91,7 +101,7 @@ function Header() {
                         <button className="header-btn" onClick={handleOpenSearch}>
                             <SearchIcon className="header-icon" />
                         </button>
-                        <button className="header-btn border-left-right">
+                        <button className="header-btn border-left-right" onClick={handleOpenCart}>
                             <Badge badgeContent={4} color="primary">
                                 <ShoppingCartIcon className="header-icon" />
                             </Badge>
@@ -117,6 +127,106 @@ function Header() {
                     </div>
                 </Slide>
             </Modal>
+            <SidebarModal isOpen={openCart} onClose={handleCloseCart}>
+                <div className="sidebar-modal__title">
+                    <h3>Your Cart</h3>
+                    <button onClick={handleCloseCart}>
+                        <CloseIcon sx={{ fontSize: 36 }} />
+                    </button>
+                </div>
+                <div className="sidebar-modal__content">
+                    <ul className="cart__list">
+                        <li className="cart__item">
+                            <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    White Shirt Pleat
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                        <li className="cart__item">
+                            <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    Converse All Star
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                        <li className="cart__item">
+                            <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    Nixon Porter Leather
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                        <li className="cart__item">
+                            <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    White Shirt Pleat
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                        <li className="cart__item">
+                            <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    Converse All Star
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                        <li className="cart__item">
+                            <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    Nixon Porter Leather
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                        <li className="cart__item">
+                            <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    White Shirt Pleat
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                        <li className="cart__item">
+                            <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    Converse All Star
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                        <li className="cart__item">
+                            <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
+                            <div className="cart__desc">
+                                <Link to="#" className="cart__desc-title">
+                                    Nixon Porter Leather
+                                </Link>
+                                <span className="cart__desc-subtitle">1 x $19.00</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div className="sidebar-modal__footer">
+                    <div className="cart__total">Total: $75.00</div>
+                    <div className="cart__buttons">
+                        <button className="cart__button">View Cart</button>
+                        <button className="cart__button">Check Out</button>
+                    </div>
+                </div>
+            </SidebarModal>
         </header>
     );
 }
