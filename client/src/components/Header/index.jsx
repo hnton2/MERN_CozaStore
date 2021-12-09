@@ -6,7 +6,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import "./Header.scss";
-import { Button, FormControl, Input, InputAdornment, InputLabel, Modal, Slide, TextField } from "@mui/material";
+import { Badge, Button, FormControl, Input, InputAdornment, InputLabel, Modal, Slide, TextField } from "@mui/material";
 import styled from "styled-components";
 
 const Backdrop = styled.div`
@@ -87,16 +87,18 @@ function Header() {
                     </ul>
                 </div>
                 <div className="header-icons">
-                    <div className="header-icons__wrapper">
-                        <Button className="header-btn" onClick={handleOpenSearch}>
-                            <SearchIcon className="header__icon" />
-                        </Button>
-                        <Button className="header-btn border-left-right">
-                            <ShoppingCartIcon className="header__icon" />
-                        </Button>
-                        <Button className="header-btn header">
-                            <MenuIcon className="header__icon" />
-                        </Button>
+                    <div className="header-icons__container">
+                        <button className="header-btn" onClick={handleOpenSearch}>
+                            <SearchIcon className="header-icon" />
+                        </button>
+                        <button className="header-btn border-left-right">
+                            <Badge badgeContent={4} color="primary">
+                                <ShoppingCartIcon className="header-icon" />
+                            </Badge>
+                        </button>
+                        <button className="header-btn">
+                            <MenuIcon className="header-icon" />
+                        </button>
                     </div>
                 </div>
             </nav>

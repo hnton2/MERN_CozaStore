@@ -108,23 +108,30 @@
         flex-grow: 1;
         height: 100%;
 
-        &__wrapper {
+        &__container {
             display: flex;
             align-items: center;
             justify-content: flex-end;
             height: 100%;
 
-            & .header__icon {
+            & .header-icon {
                 font-size: 26px;
             }
         }
     }
 
     &-btn {
+        position: relative;
         height: 100%;
         width: $header-height;
-        color: $text-black !important;
+        color: $text-black;
         padding: 0 24px;
+        transition: all 0.3s ease-in;
+
+        &:hover {
+            cursor: pointer;
+            color: $text-hover;
+        }
     }
 
     &-mobile {
