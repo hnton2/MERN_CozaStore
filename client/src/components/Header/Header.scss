@@ -137,19 +137,70 @@
 
 .search-modal {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: calc((100% - #{$search-modal-height-lg}) / 2);
+    left: calc((100% - #{$search-modal-width-lg}) / 2);
+    right: calc((100% - #{$search-modal-width-lg} -40px) / 2);
 
-    & form {
+    @include mobile {
+        top: calc((100% - #{$search-modal-height-sm}) / 2);
+        left: calc((100% - #{$search-modal-width-sm}) / 2);
+        right: calc((100% - #{$search-modal-width-sm} -20px) / 2);
+    }
+
+    @include tablet {
+        top: calc((100% - #{$search-modal-height-md}) / 2);
+        left: calc((100% - #{$search-modal-width-md}) / 2);
+        right: calc((100% - #{$search-modal-width-md} -10px) / 2);
+    }
+
+    & > .button-close {
+        position: absolute;
+        top: -40px;
+        right: -8px;
+        color: #605f5f;
+        background-color: transparent;
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+
+    &__form {
         display: flex;
         align-items: center;
         padding: 0 15px;
-        width: 960px;
         max-width: 100%;
-        height: 120px;
+        height: $search-modal-height-lg;
         border: 2px solid #e6e6e6;
         background: #fff;
+
+        @include mobile {
+            height: $search-modal-height-sm;
+        }
+
+        @include tablet {
+            height: $search-modal-height-md;
+        }
+    }
+
+    &__button {
+        color: $text-dark;
+
+        &:hover {
+            cursor: pointer;
+            color: $text-hover;
+        }
+    }
+
+    &__input {
+        border: none;
+        outline: none;
+        color: $text-dark;
+        font-size: 50px;
+        font-weight: 200;
+        height: 100%;
+        width: 100%;
+        padding-right: 30px;
     }
 }
 

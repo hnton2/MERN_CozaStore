@@ -8,13 +8,21 @@ $text-color-5: #b2b2b2;
 $text-white: #fff;
 $primary-color: #717fe0;
 $header-height: 84px;
+// HEADER SEARCH MODAL
+$search-modal-width-lg: 960px;
+$search-modal-width-md: 760px;
+$search-modal-width-sm: 460px;
+$search-modal-height-lg: 120px;
+$search-modal-height-md: 90px;
+$search-modal-height-sm: 80px;
 
+// RESPONSIVE
 $mobile-width: 480px;
 $tablet-width: 768px;
 $desktop-width: 1024px;
 
 @mixin mobile {
-    @media (max-width: #{$mobile -width - 1px}) {
+    @media (max-width: #{$tablet-width - 1px}) {
         @content;
     }
 }

@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import "./Header.scss";
-import { Button, FormControl, Input, InputAdornment, InputLabel, Modal, TextField } from "@mui/material";
+import { Button, FormControl, Input, InputAdornment, InputLabel, Modal, Slide, TextField } from "@mui/material";
 import styled from "styled-components";
 
 const Backdrop = styled.div`
@@ -100,20 +101,19 @@ function Header() {
                 </div>
             </nav>
             <Modal open={openSearch} onClose={handleCloseSearch} BackdropComponent={Backdrop}>
-                <div className="search-modal">
-                    <form>
-                        <Button>
-                            <SearchIcon sx={{ fontSize: 56, color: "#000" }} />
-                        </Button>
-                        <TextField
-                            fullWidth
-                            variant="standard"
-                            placeholder="Search..."
-                            inputProps={{ style: { fontSize: 50 } }}
-                            InputLabelProps={{ style: { fontSize: 50 } }}
-                        />
-                    </form>
-                </div>
+                <Slide in={openSearch} direction="down">
+                    <div className="search-modal">
+                        <button variant="text" className="button-close" onClick={handleCloseSearch}>
+                            <CloseIcon sx={{ fontSize: 36, color: "#333" }} />
+                        </button>
+                        <form className="search-modal__form">
+                            <button className="search-modal__button">
+                                <SearchIcon sx={{ fontSize: 52 }} />
+                            </button>
+                            <input type="text" className="search-modal__input" placeholder="Search..." />
+                        </form>
+                    </div>
+                </Slide>
             </Modal>
         </header>
     );
