@@ -12,6 +12,15 @@
         align-items: center;
         height: $header-height;
         padding-left: 45px;
+
+        @include mobile {
+            padding-left: 4px;
+            height: 70px;
+        }
+
+        @include tablet {
+            padding-left: 15px;
+        }
     }
 
     &__logo-link {
@@ -19,6 +28,10 @@
         align-items: center;
         margin-right: 55px;
         height: 100%;
+
+        @include mobile {
+            margin-right: 20px;
+        }
     }
 
     & .nav {
@@ -30,7 +43,12 @@
             list-style: none;
             display: flex;
             align-items: center;
+
             @include tablet {
+                display: none;
+            }
+
+            @include mobile {
                 display: none;
             }
         }
@@ -40,11 +58,6 @@
             position: relative;
             padding: 20px 10px 20px 0px;
             margin: 0px 4px 0px 14px;
-
-            @include tablet {
-                padding: 8px 20px;
-                width: 100%;
-            }
 
             &-link {
                 text-decoration: none;
@@ -116,6 +129,10 @@
 
             & .header-icon {
                 font-size: 26px;
+
+                @include mobile {
+                    font-size: 20px;
+                }
             }
         }
     }
@@ -123,21 +140,17 @@
     &-btn {
         position: relative;
         height: 100%;
-        width: $header-height;
         color: $text-black;
         padding: 0 24px;
         transition: all 0.3s ease-in;
 
+        @include mobile {
+            padding: 0 16px;
+        }
+
         &:hover {
             cursor: pointer;
             color: $text-hover;
-        }
-    }
-
-    &-mobile {
-        display: none;
-        @include tablet {
-            display: block;
         }
     }
 }
