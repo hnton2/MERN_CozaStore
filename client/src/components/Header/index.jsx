@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Image from "../../constants/Image";
-import SidebarModal from "../SidebarModal";
+import Sidebar from "../Sidebar";
 import "./Header.scss";
 
 const Backdrop = styled.div`
@@ -24,6 +24,7 @@ const Backdrop = styled.div`
 function Header() {
     const [openSearch, setOpenSearch] = useState(false);
     const [openCart, setOpenCart] = useState(false);
+    const [openMenu, setOpenMenu] = useState(false);
 
     const handleOpenSearch = () => {
         setOpenSearch(true);
@@ -37,6 +38,13 @@ function Header() {
     };
     const handleCloseCart = () => {
         setOpenCart(false);
+    };
+
+    const handleOpenMenu = () => {
+        setOpenMenu(true);
+    };
+    const handleCloseMenu = () => {
+        setOpenMenu(false);
     };
 
     return (
@@ -106,7 +114,7 @@ function Header() {
                                 <ShoppingCartIcon className="header-icon" />
                             </Badge>
                         </button>
-                        <button className="header-btn">
+                        <button className="header-btn" onClick={handleOpenMenu}>
                             <MenuIcon className="header-icon" />
                         </button>
                     </div>
@@ -127,106 +135,192 @@ function Header() {
                     </div>
                 </Slide>
             </Modal>
-            <SidebarModal isOpen={openCart} onClose={handleCloseCart}>
-                <div className="sidebar-modal__title">
-                    <h3>Your Cart</h3>
-                    <button onClick={handleCloseCart}>
-                        <CloseIcon sx={{ fontSize: 36 }} />
-                    </button>
-                </div>
-                <div className="sidebar-modal__content">
-                    <ul className="cart__list">
-                        <li className="cart__item">
-                            <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    White Shirt Pleat
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                        <li className="cart__item">
-                            <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    Converse All Star
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                        <li className="cart__item">
-                            <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    Nixon Porter Leather
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                        <li className="cart__item">
-                            <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    White Shirt Pleat
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                        <li className="cart__item">
-                            <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    Converse All Star
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                        <li className="cart__item">
-                            <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    Nixon Porter Leather
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                        <li className="cart__item">
-                            <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    White Shirt Pleat
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                        <li className="cart__item">
-                            <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    Converse All Star
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                        <li className="cart__item">
-                            <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
-                            <div className="cart__desc">
-                                <Link to="#" className="cart__desc-title">
-                                    Nixon Porter Leather
-                                </Link>
-                                <span className="cart__desc-subtitle">1 x $19.00</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div className="sidebar-modal__footer">
-                    <div className="cart__total">Total: $75.00</div>
-                    <div className="cart__buttons">
-                        <button className="cart__button">View Cart</button>
-                        <button className="cart__button">Check Out</button>
+            <Sidebar isOpen={openCart} onClose={handleCloseCart}>
+                <div className="sidebar__container">
+                    <div className="sidebar__title">
+                        <h3>Your Cart</h3>
+                        <button onClick={handleCloseCart}>
+                            <CloseIcon sx={{ fontSize: 36 }} />
+                        </button>
+                    </div>
+                    <div className="sidebar__content">
+                        <ul className="cart__list">
+                            <li className="cart__item">
+                                <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        White Shirt Pleat
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                            <li className="cart__item">
+                                <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        Converse All Star
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                            <li className="cart__item">
+                                <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        Nixon Porter Leather
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                            <li className="cart__item">
+                                <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        White Shirt Pleat
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                            <li className="cart__item">
+                                <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        Converse All Star
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                            <li className="cart__item">
+                                <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        Nixon Porter Leather
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                            <li className="cart__item">
+                                <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        White Shirt Pleat
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                            <li className="cart__item">
+                                <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        Converse All Star
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                            <li className="cart__item">
+                                <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
+                                <div className="cart__desc">
+                                    <Link to="#" className="cart__desc-title">
+                                        Nixon Porter Leather
+                                    </Link>
+                                    <span className="cart__desc-subtitle">1 x $19.00</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="sidebar__footer">
+                        <div className="cart__total">Total: $75.00</div>
+                        <div className="cart__buttons">
+                            <button className="cart__button">View Cart</button>
+                            <button className="cart__button">Check Out</button>
+                        </div>
                     </div>
                 </div>
-            </SidebarModal>
+            </Sidebar>
+            <Sidebar isOpen={openMenu} onClose={handleCloseMenu}>
+                <div className="sidebar__container p-0">
+                    <div className="sidebar__title">
+                        <h3></h3>
+                        <button onClick={handleCloseMenu}>
+                            <CloseIcon sx={{ fontSize: 36 }} />
+                        </button>
+                    </div>
+                    <div className="sidebar__content options">
+                        <ul className="sidebar-links">
+                            <li>
+                                <Link to="#" className="sidebar-link">
+                                    Home
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="#" className="sidebar-link">
+                                    My Wishlist
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="#" className="sidebar-link">
+                                    My Account
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="#" className="sidebar-link">
+                                    Track Order
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="#" className="sidebar-link">
+                                    Refunds
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="#" className="sidebar-link">
+                                    Help & FAQs
+                                </Link>
+                            </li>
+                        </ul>
+                        <div className="sidebar-gallery">
+                            <h4 className="options-title">@CozaStore</h4>
+                            <div className="sidebar-gallery__list">
+                                <button>
+                                    <img src={Image.GALLERY1} alt="gallery" />
+                                </button>
+                                <button>
+                                    <img src={Image.GALLERY2} alt="gallery" />
+                                </button>
+                                <button>
+                                    <img src={Image.GALLERY3} alt="gallery" />
+                                </button>
+                                <button>
+                                    <img src={Image.GALLERY4} alt="gallery" />
+                                </button>
+                                <button>
+                                    <img src={Image.GALLERY5} alt="gallery" />
+                                </button>
+                                <button>
+                                    <img src={Image.GALLERY6} alt="gallery" />
+                                </button>
+                                <button>
+                                    <img src={Image.GALLERY7} alt="gallery" />
+                                </button>
+                                <button>
+                                    <img src={Image.GALLERY8} alt="gallery" />
+                                </button>
+                                <button>
+                                    <img src={Image.GALLERY9} alt="gallery" />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="sidebar-about">
+                            <h4 className="options-title">About Us</h4>
+                            <p>
+                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum expedita animi dolorum
+                                cum repudiandae similique nostrum dolorem facere commodi voluptatem! Doloremque atque
+                                nobis veniam debitis corporis suscipit rem minima labore.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </Sidebar>
         </header>
     );
 }

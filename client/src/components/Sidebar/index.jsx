@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "@mui/material/Modal";
 import styled from "styled-components";
-import "./SidebarModal.scss";
+import "./Sidebar.scss";
 import { Slide } from "@mui/material";
 
 const Backdrop = styled.div`
@@ -19,9 +19,7 @@ function SidebarModal({ isOpen, onClose, children }) {
     return (
         <Modal open={isOpen} onClose={onClose} BackdropComponent={Backdrop}>
             <Slide in={isOpen} direction="left">
-                <div className="sidebar-modal">
-                    <div className="sidebar-modal__container">{children}</div>
-                </div>
+                <div className="sidebar">{children}</div>
             </Slide>
         </Modal>
     );

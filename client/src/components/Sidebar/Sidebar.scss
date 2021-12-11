@@ -1,6 +1,6 @@
 @import "../../variables.scss";
 
-.sidebar-modal {
+.sidebar {
     position: absolute;
     top: 0;
     right: 0;
@@ -13,11 +13,11 @@
 
     &__container {
         background-color: #fff;
-        padding: 0 24px 0 48px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         height: 100%;
+        padding: 0 24px 0 48px;
     }
 
     &__title {
@@ -25,8 +25,7 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        height: 16.5%;
-        min-height: 85px;
+        height: 85px;
         padding-bottom: 8px;
 
         & > h3 {
@@ -39,6 +38,7 @@
 
         & > button {
             color: $text-dark;
+
             &:hover {
                 cursor: pointer;
                 color: $text-hover;
@@ -49,36 +49,45 @@
     &__content {
         flex: 1;
         width: 100%;
-        max-height: 480px;
+        overflow: auto;
+
+        &.options {
+            padding: 0 65px;
+
+            & .options-title {
+                font-size: 18px;
+                color: $text-black;
+            }
+        }
+
+        /* width */
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        /* Track */
+        &::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 6px;
+        }
+
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: $text-color-2;
+            border-radius: 6px;
+        }
+
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+            background: $text-color-3;
+        }
 
         & .cart__list {
-            list-style-type: none;
-            overflow: auto;
-            height: 480px;
             margin-bottom: 24px;
+            height: 480px;
 
             @include mobile {
                 height: 460px;
-            }
-
-            /* width */
-            &::-webkit-scrollbar {
-                width: 4px;
-            }
-
-            /* Track */
-            &::-webkit-scrollbar-track {
-                background: #f1f1f1;
-            }
-
-            /* Handle */
-            &::-webkit-scrollbar-thumb {
-                background: $text-color-2;
-            }
-
-            /* Handle on hover */
-            &::-webkit-scrollbar-thumb:hover {
-                background: $text-color-3;
             }
 
             & .cart__item {
@@ -118,6 +127,7 @@
 
     &__footer {
         width: 100%;
+        margin-bottom: 20px;
 
         & .cart {
             &__total {
@@ -152,6 +162,56 @@
                     background-color: $text-hover;
                 }
             }
+        }
+    }
+
+    &-links {
+        & > li {
+            margin-bottom: 13px;
+        }
+
+        & .sidebar-link {
+            font-size: 14px;
+            color: $text-dark;
+
+            &:hover {
+                color: $text-hover;
+            }
+        }
+    }
+
+    &-gallery {
+        width: 100%;
+        padding: 30px 0;
+
+        &__list {
+            padding-top: 36px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            & > button {
+                margin-bottom: 10px;
+
+                & > img {
+                    width: 80px;
+                    height: 80px;
+                }
+
+                &:hover {
+                    opacity: 0.7;
+                }
+            }
+        }
+    }
+
+    &-about {
+        & > p {
+            padding-top: 27px;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.4;
+            color: $text-color-2;
         }
     }
 }
