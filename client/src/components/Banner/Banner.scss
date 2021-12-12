@@ -3,6 +3,15 @@
 .banner {
     position: relative;
     border: 1px solid #e6e6e6;
+    max-width: calc(100% / 3);
+
+    @include tablet {
+        max-width: calc(100% / 2);
+    }
+
+    @include mobile {
+        max-width: 100%;
+    }
 
     &__img {
         width: 100%;

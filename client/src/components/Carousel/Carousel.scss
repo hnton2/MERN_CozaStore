@@ -4,14 +4,30 @@
     width: 100%;
     height: calc(100vh - #{$header-height});
 
+    @include mobile {
+        height: calc(100vh - 70px);
+    }
+
     &__content {
         margin-left: 175px;
+
+        @include tablet {
+            margin-left: 48px;
+        }
+
+        @include mobile {
+            margin-left: 16px;
+        }
 
         & > h3 {
             font-size: 28px;
             color: $text-dark;
             font-weight: 400;
             text-transform: capitalize;
+
+            @include mobile {
+                font-size: 20px;
+            }
         }
 
         & > span {
@@ -22,6 +38,10 @@
             line-height: 1.1;
             color: $text-dark;
             text-transform: uppercase;
+
+            @include mobile {
+                font-size: 40px;
+            }
         }
 
         & > button {
@@ -29,21 +49,39 @@
             height: 46px;
             border-radius: 24px;
             background-color: $primary-color;
+            font-size: 15px;
             color: $text-white;
             text-transform: uppercase;
         }
     }
 }
 
+// slick
 .slick-prev {
     left: 2% !important;
     color: $text-color-2 !important;
     z-index: 1;
+
+    @include tablet {
+        left: -2% !important;
+    }
+
+    @include mobile {
+        display: none !important;
+    }
 }
 .slick-next {
     right: 2% !important;
     color: $text-color-2 !important;
     z-index: 1;
+
+    @include tablet {
+        right: -2% !important;
+    }
+
+    @include mobile {
+        display: none !important;
+    }
 }
 .slick-prev:hover,
 .slick-next:hover {

@@ -40,8 +40,14 @@ button {
 @import "./variables.scss";
 .main {
     margin-top: $header-height;
+
+    @include mobile {
+        margin-top: 70px;
+    }
 }
 
 .home-banner {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }

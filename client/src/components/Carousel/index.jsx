@@ -31,7 +31,7 @@ function Carousel() {
 
     const settings = {
         infinite: true,
-        autoplay: true,
+        // autoplay: true,
         pauseOnHover: true,
         speed: 2000,
         autoplaySpeed: 8000,
