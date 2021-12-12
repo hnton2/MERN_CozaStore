@@ -67,5 +67,11 @@ section {
         font-weight: bold;
         color: $text-black;
         padding-bottom: 32px;
+        text-align: center;
+        line-height: 1.1;
+
+        @include mobile {
+            font-size: 40px;
+        }
     }
 }

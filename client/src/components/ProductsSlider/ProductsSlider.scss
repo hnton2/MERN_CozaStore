@@ -8,6 +8,16 @@
 
         & .MuiTabs-indicator {
             background-color: #797979;
+
+            @include mobile {
+                display: none;
+            }
+        }
+
+        & .MuiTabs-flexContainer {
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
         }
 
         & .MuiTab-root {
@@ -19,6 +29,10 @@
 
             &.MuiTab-textColorPrimary.Mui-selected {
                 color: $text-dark;
+
+                @include mobile {
+                    border-bottom: 2px solid #797979;
+                }
             }
         }
     }
@@ -26,15 +40,24 @@
     & .tab-content {
         margin-top: 50px;
 
+        & .slick-slide img {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+        & .slick-list {
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+
         & .slick-prev {
             top: 40%;
-            left: -6% !important;
+            left: -4% !important;
             font-size: 32px;
             color: $text-color-2 !important;
             z-index: 1;
 
             @include tablet {
-                left: -2% !important;
+                left: -5% !important;
             }
 
             @include mobile {
@@ -48,13 +71,13 @@
 
         & .slick-next {
             top: 40%;
-            right: -6% !important;
+            right: -4% !important;
             font-size: 32px;
             color: $text-color-2 !important;
             z-index: 1;
 
             @include tablet {
-                right: -2% !important;
+                right: -5% !important;
             }
 
             @include mobile {
@@ -73,8 +96,16 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        width: 270px;
+        max-width: 270px;
         overflow: hidden;
+
+        @include tablet {
+            max-width: 380px;
+        }
+
+        @include mobile {
+            max-width: 350px;
+        }
 
         & > img {
             max-width: 100%;
