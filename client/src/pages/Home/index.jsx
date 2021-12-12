@@ -1,7 +1,9 @@
+import { Container } from "@mui/material";
 import React from "react";
 import Banner from "../../components/Banner";
 import Carousel from "../../components/Carousel";
 import Header from "../../components/Header";
+import ProductsSlider from "../../components/ProductsSlider";
 import Image from "../../constants/Image";
 function Home() {
     return (
@@ -15,6 +17,17 @@ function Home() {
                     <Banner title="Bags" subtitle="New Trend" image={Image.BANNER6} />
                 </div>
             </div>
+            <section className="overview">
+                <Container>
+                    <h3 className="section__title">Store Overview</h3>
+                    <ProductsSlider />
+                </Container>
+            </section>
+            <section className="blogs">
+                <Container>
+                    <h3 className="section__title">Our Blog</h3>
+                </Container>
+            </section>
         </>
     );
 }

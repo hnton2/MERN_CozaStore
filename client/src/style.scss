@@ -36,8 +36,14 @@ button {
     }
 }
 
+section {
+    padding-top: 100px;
+    padding-bottom: 50px;
+}
+
 // COMMON
 @import "./variables.scss";
+
 .main {
     margin-top: $header-height;
 
@@ -50,4 +56,16 @@ button {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+.section {
+    &__title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+        font-weight: bold;
+        color: $text-black;
+        padding-bottom: 32px;
+    }
 }

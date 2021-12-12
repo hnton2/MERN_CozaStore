@@ -17,6 +17,14 @@ import Slide3 from "../assets/images/slide-03.jpg";
 import Banner4 from "../assets/images/banner-04.jpg";
 import Banner5 from "../assets/images/banner-05.jpg";
 import Banner6 from "../assets/images/banner-06.jpg";
+import PRODUCT1 from "../assets/images/product-01.jpg";
+import PRODUCT2 from "../assets/images/product-02.jpg";
+import PRODUCT3 from "../assets/images/product-03.jpg";
+import PRODUCT4 from "../assets/images/product-04.jpg";
+import PRODUCT5 from "../assets/images/product-05.jpg";
+import PRODUCT6 from "../assets/images/product-06.jpg";
+import PRODUCT7 from "../assets/images/product-07.jpg";
+import PRODUCT8 from "../assets/images/product-08.jpg";
 
 const Image = {
     LOGO: Logo,
@@ -38,6 +46,14 @@ const Image = {
     BANNER4: Banner4,
     BANNER5: Banner5,
     BANNER6: Banner6,
+    PRODUCT1,
+    PRODUCT2,
+    PRODUCT3,
+    PRODUCT4,
+    PRODUCT5,
+    PRODUCT6,
+    PRODUCT7,
+    PRODUCT8,
 };
 
 export default Image;
