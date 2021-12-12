@@ -1,0 +1,91 @@
+@import "../../variables.scss";
+
+.carousel {
+    width: 100%;
+    height: calc(100vh - #{$header-height});
+
+    &__content {
+        margin-left: 175px;
+
+        & > h3 {
+            font-size: 28px;
+            color: $text-dark;
+            font-weight: 400;
+            text-transform: capitalize;
+        }
+
+        & > span {
+            padding: 8px 0 32px 0;
+            display: block;
+            font-size: 60px;
+            font-weight: bold;
+            line-height: 1.1;
+            color: $text-dark;
+            text-transform: uppercase;
+        }
+
+        & > button {
+            min-width: 160px;
+            height: 46px;
+            border-radius: 24px;
+            background-color: $primary-color;
+            color: $text-white;
+            text-transform: uppercase;
+        }
+    }
+}
+
+.slick-prev {
+    left: 2% !important;
+    color: $text-color-2 !important;
+    z-index: 1;
+}
+.slick-next {
+    right: 2% !important;
+    color: $text-color-2 !important;
+    z-index: 1;
+}
+.slick-prev:hover,
+.slick-next:hover {
+    color: $text-color-3 !important;
+}
+
+// create multi animation
+.slick-active.slick-current .carousel__content.animation1 > .carousel__content-event {
+    animation: fadeInDown;
+    animation-duration: 2s;
+}
+.slick-active.slick-current .carousel__content.animation1 > .carousel__content-title {
+    animation: backInUp;
+    animation-duration: 3s;
+}
+.slick-active.slick-current .carousel__content.animation1 > .carousel__content-btn {
+    animation: zoomIn;
+    animation-duration: 2s;
+}
+
+.slick-active.slick-current .carousel__content.animation2 > .carousel__content-event {
+    animation: flipInX;
+    animation-duration: 3s;
+}
+.slick-active.slick-current .carousel__content.animation2 > .carousel__content-title {
+    animation: lightSpeedInRight;
+    animation-duration: 2s;
+}
+.slick-active.slick-current .carousel__content.animation2 > .carousel__content-btn {
+    animation: fadeInUp;
+    animation-duration: 2.5s;
+}
+
+.slick-active.slick-current .carousel__content.animation3 > .carousel__content-event {
+    animation: fadeInTopLeft;
+    animation-duration: 3s;
+}
+.slick-active.slick-current .carousel__content.animation3 > .carousel__content-title {
+    animation: rotateInUpRight;
+    animation-duration: 2s;
+}
+.slick-active.slick-current .carousel__content.animation3 > .carousel__content-btn {
+    animation: rotateIn;
+    animation-duration: 2s;
+}
