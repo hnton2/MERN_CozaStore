@@ -14,6 +14,9 @@ import Gallery9 from "../assets/images/gallery-09.jpg";
 import Slide1 from "../assets/images/slide-01.jpg";
 import Slide2 from "../assets/images/slide-02.jpg";
 import Slide3 from "../assets/images/slide-03.jpg";
+import Banner4 from "../assets/images/banner-04.jpg";
+import Banner5 from "../assets/images/banner-05.jpg";
+import Banner6 from "../assets/images/banner-06.jpg";
 
 const Image = {
     LOGO: Logo,
@@ -32,6 +35,9 @@ const Image = {
     SLIDE1: Slide1,
     SLIDE2: Slide2,
     SLIDE3: Slide3,
+    BANNER4: Banner4,
+    BANNER5: Banner5,
+    BANNER6: Banner6,
 };
 
 export default Image;

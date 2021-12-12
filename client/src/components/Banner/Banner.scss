@@ -1,0 +1,75 @@
+@import "../../variables.scss";
+
+.banner {
+    position: relative;
+    border: 1px solid #e6e6e6;
+
+    &__img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    &__link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 40px 44px;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        & > .banner__desc {
+            & > h3 {
+                color: $text-dark;
+                font-size: 28px;
+                font-weight: bold;
+                line-height: 1.1;
+                margin-bottom: 8px;
+            }
+
+            & > span {
+                color: #555;
+                font-size: 14px;
+                font-weight: 300;
+                line-height: 1.4;
+            }
+        }
+
+        & > .banner__btn {
+            display: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            border-bottom: 1px solid #fff;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            animation: fadeInUp;
+            animation-duration: 2s;
+
+            &:hover {
+                transform: scale(1.05);
+            }
+        }
+
+        &:hover {
+            background: rgba(103, 117, 214, 0.8);
+
+            & > .banner__desc {
+                & > h3,
+                & > span {
+                    color: $text-white;
+                }
+            }
+
+            & > .banner__btn {
+                display: block;
+            }
+        }
+    }
+}

@@ -31,9 +31,10 @@ function Carousel() {
 
     const settings = {
         infinite: true,
-        // autoplay: true,
+        autoplay: true,
         pauseOnHover: true,
-        speed: 500,
+        speed: 2000,
+        autoplaySpeed: 8000,
         slidesToShow: 1,
         slidesToScroll: 1,
         nextArrow: <ArrowRightIcon sx={{ fontSize: 80 }} />,
