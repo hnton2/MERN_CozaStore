@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import React from "react";
 import Banner from "../../components/Banner";
 import Carousel from "../../components/Carousel";
@@ -17,15 +17,26 @@ function Home() {
                     <Banner title="Bags" subtitle="New Trend" image={Image.BANNER6} />
                 </div>
             </div>
-            <section className="overview">
+            <section>
                 <Container>
                     <h3 className="section__title">Store Overview</h3>
                     <ProductsSlider />
                 </Container>
             </section>
-            <section className="blogs">
+            <section>
                 <Container>
                     <h3 className="section__title">Our Blog</h3>
+                    <Grid container spacing={2}>
+                        <Grid item xs={4}>
+                            hello world1
+                        </Grid>
+                        <Grid item xs={4}>
+                            hello world2
+                        </Grid>
+                        <Grid item xs={4}>
+                            hello world3
+                        </Grid>
+                    </Grid>
                 </Container>
             </section>
         </>

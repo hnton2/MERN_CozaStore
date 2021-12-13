@@ -2,15 +2,16 @@ import React from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link } from "react-router-dom";
+import "./ProductCard.scss";
 
-function ProductSlider({ name, price, image }) {
+function ProductCard({ name, price, image }) {
     return (
-        <div className="product-slider">
-            <div className="product-slider__image">
+        <div className="product-card">
+            <div className="product-card__image">
                 <img src={image} alt={name} />
                 <button>Quick View</button>
             </div>
-            <div className="product">
+            <div className="product-card__desc">
                 <div>
                     <Link to="#" className="product__title">
                         {name}
@@ -25,4 +26,4 @@ function ProductSlider({ name, price, image }) {
     );
 }
 
-export default ProductSlider;
+export default ProductCard;

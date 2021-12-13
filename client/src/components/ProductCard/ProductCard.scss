@@ -1,0 +1,98 @@
+@import "../../variables";
+
+.product-card {
+    &__image {
+        position: relative;
+        max-width: 270px;
+        overflow: hidden;
+        width: 100%;
+
+        @include tablet {
+            max-width: 380px;
+        }
+
+        @include mobile {
+            max-width: 480px;
+        }
+
+        & > img {
+            width: 100%;
+            transition: all 1s;
+        }
+
+        & > button {
+            position: absolute;
+            bottom: -15%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: $text-white;
+            color: $text-black;
+            font-size: 15px;
+            border-radius: 20px;
+            min-width: 139px;
+            height: 40px;
+            padding: 0 15px;
+            transition: all 0.5s;
+
+            &:hover {
+                border-color: #222;
+                background-color: #222;
+                color: #fff;
+            }
+        }
+
+        &:hover {
+            cursor: pointer;
+
+            & > img {
+                transform: scale(1.1);
+            }
+
+            & > button {
+                bottom: 8%;
+            }
+        }
+    }
+
+    &__desc {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 8px 0 4px;
+
+        & .product__title {
+            color: $text-color-3;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.4;
+            padding-bottom: 6px;
+
+            &:hover {
+                color: $text-hover;
+            }
+
+            @include mobile {
+                font-size: 20px;
+            }
+        }
+
+        & .product__price {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.4;
+            color: $text-dark-2;
+
+            @include mobile {
+                font-size: 16px;
+            }
+        }
+
+        & .product__favorite {
+            align-self: flex-start;
+
+            & > .product__icon {
+                color: $text-color-3;
+            }
+        }
+    }
+}

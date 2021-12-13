@@ -2,10 +2,10 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 import React from "react";
 import Slider from "react-slick";
 import Image from "../../constants/Image";
-import ProductSlider from "./ProductSlider";
 import "./ProductsSlider.scss";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ProductCard from "../ProductCard";
 
 const dataTab1 = [
     {
@@ -87,19 +87,15 @@ function ProductsSlider() {
         responsive: [
             {
                 breakpoint: 576,
-                settings: { slidesToShow: 1, slidesToScroll: 1, autoplay: true, autoplaySpeed: 3000 },
+                settings: { slidesToShow: 1, slidesToScroll: 1 },
             },
             {
                 breakpoint: 768,
-                settings: { slidesToShow: 2, slidesToScroll: 2, autoplay: true, autoplaySpeed: 3000 },
+                settings: { slidesToShow: 2, slidesToScroll: 2 },
             },
             {
                 breakpoint: 992,
                 settings: { slidesToShow: 3, slidesToScroll: 3 },
-            },
-            {
-                breakpoint: 1024,
-                settings: { slidesToShow: 4, slidesToScroll: 4 },
             },
         ],
     };
@@ -119,7 +115,7 @@ function ProductsSlider() {
                     <Slider {...settings}>
                         {dataTab1.map((item, index) => (
                             <div>
-                                <ProductSlider key={index + 1} name={item.name} price={item.price} image={item.image} />
+                                <ProductCard key={index + 1} name={item.name} price={item.price} image={item.image} />
                             </div>
                         ))}
                     </Slider>
@@ -128,7 +124,7 @@ function ProductsSlider() {
                     <Slider {...settings}>
                         {dataTab1.map((item, index) => (
                             <div>
-                                <ProductSlider key={index + 1} name={item.name} price={item.price} image={item.image} />
+                                <ProductCard key={index + 1} name={item.name} price={item.price} image={item.image} />
                             </div>
                         ))}
                     </Slider>
@@ -137,7 +133,7 @@ function ProductsSlider() {
                     <Slider {...settings}>
                         {dataTab1.map((item, index) => (
                             <div>
-                                <ProductSlider key={index + 1} name={item.name} price={item.price} image={item.image} />
+                                <ProductCard key={index + 1} name={item.name} price={item.price} image={item.image} />
                             </div>
                         ))}
                     </Slider>
@@ -146,7 +142,7 @@ function ProductsSlider() {
                     <Slider {...settings}>
                         {dataTab1.map((item, index) => (
                             <div>
-                                <ProductSlider key={index + 1} name={item.name} price={item.price} image={item.image} />
+                                <ProductCard key={index + 1} name={item.name} price={item.price} image={item.image} />
                             </div>
                         ))}
                     </Slider>
