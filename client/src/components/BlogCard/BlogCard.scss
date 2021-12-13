@@ -1,0 +1,50 @@
+@import "../../variables.scss";
+
+.blog-card {
+    margin-bottom: 40px;
+
+    &__image {
+        &-link {
+            display: block;
+            overflow: hidden;
+
+            & > img {
+                width: 100%;
+                transition: all 1s;
+            }
+
+            &:hover > img {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    & .desc {
+        margin-top: 15px;
+        &__created {
+            font-size: 13px;
+            line-height: 1.4;
+            color: $text-color-3;
+            margin-bottom: 14px;
+
+            & > span {
+                color: $text-black;
+            }
+        }
+
+        &__title {
+            display: block;
+            font-size: 18px;
+            font-weight: 500;
+            color: $text-dark;
+            margin-bottom: 12px;
+        }
+
+        &__summary {
+            font-size: 14px;
+            font-weight: 300;
+            color: $text-color-2;
+            line-height: 1.6;
+        }
+    }
+}

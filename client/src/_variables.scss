@@ -19,7 +19,7 @@ $search-modal-height-sm: 80px;
 $sidebar-modal-width: 390px;
 
 // RESPONSIVE
-$mobile-width: 480px;
+$mobile-width: 576px;
 $tablet-width: 768px;
 $desktop-width: 1024px;
 
@@ -35,8 +35,8 @@ $desktop-width: 1024px;
     }
 }
 
-@mixin mini-desktop {
-    @media (min-width: #{$desktop-width}) and ( max-width: 1260px) {
+@mixin desktop {
+    @media (min-width: #{$desktop-width}) {
         @content;
     }
 }

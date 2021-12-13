@@ -36,11 +36,6 @@ button {
     }
 }
 
-section {
-    padding-top: 100px;
-    padding-bottom: 50px;
-}
-
 // COMMON
 @import "./variables.scss";
 
@@ -56,6 +51,20 @@ section {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+.overview {
+    padding-top: 100px;
+    padding-bottom: 50px;
+}
+
+.blogs {
+    padding-top: 60px;
+    padding-bottom: 90px;
+
+    & .section__title {
+        padding-bottom: 66px;
+    }
 }
 
 .section {

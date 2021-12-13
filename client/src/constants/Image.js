@@ -25,6 +25,9 @@ import PRODUCT5 from "../assets/images/product-05.jpg";
 import PRODUCT6 from "../assets/images/product-06.jpg";
 import PRODUCT7 from "../assets/images/product-07.jpg";
 import PRODUCT8 from "../assets/images/product-08.jpg";
+import BLOG1 from "../assets/images/blog-01.jpg";
+import BLOG2 from "../assets/images/blog-02.jpg";
+import BLOG3 from "../assets/images/blog-03.jpg";
 
 const Image = {
     LOGO: Logo,
@@ -54,6 +57,9 @@ const Image = {
     PRODUCT6,
     PRODUCT7,
     PRODUCT8,
+    BLOG1,
+    BLOG2,
+    BLOG3,
 };
 
 export default Image;

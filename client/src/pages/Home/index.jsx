@@ -1,10 +1,39 @@
 import { Container, Grid } from "@mui/material";
 import React from "react";
 import Banner from "../../components/Banner";
+import BlogCard from "../../components/BlogCard";
 import Carousel from "../../components/Carousel";
 import Header from "../../components/Header";
 import ProductsSlider from "../../components/ProductsSlider";
 import Image from "../../constants/Image";
+
+const dataBlog = [
+    {
+        title: "8 Inspiring Ways to Wear Dresses in the Winter",
+        image: Image.BLOG1,
+        author: "Nancy Ward",
+        created: "July 22, 2017",
+        summary:
+            "Duis ut velit gravida nibh bibendum commodo. Suspendisse pellentesque mattis augue id euismod. Interdum et male-suada fames",
+    },
+    {
+        title: "The Great Big List of Men’s Gifts for the Holidays",
+        image: Image.BLOG2,
+        author: "Nancy Ward",
+        created: "July 18, 2017",
+        summary:
+            "Nullam scelerisque, lacus sed consequat laoreet, dui enim iaculis leo, eu viverra ex nulla in tellus. Nullam nec ornare tellus, ac fringilla lacus. Ut sit ame",
+    },
+    {
+        title: "5 Winter-to-Spring Fashion Trends to Try Now",
+        image: Image.BLOG3,
+        author: "Nancy Ward",
+        created: "July 2, 2017",
+        summary:
+            "Proin nec vehicula lorem, a efficitur ex. Nam vehicula nulla vel erat tincidunt, sed hendrerit ligula porttitor. Fusce sit amet maximus nunc",
+    },
+];
+
 function Home() {
     return (
         <>
@@ -17,25 +46,28 @@ function Home() {
                     <Banner title="Bags" subtitle="New Trend" image={Image.BANNER6} />
                 </div>
             </div>
-            <section>
+            <section className="overview">
                 <Container>
                     <h3 className="section__title">Store Overview</h3>
                     <ProductsSlider />
                 </Container>
             </section>
-            <section>
+            <section className="blogs">
                 <Container>
-                    <h3 className="section__title">Our Blog</h3>
-                    <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            hello world1
-                        </Grid>
-                        <Grid item xs={4}>
-                            hello world2
-                        </Grid>
-                        <Grid item xs={4}>
-                            hello world3
-                        </Grid>
+                    <h3 className="section__title">Our Blogs</h3>
+                    <Grid container spacing={1}>
+                        {dataBlog.map((item, index) => (
+                            <Grid item sm={6} md={4}>
+                                <BlogCard
+                                    key={index}
+                                    title={item.title}
+                                    image={item.image}
+                                    author={item.author}
+                                    created={item.created}
+                                    summary={item.summary}
+                                />
+                            </Grid>
+                        ))}
                     </Grid>
                 </Container>
             </section>
