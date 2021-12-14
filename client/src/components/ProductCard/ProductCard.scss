@@ -1,6 +1,11 @@
 @import "../../variables";
 
 .product-card {
+    @include mobile {
+        padding: 0 32px;
+        margin-bottom: 16px;
+    }
+
     &__image {
         position: relative;
         max-width: 270px;
@@ -12,7 +17,7 @@
         }
 
         @include mobile {
-            max-width: 480px;
+            max-width: 100%;
         }
 
         & > img {

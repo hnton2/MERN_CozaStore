@@ -1,4 +1,4 @@
-import { Chip, Container, Grid, Pagination, Tab, Tabs } from "@mui/material";
+import { Container, Grid, Pagination, Tab, Tabs } from "@mui/material";
 import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
@@ -78,33 +78,39 @@ function Category() {
         <>
             <Header />
             <div className="main">
-                <Container>
+                <Container fixed>
                     <div className="category">
                         <div className="category__header">
-                            <div className="tabs">
-                                <Tabs value={value} onChange={handleChange}>
-                                    <Tab label="Best Seller" />
-                                    <Tab label="Featured" />
-                                    <Tab label="Sale" />
-                                    <Tab label="Top Rate" />
-                                </Tabs>
-                            </div>
-                            <div className="category__options">
-                                <button
-                                    className={`category__options-btn ${filter ? "show-filter" : ""}`}
-                                    onClick={handleSToggleSFilter}
-                                >
-                                    {filter ? <ClearIcon /> : <FilterListIcon />}
-                                    <span>Filter</span>
-                                </button>
-                                <button
-                                    className={`category__options-btn ${search ? "show-filter" : ""}`}
-                                    onClick={handleToggleSearch}
-                                >
-                                    {search ? <ClearIcon /> : <SearchIcon />}
-                                    <span>Search</span>
-                                </button>
-                            </div>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={12} md={8}>
+                                    <div className="tabs">
+                                        <Tabs value={value} onChange={handleChange}>
+                                            <Tab label="Best Seller" />
+                                            <Tab label="Featured" />
+                                            <Tab label="Sale" />
+                                            <Tab label="Top Rate" />
+                                        </Tabs>
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} sm={12} md={4}>
+                                    <div className="category__options">
+                                        <button
+                                            className={`category__options-btn ${filter ? "show-filter" : ""}`}
+                                            onClick={handleSToggleSFilter}
+                                        >
+                                            {filter ? <ClearIcon /> : <FilterListIcon />}
+                                            <span>Filter</span>
+                                        </button>
+                                        <button
+                                            className={`category__options-btn ${search ? "show-filter" : ""}`}
+                                            onClick={handleToggleSearch}
+                                        >
+                                            {search ? <ClearIcon /> : <SearchIcon />}
+                                            <span>Search</span>
+                                        </button>
+                                    </div>
+                                </Grid>
+                            </Grid>
                         </div>
                         <div className={`category__search ${search ? "active" : ""}`}>
                             <form>
@@ -256,7 +262,7 @@ function Category() {
                                 <TabPanel value={value} index={0}>
                                     <Grid container spacing={1}>
                                         {dataTab1.map((item, index) => (
-                                            <Grid item xs={6} sm={6} md={3} key={index + 1}>
+                                            <Grid item xs={12} sm={6} md={3} key={index + 1}>
                                                 <ProductCard name={item.name} price={item.price} image={item.image} />
                                             </Grid>
                                         ))}

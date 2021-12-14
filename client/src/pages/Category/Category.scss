@@ -12,12 +12,33 @@
         justify-content: space-between;
         padding-top: 36px;
         margin-bottom: 36px;
+
+        & .tabs {
+            align-items: center;
+            justify-content: flex-start;
+
+            @include tablet {
+                justify-content: center;
+            }
+
+            @include mobile {
+                justify-content: center;
+            }
+        }
     }
 
     &__options {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
+
+        @include tablet {
+            justify-content: center;
+        }
+
+        @include mobile {
+            justify-content: center;
+        }
 
         &-btn {
             margin-left: 8px;
@@ -198,11 +219,6 @@
                 }
             }
         }
-    }
-
-    &__content {
-        margin-left: -24px;
-        margin-right: -56px;
     }
 
     &__pagination {
