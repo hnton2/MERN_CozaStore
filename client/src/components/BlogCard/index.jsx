@@ -6,7 +6,7 @@ function BlogCard({ title, image, author, created, summary }) {
     return (
         <div className="blog-card">
             <div className="blog-card__image">
-                <Link to="#" className="blog-card__image-link">
+                <Link to="#">
                     <img src={image} alt={title} />
                 </Link>
             </div>

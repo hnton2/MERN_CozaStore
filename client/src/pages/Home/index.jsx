@@ -3,6 +3,7 @@ import React from "react";
 import Banner from "../../components/Banner";
 import BlogCard from "../../components/BlogCard";
 import Carousel from "../../components/Carousel";
+import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import ProductsSlider from "../../components/ProductsSlider";
 import Image from "../../constants/Image";
@@ -71,6 +72,7 @@ function Home() {
                     </Grid>
                 </Container>
             </section>
+            <Footer />
         </>
     );
 }
