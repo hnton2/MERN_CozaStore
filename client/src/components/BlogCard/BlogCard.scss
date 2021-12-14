@@ -38,6 +38,10 @@
             font-weight: 500;
             color: $text-dark;
             margin-bottom: 12px;
+
+            &:hover {
+                color: $text-hover;
+            }
         }
 
         &__summary {

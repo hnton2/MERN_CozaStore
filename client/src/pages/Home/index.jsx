@@ -46,31 +46,31 @@ function Home() {
                     <Banner title="Men" subtitle="Spring 2020" image={Image.BANNER5} />
                     <Banner title="Bags" subtitle="New Trend" image={Image.BANNER6} />
                 </div>
+                <section className="overview">
+                    <Container>
+                        <h3 className="section__title">Store Overview</h3>
+                        <ProductsSlider />
+                    </Container>
+                </section>
+                <section className="blogs">
+                    <Container>
+                        <h3 className="section__title">Our Blogs</h3>
+                        <Grid container spacing={1}>
+                            {dataBlog.map((item, index) => (
+                                <Grid item sm={6} md={4} key={index}>
+                                    <BlogCard
+                                        title={item.title}
+                                        image={item.image}
+                                        author={item.author}
+                                        created={item.created}
+                                        summary={item.summary}
+                                    />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Container>
+                </section>
             </div>
-            <section className="overview">
-                <Container>
-                    <h3 className="section__title">Store Overview</h3>
-                    <ProductsSlider />
-                </Container>
-            </section>
-            <section className="blogs">
-                <Container>
-                    <h3 className="section__title">Our Blogs</h3>
-                    <Grid container spacing={1}>
-                        {dataBlog.map((item, index) => (
-                            <Grid item sm={6} md={4} key={index}>
-                                <BlogCard
-                                    title={item.title}
-                                    image={item.image}
-                                    author={item.author}
-                                    created={item.created}
-                                    summary={item.summary}
-                                />
-                            </Grid>
-                        ))}
-                    </Grid>
-                </Container>
-            </section>
             <Footer />
         </>
     );
