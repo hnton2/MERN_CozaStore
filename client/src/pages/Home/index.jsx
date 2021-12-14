@@ -58,9 +58,8 @@ function Home() {
                     <h3 className="section__title">Our Blogs</h3>
                     <Grid container spacing={1}>
                         {dataBlog.map((item, index) => (
-                            <Grid item sm={6} md={4}>
+                            <Grid item sm={6} md={4} key={index}>
                                 <BlogCard
-                                    key={index}
                                     title={item.title}
                                     image={item.image}
                                     author={item.author}

@@ -114,8 +114,8 @@ function ProductsSlider() {
                 <TabPanel value={value} index={0}>
                     <Slider {...settings}>
                         {dataTab1.map((item, index) => (
-                            <div>
-                                <ProductCard key={index + 1} name={item.name} price={item.price} image={item.image} />
+                            <div key={index + 1}>
+                                <ProductCard name={item.name} price={item.price} image={item.image} />
                             </div>
                         ))}
                     </Slider>
@@ -123,8 +123,8 @@ function ProductsSlider() {
                 <TabPanel value={value} index={1}>
                     <Slider {...settings}>
                         {dataTab1.map((item, index) => (
-                            <div>
-                                <ProductCard key={index + 1} name={item.name} price={item.price} image={item.image} />
+                            <div key={index + 1}>
+                                <ProductCard name={item.name} price={item.price} image={item.image} />
                             </div>
                         ))}
                     </Slider>
@@ -132,8 +132,8 @@ function ProductsSlider() {
                 <TabPanel value={value} index={2}>
                     <Slider {...settings}>
                         {dataTab1.map((item, index) => (
-                            <div>
-                                <ProductCard key={index + 1} name={item.name} price={item.price} image={item.image} />
+                            <div key={index + 1}>
+                                <ProductCard name={item.name} price={item.price} image={item.image} />
                             </div>
                         ))}
                     </Slider>
@@ -141,8 +141,8 @@ function ProductsSlider() {
                 <TabPanel value={value} index={3}>
                     <Slider {...settings}>
                         {dataTab1.map((item, index) => (
-                            <div>
-                                <ProductCard key={index + 1} name={item.name} price={item.price} image={item.image} />
+                            <div key={index + 1}>
+                                <ProductCard name={item.name} price={item.price} image={item.image} />
                             </div>
                         ))}
                     </Slider>
