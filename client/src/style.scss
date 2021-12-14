@@ -1,3 +1,5 @@
+@import "./variables.scss";
+
 * {
     margin: 0;
     padding: 0;
@@ -36,7 +38,42 @@ button {
 }
 
 // COMMON
-@import "./variables.scss";
+.tabs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & .MuiTabs-indicator {
+        height: 2px;
+        background-color: #797979;
+
+        @include mobile {
+            display: none;
+        }
+    }
+
+    & .MuiTabs-flexContainer {
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & .MuiTab-root {
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.4;
+        color: $text-color-2;
+        text-transform: none;
+
+        &.MuiTab-textColorPrimary.Mui-selected {
+            color: $text-dark;
+
+            @include mobile {
+                border-bottom: 2px solid #797979;
+            }
+        }
+    }
+}
 
 .main {
     margin-top: $header-height;

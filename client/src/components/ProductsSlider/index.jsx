@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import React from "react";
 import Slider from "react-slick";
 import Image from "../../constants/Image";
@@ -6,6 +6,7 @@ import "./ProductsSlider.scss";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ProductCard from "../ProductCard";
+import TabPanel from "../TabPanel";
 
 const dataTab1 = [
     {
@@ -49,26 +50,6 @@ const dataTab1 = [
         image: Image.PRODUCT8,
     },
 ];
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
 
 function ProductsSlider() {
     const [value, setValue] = React.useState(0);
