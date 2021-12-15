@@ -1,0 +1,173 @@
+@import "../../variables.scss";
+
+.product {
+    &-tabs {
+        margin: 80px 0 40px;
+        padding: 44px 0 40px;
+        border: 1px solid #e6e6e6;
+
+        & .tab-content {
+            margin-top: 44px;
+        }
+
+        &__desc {
+            padding: 0 10% 20px;
+            font-size: 14px;
+            font-weight: 400;
+            color: $text-color-2;
+        }
+
+        &__info {
+            & ul {
+                padding: 0 44px 20px;
+
+                & li {
+                    margin-bottom: 12px;
+                    font-size: 14px;
+                    line-height: 1.6;
+                    display: flex;
+                    align-items: center;
+
+                    & .info-name {
+                        min-width: 145px;
+                        font-weight: 400;
+                        color: $text-dark-2;
+                    }
+
+                    & .info-detail {
+                        color: $text-color-2;
+                    }
+                }
+            }
+        }
+
+        & .review-list {
+            margin-bottom: 68px;
+
+            & .review {
+                display: flex;
+                align-items: center;
+                margin-bottom: 24px;
+
+                &__avatar {
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    margin-right: 16px;
+                }
+
+                &__header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 4px;
+
+                    & .review__name {
+                        font-size: 16px;
+                        font-weight: 400;
+                        color: $text-dark;
+                    }
+                }
+
+                &__message {
+                    font-size: 14px;
+                    font-weight: 300;
+                    color: $text-color-2;
+                }
+            }
+        }
+
+        & .review-form {
+            & > h5 {
+                margin-bottom: 4px;
+                font-size: 20px;
+                font-weight: 400;
+                color: $text-dark;
+            }
+
+            & > p {
+                font-size: 14px;
+                font-weight: 300;
+                color: $text-color-2;
+                margin-bottom: 48px;
+            }
+
+            & .form-group {
+                display: flex;
+
+                &.fxd-col {
+                    flex-direction: column;
+                }
+
+                & > label {
+                    min-width: 80px;
+                    font-size: 14px;
+                    padding-right: 16px;
+                    color: $text-dark-2;
+                    margin-bottom: 8px;
+                }
+
+                & textarea {
+                    margin-bottom: 12px;
+                    border: none;
+                    outline: none;
+                    border: 1px solid #e6e6e6;
+                    border-radius: 2px;
+                    padding: 10px 20px;
+                }
+
+                & input {
+                    border: none;
+                    outline: none;
+                    border: 1px solid #e6e6e6;
+                    border-radius: 2px;
+                    width: 100%;
+                    height: 40px;
+                    font-size: 14px;
+                    line-height: 1.7;
+                    color: $text-dark;
+                    padding: 0 20px;
+                }
+            }
+
+            & .submit-btn {
+                margin-top: 25px;
+                background-color: $text-dark;
+                min-width: 134px;
+                height: 43px;
+                border-radius: 23px;
+                color: $text-white;
+                font-size: 15px;
+                font-weight: 600;
+                line-height: 1.466667;
+                text-transform: uppercase;
+                transition: 0.3s ease-in;
+
+                &:hover {
+                    background-color: $primary-color;
+                }
+            }
+        }
+    }
+
+    &-tags {
+        margin: 65px 0 60px;
+        background-color: #f2f2f2;
+        min-height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $text-color-2;
+    }
+
+    &-related {
+        padding: 45px 0 105px;
+        & > h3 {
+            font-size: 36px;
+            font-weight: bold;
+            color: $text-black;
+            text-align: center;
+            margin-bottom: 44px;
+        }
+    }
+}

@@ -33,6 +33,10 @@ import ICONPAY2 from "../assets/images/icons/icon-pay-02.png";
 import ICONPAY3 from "../assets/images/icons/icon-pay-03.png";
 import ICONPAY4 from "../assets/images/icons/icon-pay-04.png";
 import ICONPAY5 from "../assets/images/icons/icon-pay-05.png";
+import PRODUCT_DETAIL1 from "../assets/images/product-detail-01.jpg";
+import PRODUCT_DETAIL2 from "../assets/images/product-detail-02.jpg";
+import PRODUCT_DETAIL3 from "../assets/images/product-detail-03.jpg";
+import AVATAR1 from "../assets/images/avatar-01.jpg";
 
 const Image = {
     LOGO: Logo,
@@ -70,6 +74,10 @@ const Image = {
     ICONPAY3,
     ICONPAY4,
     ICONPAY5,
+    PRODUCT_DETAIL1,
+    PRODUCT_DETAIL2,
+    PRODUCT_DETAIL3,
+    AVATAR1,
 };
 
 export default Image;

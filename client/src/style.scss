@@ -37,6 +37,10 @@ button {
     }
 }
 
+img {
+    vertical-align: middle;
+}
+
 // COMMON
 .tabs {
     display: flex;
@@ -75,6 +79,7 @@ button {
     }
 }
 
+// CUSTOM
 .main {
     margin-top: $header-height;
 
@@ -118,5 +123,33 @@ button {
         @include mobile {
             font-size: 40px;
         }
+    }
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    padding-top: 30px;
+    margin-bottom: 65px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.4;
+
+    &__link {
+        display: flex;
+        align-items: center;
+        color: #555;
+
+        &-icon {
+            margin: 0 10px;
+        }
+
+        &:hover {
+            color: $text-hover;
+        }
+    }
+
+    & > span {
+        color: $text-color-3;
     }
 }
