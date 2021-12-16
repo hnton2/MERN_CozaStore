@@ -1,10 +1,10 @@
-import { Container, Grid } from "@mui/material";
-import React from "react";
+import { Container, Grid, Modal } from "@mui/material";
+import React, { useState } from "react";
 import Slider from "react-slick";
 import Image from "../../constants/Image";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import OpenInFullIcon from "@mui/icons-material/OpenInFull";
+import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 import "./ProductDetail.scss";
 import Select from "react-select";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -13,8 +13,15 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import GoogleIcon from "@mui/icons-material/Google";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
+
+const images = [Image.PRODUCT_DETAIL1, Image.PRODUCT_DETAIL2, Image.PRODUCT_DETAIL3];
 
 function ProductDetail() {
+    const [photoIndex, setPhotoIndex] = useState(0);
+    const [isOpenModal, setIsOpenModal] = useState(false);
+
     const options = [
         { value: "chocolate", label: "Chocolate" },
         { value: "strawberry", label: "Strawberry" },
@@ -48,8 +55,8 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL1} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button>
-                                            <OpenInFullIcon />
+                                        <button onClick={() => setIsOpenModal(true)}>
+                                            <ZoomOutMapIcon />
                                         </button>
                                     </div>
                                 </div>
@@ -60,8 +67,8 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL2} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button>
-                                            <OpenInFullIcon />
+                                        <button onClick={() => setIsOpenModal(true)}>
+                                            <ZoomOutMapIcon />
                                         </button>
                                     </div>
                                 </div>
@@ -72,8 +79,8 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL3} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button>
-                                            <OpenInFullIcon />
+                                        <button onClick={() => setIsOpenModal(true)}>
+                                            <ZoomOutMapIcon />
                                         </button>
                                     </div>
                                 </div>
@@ -136,6 +143,16 @@ function ProductDetail() {
                     </div>
                 </Grid>
             </Grid>
+            {isOpenModal && (
+                <Lightbox
+                    mainSrc={images[photoIndex]}
+                    nextSrc={images[(photoIndex + 1) % images.length]}
+                    prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+                    onCloseRequest={() => setIsOpenModal(false)}
+                    onMovePrevRequest={() => setPhotoIndex((photoIndex + images.length - 1) % images.length)}
+                    onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % images.length)}
+                />
+            )}
         </div>
     );
 }
