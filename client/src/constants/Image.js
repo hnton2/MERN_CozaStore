@@ -37,6 +37,10 @@ import PRODUCT_DETAIL1 from "../assets/images/product-detail-01.jpg";
 import PRODUCT_DETAIL2 from "../assets/images/product-detail-02.jpg";
 import PRODUCT_DETAIL3 from "../assets/images/product-detail-03.jpg";
 import AVATAR1 from "../assets/images/avatar-01.jpg";
+import BACKGROUND1 from "../assets/images/bg-01.jpg";
+import BACKGROUND2 from "../assets/images/bg-02.jpg";
+import ABOUT1 from "../assets/images/about-01.jpg";
+import ABOUT2 from "../assets/images/about-02.jpg";
 
 const Image = {
     LOGO: Logo,
@@ -78,6 +82,10 @@ const Image = {
     PRODUCT_DETAIL2,
     PRODUCT_DETAIL3,
     AVATAR1,
+    BACKGROUND1,
+    BACKGROUND2,
+    ABOUT1,
+    ABOUT2,
 };
 
 export default Image;
