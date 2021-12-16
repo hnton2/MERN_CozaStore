@@ -1,63 +1,11 @@
-import { Tab, Tabs } from "@mui/material";
 import React from "react";
 import Slider from "react-slick";
-import Image from "../../constants/Image";
 import "./ProductsSlider.scss";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ProductCard from "../ProductCard";
-import TabPanel from "../TabPanel";
 
-const dataTab1 = [
-    {
-        name: "Esprit Ruffle Shirt",
-        price: 16.64,
-        image: Image.PRODUCT1,
-    },
-    {
-        name: "Herschel Supply",
-        price: 16.64,
-        image: Image.PRODUCT2,
-    },
-    {
-        name: "Only Check Trouser",
-        price: 16.64,
-        image: Image.PRODUCT3,
-    },
-    {
-        name: "Classic Trench Coat",
-        price: 16.64,
-        image: Image.PRODUCT4,
-    },
-    {
-        name: "Front Pocket Jumper",
-        price: 16.64,
-        image: Image.PRODUCT5,
-    },
-    {
-        name: "Vintage Inspired Classic",
-        price: 16.64,
-        image: Image.PRODUCT6,
-    },
-    {
-        name: "Shirt in Stretch Cotton",
-        price: 16.64,
-        image: Image.PRODUCT7,
-    },
-    {
-        name: "Pieces Metallic Printed",
-        price: 16.64,
-        image: Image.PRODUCT8,
-    },
-];
-
-function ProductsSlider() {
-    const [value, setValue] = React.useState(0);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
+function ProductsSlider({ products }) {
     const settings = {
         infinite: true,
         speed: 500,
@@ -83,52 +31,13 @@ function ProductsSlider() {
 
     return (
         <div className="products-slider">
-            <div className="tabs">
-                <Tabs value={value} onChange={handleChange}>
-                    <Tab label="Best Seller" />
-                    <Tab label="Featured" />
-                    <Tab label="Sale" />
-                    <Tab label="Top Rate" />
-                </Tabs>
-            </div>
-            <div className="tab-content">
-                <TabPanel value={value} index={0}>
-                    <Slider {...settings}>
-                        {dataTab1.map((item, index) => (
-                            <div key={index + 1}>
-                                <ProductCard name={item.name} price={item.price} image={item.image} />
-                            </div>
-                        ))}
-                    </Slider>
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                    <Slider {...settings}>
-                        {dataTab1.map((item, index) => (
-                            <div key={index + 1}>
-                                <ProductCard name={item.name} price={item.price} image={item.image} />
-                            </div>
-                        ))}
-                    </Slider>
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                    <Slider {...settings}>
-                        {dataTab1.map((item, index) => (
-                            <div key={index + 1}>
-                                <ProductCard name={item.name} price={item.price} image={item.image} />
-                            </div>
-                        ))}
-                    </Slider>
-                </TabPanel>
-                <TabPanel value={value} index={3}>
-                    <Slider {...settings}>
-                        {dataTab1.map((item, index) => (
-                            <div key={index + 1}>
-                                <ProductCard name={item.name} price={item.price} image={item.image} />
-                            </div>
-                        ))}
-                    </Slider>
-                </TabPanel>
-            </div>
+            <Slider {...settings}>
+                {products.map((item, index) => (
+                    <div key={index + 1}>
+                        <ProductCard name={item.name} price={item.price} image={item.image} />
+                    </div>
+                ))}
+            </Slider>
         </div>
     );
 }

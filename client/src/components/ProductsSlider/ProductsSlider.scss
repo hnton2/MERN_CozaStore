@@ -1,58 +1,54 @@
 @import "../../variables";
 
 .products-slider {
-    & .tab-content {
-        margin-top: 50px;
+    & .slick-slide > div {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+    // & .slick-list {
+    //     margin-left: -48px;
+    //     margin-right: -48px;
+    // }
 
-        & .slick-slide > div {
-            margin-left: 15px;
-            margin-right: 15px;
-        }
-        // & .slick-list {
-        //     margin-left: -48px;
-        //     margin-right: -48px;
-        // }
+    & .slick-prev {
+        top: 40%;
+        left: -4% !important;
+        font-size: 32px;
+        color: #ccc !important;
+        z-index: 1;
 
-        & .slick-prev {
-            top: 40%;
-            left: -4% !important;
-            font-size: 32px;
-            color: #ccc !important;
-            z-index: 1;
-
-            @include tablet {
-                font-size: 28px;
-            }
-
-            @include mobile {
-                display: block !important;
-                left: -6% !important;
-            }
-
-            &:hover {
-                color: $text-dark-2 !important;
-            }
+        @include tablet {
+            font-size: 28px;
         }
 
-        & .slick-next {
-            top: 40%;
-            right: -4% !important;
-            font-size: 32px;
-            color: #ccc !important;
-            z-index: 1;
+        @include mobile {
+            display: block !important;
+            left: -6% !important;
+        }
 
-            @include tablet {
-                font-size: 28px;
-            }
+        &:hover {
+            color: $text-dark-2 !important;
+        }
+    }
 
-            @include mobile {
-                display: block !important;
-                right: -6% !important;
-            }
+    & .slick-next {
+        top: 40%;
+        right: -4% !important;
+        font-size: 32px;
+        color: #ccc !important;
+        z-index: 1;
 
-            &:hover {
-                color: $text-dark-2 !important;
-            }
+        @include tablet {
+            font-size: 28px;
+        }
+
+        @include mobile {
+            display: block !important;
+            right: -6% !important;
+        }
+
+        &:hover {
+            color: $text-dark-2 !important;
         }
     }
 }

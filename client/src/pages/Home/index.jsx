@@ -3,10 +3,54 @@ import React from "react";
 import Banner from "../../components/Banner";
 import BlogCard from "../../components/BlogCard";
 import Carousel from "../../components/Carousel";
+import CustomTabs from "../../components/CustomTabs";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import ProductsSlider from "../../components/ProductsSlider";
 import Image from "../../constants/Image";
+
+const dataTab1 = [
+    {
+        name: "Esprit Ruffle Shirt",
+        price: 16.64,
+        image: Image.PRODUCT1,
+    },
+    {
+        name: "Herschel Supply",
+        price: 16.64,
+        image: Image.PRODUCT2,
+    },
+    {
+        name: "Only Check Trouser",
+        price: 16.64,
+        image: Image.PRODUCT3,
+    },
+    {
+        name: "Classic Trench Coat",
+        price: 16.64,
+        image: Image.PRODUCT4,
+    },
+    {
+        name: "Front Pocket Jumper",
+        price: 16.64,
+        image: Image.PRODUCT5,
+    },
+    {
+        name: "Vintage Inspired Classic",
+        price: 16.64,
+        image: Image.PRODUCT6,
+    },
+    {
+        name: "Shirt in Stretch Cotton",
+        price: 16.64,
+        image: Image.PRODUCT7,
+    },
+    {
+        name: "Pieces Metallic Printed",
+        price: 16.64,
+        image: Image.PRODUCT8,
+    },
+];
 
 const dataBlog = [
     {
@@ -35,6 +79,25 @@ const dataBlog = [
     },
 ];
 
+const overviewData = [
+    {
+        label: "Best Seller",
+        content: <ProductsSlider products={dataTab1} />,
+    },
+    {
+        label: "Featured",
+        content: <ProductsSlider products={dataTab1} />,
+    },
+    {
+        label: "Sale",
+        content: <ProductsSlider products={dataTab1} />,
+    },
+    {
+        label: "Top Rate",
+        content: <ProductsSlider products={dataTab1} />,
+    },
+];
+
 function Home() {
     return (
         <>
@@ -49,7 +112,7 @@ function Home() {
                 <section className="overview">
                     <Container>
                         <h3 className="section__title">Store Overview</h3>
-                        <ProductsSlider />
+                        <CustomTabs panels={overviewData} />
                     </Container>
                 </section>
                 <section className="blogs">
