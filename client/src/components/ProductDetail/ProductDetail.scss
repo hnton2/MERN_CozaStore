@@ -2,24 +2,23 @@
 
 .product {
     & .slick-dots.slick-thumb {
-        display: flex !important;
-        flex-direction: column;
         top: 0;
-        left: 4px;
-        max-width: 90px;
+        left: 0;
 
         & li {
-            min-height: 84px;
-            margin-bottom: 28px;
+            display: block;
             width: 68px;
+            height: 84px;
+            margin-bottom: 28px;
+            border: 1px solid #ccc;
 
             &.slick-active img {
-                border: 1px solid #ccc;
+                border: 1px solid $text-dark-2;
             }
         }
 
         & .product__image-dots {
-            width: 68px;
+            width: 100%;
         }
     }
 
@@ -29,18 +28,13 @@
         padding: 8px;
         background-color: rgba($color: #000000, $alpha: 0.5);
         top: 50%;
-        left: 100px !important;
+        left: 0 !important;
         font-size: 25px;
         color: #fff !important;
         z-index: 1;
 
-        @include tablet {
-            font-size: 28px;
-        }
-
         @include mobile {
             display: block !important;
-            left: -6% !important;
         }
 
         &:hover {
@@ -54,18 +48,13 @@
         padding: 8px;
         background-color: rgba($color: #000000, $alpha: 0.5);
         top: 50%;
-        right: 56px !important;
+        right: 0 !important;
         font-size: 25px;
         color: #fff !important;
         z-index: 1;
 
-        @include tablet {
-            font-size: 28px;
-        }
-
         @include mobile {
             display: block !important;
-            right: -6% !important;
         }
 
         &:hover {
@@ -73,20 +62,25 @@
         }
     }
 
-    &__image {
+    &__slide {
         position: relative;
-        width: 513px;
-        padding-left: 100px;
+        margin-bottom: 30px;
 
-        & > img {
-            width: 513px;
+        & > .product-image {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            & img {
+                width: 100%;
+            }
         }
 
-        &-expand {
+        & .btn-expand {
             display: block;
             position: absolute;
             top: 10px;
-            right: -90px;
+            right: 10px;
             z-index: 1;
 
             & > button {
@@ -141,6 +135,10 @@
                 justify-content: flex-end;
                 margin-bottom: 10px;
 
+                &.btn {
+                    margin-top: 20px;
+                }
+
                 & > label {
                     width: 105px;
                     text-align: center;
@@ -150,63 +148,58 @@
                     width: calc(100% - 105px);
                 }
 
-                & .form-button {
-                    width: calc(100% - 105px);
-                    padding-top: 10px;
+                & .quantity-button {
+                    display: flex;
+                    align-items: center;
 
-                    & .form-submit {
-                        color: $text-white;
-                        font-size: 15px;
-                        font-weight: 600;
-                        text-transform: uppercase;
-                        background-color: $primary-color;
-                        min-width: 161px;
-                        height: 46px;
-                        padding: 0 15px;
-                        border-radius: 24px;
-                        margin-top: 20px;
-
-                        &:hover {
-                            border-color: #222;
-                            background-color: #222;
-                            color: #fff;
-                        }
+                    & input,
+                    & button {
+                        width: 45px;
+                        height: 45px;
+                        color: #555;
                     }
 
-                    & .product-quantity {
+                    & input {
+                        text-align: center;
+                        font-size: 16px;
+                        font-weight: 600;
+                        line-height: 1.6;
+                        background-color: #f7f7f7;
+                        border: none;
+                        outline: none;
+                        border-top: 1px solid #e6e6e6;
+                        border-bottom: 1px solid #e6e6e6;
+                    }
+
+                    & button {
+                        background-color: #ffff;
+                        border: 1px solid #e6e6e6;
                         display: flex;
+                        align-items: center;
+                        justify-content: center;
 
-                        & input,
-                        & button {
-                            width: 45px;
-                            height: 45px;
-                            color: #555;
+                        &:hover {
+                            background-color: $primary-color;
+                            color: $text-white;
                         }
+                    }
+                }
 
-                        & input {
-                            text-align: center;
-                            font-size: 16px;
-                            font-weight: 600;
-                            line-height: 1.6;
-                            background-color: #f7f7f7;
-                            border: none;
-                            outline: none;
-                            border-top: 1px solid #e6e6e6;
-                            border-bottom: 1px solid #e6e6e6;
-                        }
+                & .form-submit {
+                    color: $text-white;
+                    font-size: 15px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    background-color: $primary-color;
+                    min-width: 161px;
+                    height: 46px;
+                    padding: 0 15px;
+                    border-radius: 24px;
 
-                        & button {
-                            background-color: #ffff;
-                            border: 1px solid #e6e6e6;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-
-                            &:hover {
-                                background-color: $primary-color;
-                                color: $text-white;
-                            }
-                        }
+                    &:hover {
+                        border-color: #222;
+                        background-color: #222;
+                        color: #fff;
                     }
                 }
             }

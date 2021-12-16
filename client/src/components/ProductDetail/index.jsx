@@ -23,11 +23,7 @@ function ProductDetail() {
 
     const settings = {
         customPaging: function (i) {
-            return (
-                <a>
-                    <img src={Image[`PRODUCT_DETAIL${i + 1}`]} className="product__image-dots" />
-                </a>
-            );
+            return <img src={Image[`PRODUCT_DETAIL${i + 1}`]} className="product__image-dots" />;
         },
         dots: true,
         dotsClass: "slick-dots slick-thumb",
@@ -42,35 +38,41 @@ function ProductDetail() {
 
     return (
         <div className="product">
-            <Grid container spacing={1}>
-                <Grid item xs={12} sm={12} md={6} lg={7}>
+            <Grid container spacing={4}>
+                <Grid item xs={12} sm={12} md={7} lg={7}>
                     <div>
                         <Slider {...settings}>
                             <div>
-                                <div className="product__image">
-                                    <img src={Image.PRODUCT_DETAIL1} />
-                                    <div className="product__image-expand">
-                                        <button onClick={() => console.log("object1")}>
+                                <div className="product__slide">
+                                    <div className="product-image">
+                                        <img src={Image.PRODUCT_DETAIL1} />
+                                    </div>
+                                    <div className="btn-expand">
+                                        <button>
                                             <OpenInFullIcon />
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <div className="product__image">
-                                    <img src={Image.PRODUCT_DETAIL2} />
-                                    <div className="product__image-expand">
-                                        <button onClick={() => console.log("object2")}>
+                                <div className="product__slide">
+                                    <div className="product-image">
+                                        <img src={Image.PRODUCT_DETAIL2} />
+                                    </div>
+                                    <div className="btn-expand">
+                                        <button>
                                             <OpenInFullIcon />
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <div className="product__image">
-                                    <img src={Image.PRODUCT_DETAIL3} />
-                                    <div className="product__image-expand">
-                                        <button onClick={() => console.log("object3")}>
+                                <div className="product__slide">
+                                    <div className="product-image">
+                                        <img src={Image.PRODUCT_DETAIL3} />
+                                    </div>
+                                    <div className="btn-expand">
+                                        <button>
                                             <OpenInFullIcon />
                                         </button>
                                     </div>
@@ -79,7 +81,7 @@ function ProductDetail() {
                         </Slider>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={5}>
+                <Grid item xs={12} sm={12} md={5} lg={5}>
                     <div className="product__content">
                         <h3 className="product__content-title">Lightweight Jacket</h3>
                         <span className="product__content-price">$58.79</span>
@@ -96,18 +98,24 @@ function ProductDetail() {
                                 <label>Color</label>
                                 <Select options={options} className="form-control" placeholder="Choose an option" />
                             </div>
-                            <div className="form-group">
-                                <div className="form-button">
-                                    <div className="product-quantity">
-                                        <button>
-                                            <RemoveIcon fontSize="small" />
-                                        </button>
-                                        <input type="text" value={1} />
-                                        <button>
-                                            <AddIcon fontSize="small" />
-                                        </button>
-                                    </div>
-                                    <button className="form-submit">Add to cart</button>
+                            <div className="form-group btn">
+                                <div className="form-control">
+                                    <Grid container spacing={2} alignItems="center">
+                                        <Grid item lg={12} md={6} sm={6}>
+                                            <div className="quantity-button">
+                                                <button>
+                                                    <RemoveIcon fontSize="small" />
+                                                </button>
+                                                <input type="text" value={1} />
+                                                <button>
+                                                    <AddIcon fontSize="small" />
+                                                </button>
+                                            </div>
+                                        </Grid>
+                                        <Grid item lg={12} md={6} sm={6}>
+                                            <button className="form-submit">Add to cart</button>
+                                        </Grid>
+                                    </Grid>
                                 </div>
                             </div>
                         </form>

@@ -14,7 +14,7 @@ function CustomTabs({ panels }) {
             <div className="tabs">
                 <Tabs value={value} onChange={handleChange}>
                     {panels.map((panel, index) => (
-                        <Tab label={panel.label} key={index} />
+                        <Tab label={panel.label} key={index + 1} />
                     ))}
                 </Tabs>
             </div>
