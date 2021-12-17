@@ -41,6 +41,7 @@ import BACKGROUND1 from "../assets/images/bg-01.jpg";
 import BACKGROUND2 from "../assets/images/bg-02.jpg";
 import ABOUT1 from "../assets/images/about-01.jpg";
 import ABOUT2 from "../assets/images/about-02.jpg";
+import ICON_EMAIL from "../assets/images/icons/icon-email.png";
 
 const Image = {
     LOGO: Logo,
@@ -86,6 +87,7 @@ const Image = {
     BACKGROUND2,
     ABOUT1,
     ABOUT2,
+    ICON_EMAIL,
 };
 
 export default Image;

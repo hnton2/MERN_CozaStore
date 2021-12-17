@@ -1,0 +1,105 @@
+@import "../../variables.scss";
+
+.contact {
+    padding: 104px 0 116px;
+
+    &__container {
+        border: 1px solid #e6e6e6;
+        min-height: 600px;
+
+        &.form {
+            padding: 55px 70px 70px;
+
+            & > h4 {
+                color: $text-dark;
+                font-size: 24px;
+                font-weight: 400;
+                padding-bottom: 30px;
+                text-align: center;
+            }
+
+            & > .form-group {
+                position: relative;
+                border: 1px solid #e6e6e6;
+                border-radius: 2px;
+                margin-bottom: 20px;
+
+                & > img {
+                    position: absolute;
+                    top: 50%;
+                    left: 24px;
+                    transform: translateY(-50%);
+                }
+
+                & > .form-control {
+                    border: none;
+                    outline: none;
+                    width: 100%;
+                    color: $text-dark;
+                    font-size: 14px;
+                    line-height: 1.6;
+
+                    &::placeholder {
+                        color: $text-dark;
+                        font-size: 13px;
+                        line-height: 1.6;
+                    }
+                }
+
+                & > input {
+                    height: 50px;
+                    padding-left: 62px;
+                    padding-right: 30px;
+                }
+
+                & > textarea {
+                    padding: 25px 28px;
+                }
+            }
+        }
+
+        &.information {
+            padding: 30px 93px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            & .contact-desc {
+                display: flex;
+                margin-bottom: 42px;
+
+                &__icon {
+                    width: 60px;
+                }
+
+                &__content {
+                    width: calc(100% - 60px);
+
+                    & > .contact-title {
+                        color: $text-dark;
+                        font-size: 18px;
+                        font-weight: 400;
+                        line-height: 1.4;
+                    }
+
+                    & > .contact-subtitle {
+                        font-size: 15px;
+                        font-weight: 300;
+                        line-height: 1.6;
+                        margin-top: 18px;
+                        color: $text-color-2;
+
+                        &.text-primary {
+                            color: $primary-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.maps {
+    width: 100%;
+    min-height: 390px;
+}
