@@ -14,7 +14,7 @@
             padding: 0 10% 20px;
             font-size: 14px;
             font-weight: 400;
-            color: $text-color-2;
+            color: $grey-color;
         }
 
         &__info {
@@ -31,11 +31,11 @@
                     & .info-name {
                         min-width: 145px;
                         font-weight: 400;
-                        color: $text-dark-2;
+                        color: $dark-color-2;
                     }
 
                     & .info-detail {
-                        color: $text-color-2;
+                        color: $grey-color;
                     }
                 }
             }
@@ -65,14 +65,14 @@
                     & .review__name {
                         font-size: 16px;
                         font-weight: 400;
-                        color: $text-dark;
+                        color: $dark-color;
                     }
                 }
 
                 &__message {
                     font-size: 14px;
                     font-weight: 300;
-                    color: $text-color-2;
+                    color: $grey-color;
                 }
             }
         }
@@ -82,13 +82,13 @@
                 margin-bottom: 4px;
                 font-size: 20px;
                 font-weight: 400;
-                color: $text-dark;
+                color: $dark-color;
             }
 
             & > p {
                 font-size: 14px;
                 font-weight: 300;
-                color: $text-color-2;
+                color: $grey-color;
                 margin-bottom: 48px;
             }
 
@@ -103,7 +103,7 @@
                     min-width: 80px;
                     font-size: 14px;
                     padding-right: 16px;
-                    color: $text-dark-2;
+                    color: $dark-color-2;
                     margin-bottom: 8px;
                 }
 
@@ -125,27 +125,13 @@
                     height: 40px;
                     font-size: 14px;
                     line-height: 1.7;
-                    color: $text-dark;
+                    color: $dark-color;
                     padding: 0 20px;
                 }
             }
 
             & .submit-btn {
                 margin-top: 25px;
-                background-color: $text-dark;
-                min-width: 134px;
-                height: 43px;
-                border-radius: 23px;
-                color: $text-white;
-                font-size: 15px;
-                font-weight: 600;
-                line-height: 1.466667;
-                text-transform: uppercase;
-                transition: 0.3s ease-in;
-
-                &:hover {
-                    background-color: $primary-color;
-                }
             }
         }
     }
@@ -157,7 +143,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: $text-color-2;
+        color: $grey-color;
     }
 
     &-related {
@@ -165,7 +151,7 @@
         & > h3 {
             font-size: 36px;
             font-weight: bold;
-            color: $text-black;
+            color: $black-color;
             text-align: center;
             margin-bottom: 44px;
         }

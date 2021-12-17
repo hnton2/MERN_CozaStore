@@ -14,7 +14,7 @@
             border: 1px solid #ccc;
 
             &.slick-active img {
-                border: 1px solid $text-dark-2;
+                border: 1px solid $dark-color-2;
             }
         }
 
@@ -85,20 +85,12 @@
             z-index: 1;
 
             & > button {
-                width: 40px;
+                min-width: 40px;
                 height: 40px;
-                color: $text-black;
-                background-color: #fff;
-                border-radius: 50%;
+                padding: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transition: 0.35s ease;
-
-                &:hover {
-                    color: $text-white;
-                    background-color: $primary-color;
-                }
             }
         }
     }
@@ -110,19 +102,19 @@
             font-size: 24px;
             font-weight: 400;
             line-height: 1.4;
-            color: $text-dark;
+            color: $dark-color;
             padding-bottom: 14px;
         }
 
         &-price {
             font-size: 18px;
             font-weight: 600;
-            color: $text-dark;
+            color: $dark-color;
         }
 
         &-summary {
             font-size: 14px;
-            color: $text-dark-2;
+            color: $dark-color-2;
             padding: 24px 0 32px;
         }
 
@@ -135,10 +127,6 @@
                 align-items: center;
                 justify-content: flex-end;
                 margin-bottom: 10px;
-
-                &.btn {
-                    margin-top: 20px;
-                }
 
                 & > label {
                     width: 105px;
@@ -157,7 +145,6 @@
                     & button {
                         width: 45px;
                         height: 45px;
-                        color: #555;
                     }
 
                     & input {
@@ -166,6 +153,7 @@
                         font-weight: 600;
                         line-height: 1.6;
                         background-color: #f7f7f7;
+                        color: #555;
                         border: none;
                         outline: none;
                         border-top: 1px solid #e6e6e6;
@@ -173,34 +161,12 @@
                     }
 
                     & button {
-                        background-color: #ffff;
+                        min-width: 45px;
+                        border-radius: 0;
                         border: 1px solid #e6e6e6;
                         display: flex;
                         align-items: center;
                         justify-content: center;
-
-                        &:hover {
-                            background-color: $primary-color;
-                            color: $text-white;
-                        }
-                    }
-                }
-
-                & .form-submit {
-                    color: $text-white;
-                    font-size: 15px;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    background-color: $primary-color;
-                    min-width: 161px;
-                    height: 46px;
-                    padding: 0 15px;
-                    border-radius: 24px;
-
-                    &:hover {
-                        border-color: #222;
-                        background-color: #222;
-                        color: #fff;
                     }
                 }
             }
@@ -216,7 +182,7 @@
             }
 
             & > button {
-                color: $text-dark-2;
+                color: $dark-color-2;
                 padding: 5px;
                 margin-right: 8px;
 
@@ -226,7 +192,7 @@
                 }
 
                 &:hover {
-                    color: $text-hover;
+                    color: $color-hover;
                 }
             }
         }

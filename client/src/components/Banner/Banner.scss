@@ -34,7 +34,7 @@
 
         & > .banner__desc {
             & > h3 {
-                color: $text-dark;
+                color: $dark-color;
                 font-size: 28px;
                 font-weight: bold;
                 line-height: 1.1;
@@ -72,7 +72,7 @@
             & > .banner__desc {
                 & > h3,
                 & > span {
-                    color: $text-white;
+                    color: $color-white;
                 }
             }
 

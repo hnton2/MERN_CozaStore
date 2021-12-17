@@ -21,7 +21,7 @@
 
         & > h3 {
             font-size: 28px;
-            color: $text-dark;
+            color: $dark-color;
             font-weight: 400;
             text-transform: capitalize;
 
@@ -36,22 +36,12 @@
             font-size: 60px;
             font-weight: bold;
             line-height: 1.1;
-            color: $text-dark;
+            color: $dark-color;
             text-transform: uppercase;
 
             @include mobile {
                 font-size: 40px;
             }
-        }
-
-        & > button {
-            min-width: 160px;
-            height: 46px;
-            border-radius: 24px;
-            background-color: $primary-color;
-            font-size: 15px;
-            color: $text-white;
-            text-transform: uppercase;
         }
     }
 }
@@ -59,7 +49,7 @@
 // slick
 .slick-prev {
     left: 2% !important;
-    color: $text-color-2 !important;
+    color: $grey-color !important;
     z-index: 1;
 
     @include tablet {
@@ -72,7 +62,7 @@
 }
 .slick-next {
     right: 2% !important;
-    color: $text-color-2 !important;
+    color: $grey-color !important;
     z-index: 1;
 
     @include tablet {
@@ -85,7 +75,7 @@
 }
 .slick-prev:hover,
 .slick-next:hover {
-    color: $text-color-3 !important;
+    color: $grey-color-2 !important;
 }
 
 // create multi animation
@@ -97,7 +87,7 @@
     animation: backInUp;
     animation-duration: 3s;
 }
-.slick-active.slick-current .carousel__content.animation1 > .carousel__content-btn {
+.slick-active.slick-current .carousel__content.animation1 > button {
     animation: zoomIn;
     animation-duration: 2s;
 }
@@ -110,7 +100,7 @@
     animation: lightSpeedInRight;
     animation-duration: 2s;
 }
-.slick-active.slick-current .carousel__content.animation2 > .carousel__content-btn {
+.slick-active.slick-current .carousel__content.animation2 > button {
     animation: fadeInUp;
     animation-duration: 2.5s;
 }
@@ -123,7 +113,7 @@
     animation: rotateInUpRight;
     animation-duration: 2s;
 }
-.slick-active.slick-current .carousel__content.animation3 > .carousel__content-btn {
+.slick-active.slick-current .carousel__content.animation3 > button {
     animation: rotateIn;
     animation-duration: 2s;
 }

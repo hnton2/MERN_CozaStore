@@ -24,11 +24,11 @@
         &__created {
             font-size: 13px;
             line-height: 1.4;
-            color: $text-color-3;
+            color: $grey-color-2;
             margin-bottom: 14px;
 
             & > span {
-                color: $text-black;
+                color: $black-color;
             }
         }
 
@@ -36,18 +36,18 @@
             display: block;
             font-size: 18px;
             font-weight: 500;
-            color: $text-dark;
+            color: $dark-color;
             margin-bottom: 12px;
 
             &:hover {
-                color: $text-hover;
+                color: $color-hover;
             }
         }
 
         &__summary {
             font-size: 14px;
             font-weight: 300;
-            color: $text-color-2;
+            color: $grey-color;
             line-height: 1.6;
         }
     }

@@ -19,11 +19,11 @@
         }
 
         &:hover {
-            color: $text-hover;
+            color: $color-hover;
         }
     }
 
     & > span {
-        color: $text-color-3;
+        color: $grey-color-2;
     }
 }

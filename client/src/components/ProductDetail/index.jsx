@@ -55,7 +55,10 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL1} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button onClick={() => setIsOpenModal(true)}>
+                                        <button
+                                            className="btn btn-bg__white btn-circle"
+                                            onClick={() => setIsOpenModal(true)}
+                                        >
                                             <ZoomOutMapIcon />
                                         </button>
                                     </div>
@@ -67,7 +70,10 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL2} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button onClick={() => setIsOpenModal(true)}>
+                                        <button
+                                            className="btn btn-bg__white btn-circle"
+                                            onClick={() => setIsOpenModal(true)}
+                                        >
                                             <ZoomOutMapIcon />
                                         </button>
                                     </div>
@@ -79,7 +85,10 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL3} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button onClick={() => setIsOpenModal(true)}>
+                                        <button
+                                            className="btn btn-bg__white btn-circle"
+                                            onClick={() => setIsOpenModal(true)}
+                                        >
                                             <ZoomOutMapIcon />
                                         </button>
                                     </div>
@@ -105,22 +114,24 @@ function ProductDetail() {
                                 <label>Color</label>
                                 <Select options={options} className="form-control" placeholder="Choose an option" />
                             </div>
-                            <div className="form-group btn">
+                            <div className="form-group">
                                 <div className="form-control">
                                     <Grid container spacing={2} alignItems="center">
                                         <Grid item lg={12} md={6} sm={6}>
                                             <div className="quantity-button">
-                                                <button>
+                                                <button className="btn btn-bg__white">
                                                     <RemoveIcon fontSize="small" />
                                                 </button>
                                                 <input type="text" value={1} />
-                                                <button>
+                                                <button className="btn btn-bg__white">
                                                     <AddIcon fontSize="small" />
                                                 </button>
                                             </div>
                                         </Grid>
                                         <Grid item lg={12} md={6} sm={6}>
-                                            <button className="form-submit">Add to cart</button>
+                                            <button className="btn btn-md text-uppercase btn-hover-black">
+                                                Add to cart
+                                            </button>
                                         </Grid>
                                     </Grid>
                                 </div>

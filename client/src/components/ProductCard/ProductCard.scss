@@ -31,20 +31,6 @@
             bottom: -15%;
             left: 50%;
             transform: translateX(-50%);
-            background-color: $text-white;
-            color: $text-black;
-            font-size: 15px;
-            border-radius: 20px;
-            min-width: 139px;
-            height: 40px;
-            padding: 0 15px;
-            transition: all 0.5s;
-
-            &:hover {
-                border-color: #222;
-                background-color: #222;
-                color: #fff;
-            }
         }
 
         &:hover {
@@ -67,14 +53,14 @@
         padding: 14px 8px 0 4px;
 
         & .product__title {
-            color: $text-color-3;
+            color: $grey-color-2;
             font-size: 14px;
             font-weight: 300;
             line-height: 1.4;
             padding-bottom: 6px;
 
             &:hover {
-                color: $text-hover;
+                color: $color-hover;
             }
 
             @include mobile {
@@ -86,7 +72,7 @@
             font-size: 14px;
             font-weight: 300;
             line-height: 1.4;
-            color: $text-dark-2;
+            color: $dark-color-2;
 
             @include mobile {
                 font-size: 16px;
@@ -97,7 +83,7 @@
             align-self: flex-start;
 
             & > .product__icon {
-                color: $text-color-3;
+                color: $grey-color-2;
             }
         }
     }

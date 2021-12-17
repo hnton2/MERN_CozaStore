@@ -66,11 +66,11 @@ img {
         font-size: 16px;
         font-weight: 300;
         line-height: 1.4;
-        color: $text-color-2;
+        color: $grey-color;
         text-transform: none;
 
         &.MuiTab-textColorPrimary.Mui-selected {
-            color: $text-dark;
+            color: $dark-color;
 
             @include mobile {
                 border-bottom: 2px solid #797979;
@@ -80,6 +80,68 @@ img {
 }
 .tab-content {
     margin-top: 50px;
+}
+
+.btn {
+    min-width: 140px;
+    height: 40px;
+    border-radius: 24px;
+    background-color: $primary-color;
+    color: $color-white;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4667;
+    padding: 5px 15px;
+    transition: all 0.3s ease-in;
+
+    &.btn-md {
+        min-width: 160px;
+        height: 43px;
+    }
+
+    &.btn-lg {
+        min-width: 180px;
+        height: 46px;
+    }
+
+    &.btn-bg__dark {
+        background-color: $black-color;
+        color: $color-white;
+
+        &:hover {
+            background-color: $primary-color;
+            color: $color-white;
+        }
+    }
+
+    &.btn-bg__white {
+        background-color: $color-white;
+        color: $primary-color;
+
+        &:hover {
+            background-color: $primary-color;
+            color: $color-white;
+        }
+    }
+
+    &.btn-hover-black:hover {
+        background-color: $black-color;
+        color: $color-white;
+    }
+
+    &.btn-hover-white:hover {
+        background-color: $color-white;
+        color: $primary-color;
+    }
+
+    &.text-uppercase {
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    &.btn-circle {
+        border-radius: 50%;
+    }
 }
 
 // CUSTOM
@@ -118,7 +180,7 @@ img {
         justify-content: center;
         font-size: 50px;
         font-weight: bold;
-        color: $text-black;
+        color: $black-color;
         padding-bottom: 32px;
         text-align: center;
         line-height: 1.1;
