@@ -81,7 +81,7 @@ img {
 .tab-content {
     margin-top: 50px;
 }
-
+// button
 .btn {
     min-width: 140px;
     height: 40px;
@@ -140,6 +140,9 @@ img {
     }
 
     &.btn-circle {
+        min-width: 40px;
+        height: 40px;
+        padding: 0;
         border-radius: 50%;
     }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import About from "./pages/About";
+import Cart from "./pages/Cart";
 import Category from "./pages/Category";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/product" element={<Product />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/cart" element={<Cart />} />
             </Routes>
         </BrowserRouter>
     );

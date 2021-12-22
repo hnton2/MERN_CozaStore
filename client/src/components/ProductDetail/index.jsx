@@ -11,10 +11,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import GoogleIcon from "@mui/icons-material/Google";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import QuantityButton from "../QuantityButton";
 
 const images = [Image.PRODUCT_DETAIL1, Image.PRODUCT_DETAIL2, Image.PRODUCT_DETAIL3];
 
@@ -118,15 +117,7 @@ function ProductDetail() {
                                 <div className="form-control">
                                     <Grid container spacing={2} alignItems="center">
                                         <Grid item lg={12} md={6} sm={6}>
-                                            <div className="quantity-button">
-                                                <button className="btn btn-bg__white">
-                                                    <RemoveIcon fontSize="small" />
-                                                </button>
-                                                <input type="text" value={1} />
-                                                <button className="btn btn-bg__white">
-                                                    <AddIcon fontSize="small" />
-                                                </button>
-                                            </div>
+                                            <QuantityButton />
                                         </Grid>
                                         <Grid item lg={12} md={6} sm={6}>
                                             <button className="btn btn-md text-uppercase btn-hover-black">

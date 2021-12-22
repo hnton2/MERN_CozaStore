@@ -1,0 +1,162 @@
+@import "../../variables.scss";
+
+.horizontal-scroll {
+    overflow: hidden;
+    overflow-x: auto;
+    clear: both;
+    width: 100%;
+}
+
+.cart {
+    padding-bottom: 85px;
+
+    & .table {
+        border-collapse: collapse;
+        max-width: 100%;
+        width: 100%;
+        border-left: 1px solid $border-color;
+        border-right: 1px solid $border-color;
+
+        &__head {
+            width: 100%;
+            border-top: 1px solid $border-color;
+            border-bottom: 1px solid $border-color;
+
+            & th {
+                font-size: 16px;
+                color: #555;
+                line-height: 1.6;
+                text-transform: uppercase;
+                padding: 15px 0;
+
+                &:first-child {
+                    padding-left: 15px;
+                }
+            }
+        }
+
+        &__row {
+            border-top: 1px solid $border-color;
+            border-bottom: 1px solid $border-color;
+            padding: 30px 0;
+
+            & td {
+                padding: 30px 24px;
+
+                &.text-center {
+                    text-align: center;
+                }
+
+                &:first-child {
+                    padding-left: 15px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                &.product-name {
+                    padding: 0;
+                    font-size: 16px;
+                }
+
+                & .quantity-button {
+                    justify-content: center;
+                }
+            }
+
+            & img {
+                width: 100px;
+                object-fit: contain;
+            }
+        }
+
+        &-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px !important;
+            height: 30px !important;
+        }
+    }
+
+    &__actions {
+        border: 1px solid $border-color;
+        padding: 30px 40px 40px;
+
+        & > h3 {
+            color: $dark-color;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding-bottom: 30px;
+        }
+
+        & .coupon {
+            &__content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                & .coupon-title {
+                    font-size: 16px;
+                    font-weight: 500;
+                    color: $dark-color;
+                    line-height: 1.4;
+                }
+
+                & .coupon-desc {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-size: 13px;
+                    font-weight: 300;
+                    color: $grey-color-2;
+                }
+            }
+
+            &__button {
+                padding: 8px 0;
+                color: $primary-color;
+                display: flex;
+                align-items: center;
+                font-size: 16px;
+
+                & > span {
+                    margin-left: 4px;
+                }
+
+                &:hover {
+                    opacity: 0.8;
+                }
+            }
+        }
+
+        & .cart-prices {
+            display: flex;
+            align-items: center;
+            color: $dark-color;
+
+            & .title {
+                font-size: 16px;
+                line-height: 1.4;
+                font-weight: 500;
+                min-width: 124px;
+            }
+
+            & .price {
+                font-size: 18px;
+                font-weight: 400;
+                line-height: 1.2;
+            }
+        }
+
+        & .totals {
+            margin: 27px 0 33px;
+        }
+    }
+
+    & .border-bot {
+        border-bottom: 1px dashed $border-color-2;
+        padding: 15px 0;
+    }
+}
