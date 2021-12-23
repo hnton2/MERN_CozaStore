@@ -1,0 +1,178 @@
+@import "../../variables.scss";
+
+.checkout {
+    margin: 54px 0;
+
+    &__title {
+        display: block;
+        font-size: 18px;
+        font-weight: 600;
+        color: $black-color;
+        line-height: 0.14;
+        margin: 44px 0 30px;
+    }
+
+    &__form {
+        padding: 10px 15px;
+        width: 100%;
+
+        & .form-group {
+            padding: 0 15px;
+            margin-bottom: 20px;
+
+            & > input,
+            & > textarea {
+                font-size: 14px;
+                font-weight: 300;
+                color: $dark-color;
+                outline: none;
+                padding: 10px 12px;
+                width: 100%;
+                border: 1px solid $border-color;
+                border-radius: 4px;
+
+                &::placeholder {
+                    font-size: 14px;
+                    font-weight: 300;
+                    color: $dark-color;
+                }
+            }
+        }
+    }
+
+    &__box {
+        padding: 10px 20px;
+        width: 100%;
+        background: $border-color;
+
+        & .product-list {
+            border-top: 2px solid $border-color-2;
+            padding-top: 15px;
+
+            &__header {
+                font-size: 15px;
+                font-weight: 400;
+                color: $dark-color;
+            }
+
+            & > li {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 0;
+                font-size: 14px;
+                line-height: 1.4;
+                color: $grey-color;
+
+                & > .product-link {
+                    color: $grey-color;
+                    font-weight: 300;
+                }
+
+                & > .product-quantity {
+                    color: $black-color;
+                }
+            }
+        }
+
+        & .price-list {
+            padding: 15px 0;
+
+            & > li {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 0;
+
+                & .price-title {
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: $dark-color;
+                    text-transform: uppercase;
+                }
+
+                & span {
+                    font-weight: 500;
+
+                    &.totals {
+                        color: $black-color;
+                    }
+                }
+            }
+        }
+
+        & .payment {
+            padding-bottom: 16px;
+
+            &__title {
+                color: $black-color;
+                font-size: 15px;
+                font-weight: 600;
+                line-height: 1.467;
+            }
+
+            & .radio {
+                display: block;
+                position: relative;
+                padding-left: 24px;
+                cursor: pointer;
+                user-select: none;
+                margin-bottom: 16px;
+
+                & input {
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+
+                    &:checked ~ .radio-checkmark {
+                        background-color: $primary-color;
+
+                        &::after {
+                            display: block;
+                        }
+                    }
+                }
+
+                &-checkmark {
+                    position: absolute;
+                    top: 3px;
+                    left: 0;
+                    height: 16px;
+                    width: 16px;
+                    border: 1px solid $border-color-2;
+                    border-radius: 50%;
+                    background-color: $color-white;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        display: none;
+                        top: 4px;
+                        left: 4px;
+                        width: 6px;
+                        height: 6px;
+                        border-radius: 50%;
+                        background-color: white;
+                    }
+                }
+            }
+
+            &__note {
+                background-color: $color-white;
+                padding: 15px 20px;
+                font-size: 12px;
+                font-weight: 300;
+                color: $grey-color;
+            }
+        }
+    }
+
+    &__button {
+        width: 100%;
+        margin-top: 36px;
+
+        & .btn {
+            width: 100%;
+        }
+    }
+}
