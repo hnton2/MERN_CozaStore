@@ -87,7 +87,7 @@ function Footer() {
                                 <input type="text" placeholder="email@example.com" />
                                 <div className="focus-input"></div>
                             </div>
-                            <button className="btn btn-lg btn-hover-white text-uppercase footer-btn">Subscribe</button>
+                            <button className="btn btn-lg hover-white text-uppercase footer-btn">Subscribe</button>
                         </form>
                     </Grid>
                 </Grid>

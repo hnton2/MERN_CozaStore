@@ -54,7 +54,7 @@ function Cart() {
                                                 </td>
                                                 <td className="text-center">$36.00</td>
                                                 <td>
-                                                    <button className="table-btn btn btn-circle btn-hover-black">
+                                                    <button className="table-btn btn btn-circle hover-black">
                                                         <CloseIcon />
                                                     </button>
                                                 </td>
@@ -70,7 +70,7 @@ function Cart() {
                                                 </td>
                                                 <td className="text-center">$16.00</td>
                                                 <td>
-                                                    <button className="table-btn btn btn-circle btn-hover-black">
+                                                    <button className="table-btn btn btn-circle hover-black">
                                                         <CloseIcon />
                                                     </button>
                                                 </td>
@@ -86,7 +86,7 @@ function Cart() {
                                                 </td>
                                                 <td className="text-center">$16.00</td>
                                                 <td>
-                                                    <button className="table-btn btn btn-circle btn-hover-black">
+                                                    <button className="table-btn btn btn-circle hover-black">
                                                         <CloseIcon />
                                                     </button>
                                                 </td>
@@ -129,9 +129,7 @@ function Cart() {
                                             <span className="price">$72.60</span>
                                         </div>
                                     </div>
-                                    <button className="btn btn-lg btn-bg__dark text-uppercase">
-                                        Proceed to checkout
-                                    </button>
+                                    <button className="btn btn-lg bg__dark text-uppercase">Proceed to checkout</button>
                                 </div>
                             </Grid>
                         </Grid>

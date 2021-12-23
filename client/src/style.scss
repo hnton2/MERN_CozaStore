@@ -42,6 +42,20 @@ img {
 }
 
 // COMMON
+.link {
+    font-size: 14px;
+    color: $dark-color;
+    margin: 15px 0;
+
+    &:hover {
+        opacity: 0.8;
+    }
+
+    @include mobile {
+        margin: 4px 0;
+    }
+}
+
 .tabs {
     display: flex;
     align-items: center;
@@ -104,7 +118,7 @@ img {
         height: 46px;
     }
 
-    &.btn-bg__dark {
+    &.bg-dark {
         background-color: $black-color;
         color: $color-white;
 
@@ -114,7 +128,7 @@ img {
         }
     }
 
-    &.btn-bg__white {
+    &.bg-white {
         background-color: $color-white;
         color: $primary-color;
 
@@ -124,12 +138,12 @@ img {
         }
     }
 
-    &.btn-hover-black:hover {
+    &.hover-black:hover {
         background-color: $black-color;
         color: $color-white;
     }
 
-    &.btn-hover-white:hover {
+    &.hover-white:hover {
         background-color: $color-white;
         color: $primary-color;
     }

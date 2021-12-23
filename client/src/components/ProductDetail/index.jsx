@@ -55,7 +55,7 @@ function ProductDetail() {
                                     </div>
                                     <div className="btn-expand">
                                         <button
-                                            className="btn btn-bg__white btn-circle"
+                                            className="btn bg-white btn-circle"
                                             onClick={() => setIsOpenModal(true)}
                                         >
                                             <ZoomOutMapIcon />
@@ -70,7 +70,7 @@ function ProductDetail() {
                                     </div>
                                     <div className="btn-expand">
                                         <button
-                                            className="btn btn-bg__white btn-circle"
+                                            className="btn bg-white btn-circle"
                                             onClick={() => setIsOpenModal(true)}
                                         >
                                             <ZoomOutMapIcon />
@@ -85,7 +85,7 @@ function ProductDetail() {
                                     </div>
                                     <div className="btn-expand">
                                         <button
-                                            className="btn btn-bg__white btn-circle"
+                                            className="btn bg-white btn-circle"
                                             onClick={() => setIsOpenModal(true)}
                                         >
                                             <ZoomOutMapIcon />
@@ -120,7 +120,7 @@ function ProductDetail() {
                                             <QuantityButton />
                                         </Grid>
                                         <Grid item lg={12} md={6} sm={6}>
-                                            <button className="btn btn-md text-uppercase btn-hover-black">
+                                            <button className="btn btn-md text-uppercase hover-black">
                                                 Add to cart
                                             </button>
                                         </Grid>

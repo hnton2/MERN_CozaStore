@@ -6,7 +6,9 @@ import Category from "./pages/Category";
 import Checkout from "./pages/Checkout";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 import Product from "./pages/Product";
+import Register from "./pages/Register";
 import "./style.scss";
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
             </Routes>
         </BrowserRouter>
     );
