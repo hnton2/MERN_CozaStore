@@ -9,7 +9,7 @@ function ProductCard({ name, price, image }) {
         <div className="product-card">
             <div className="product-card__image">
                 <img src={image} alt={name} />
-                <button className="btn btn-bg__white">Quick View</button>
+                <button className="btn bg-white">Quick View</button>
             </div>
             <div className="product-card__desc">
                 <div>

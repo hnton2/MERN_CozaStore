@@ -4,6 +4,7 @@
     margin-bottom: 40px;
 
     &__image {
+        position: relative;
         display: block;
         overflow: hidden;
 
@@ -15,18 +16,91 @@
             max-width: 100%;
             transition: transform 1s ease;
         }
+
+        & .time {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba($color: #fff, $alpha: 0.9);
+            width: 70px;
+            min-height: 70px;
+
+            & .day {
+                font-size: 30px;
+                font-weight: bold;
+                color: $dark-color;
+            }
+
+            & .month-year {
+                font-size: 12px;
+                font-weight: 400;
+                color: $dark-color-2;
+            }
+        }
     }
 
     & .desc {
-        margin-top: 15px;
-        &__created {
-            font-size: 13px;
-            line-height: 1.4;
-            color: $grey-color-2;
-            margin-bottom: 14px;
+        padding-top: 15px;
 
-            & > span {
-                color: $black-color;
+        &.card-lg {
+            padding: 32px 0 24px;
+
+            & .desc__title {
+                font-size: 26px;
+                font-weight: bold;
+                transition: all 0.3s;
+            }
+
+            & .desc__summary {
+                font-size: 15px;
+            }
+
+            & .desc__footer {
+                display: flex;
+            }
+        }
+
+        &__footer {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 18px;
+
+            & .created {
+                font-size: 13px;
+                line-height: 1.4;
+                color: $grey-color-2;
+
+                & .content {
+                    color: $black-color;
+                }
+
+                & .border {
+                    color: $border-color-2;
+                    margin: 0 4px;
+                }
+            }
+
+            & .link-detail {
+                display: flex;
+                align-items: center;
+                font-size: 15px;
+                font-weight: 500;
+                color: $dark-color;
+                text-transform: uppercase;
+                transition: 0.3s ease-in-out;
+
+                & span {
+                    margin-right: 8px;
+                }
+
+                &:hover {
+                    color: $color-hover;
+                }
             }
         }
 

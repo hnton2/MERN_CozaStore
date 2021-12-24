@@ -56,18 +56,13 @@ function Header() {
                 <div className="nav">
                     <ul className="nav__items">
                         <li className="nav__item">
-                            <Link to="#" className="nav__item-link active">
+                            <Link to="/" className="nav__item-link active">
                                 Home
                             </Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="#" className="nav__item-link">
-                                Shop
-                            </Link>
-                        </li>
-                        <li className="nav__item">
-                            <Link to="#" className="nav__item-link">
-                                Feature
+                            <Link to="/category" className="nav__item-link">
+                                Category
                             </Link>
                             <ul className="sub-nav">
                                 <li>
@@ -89,16 +84,21 @@ function Header() {
                         </li>
                         <li className="nav__item">
                             <Link to="#" className="nav__item-link">
+                                Sale
+                            </Link>
+                        </li>
+                        <li className="nav__item">
+                            <Link to="/blog" className="nav__item-link">
                                 Blog
                             </Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="#" className="nav__item-link">
+                            <Link to="/about" className="nav__item-link">
                                 About
                             </Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="#" className="nav__item-link">
+                            <Link to="/contact" className="nav__item-link">
                                 Contact
                             </Link>
                         </li>
@@ -231,8 +231,8 @@ function Header() {
                     <div className="sidebar__footer">
                         <div className="cart__total">Total: $75.00</div>
                         <div className="cart__buttons">
-                            <button className="btn bg__dark text-uppercase">View Cart</button>
-                            <button className="btn bg__dark text-uppercase">Check Out</button>
+                            <button className="btn bg-dark text-uppercase">View Cart</button>
+                            <button className="btn bg-dark text-uppercase">Check Out</button>
                         </div>
                     </div>
                 </div>

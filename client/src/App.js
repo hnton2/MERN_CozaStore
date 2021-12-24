@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import About from "./pages/About";
+import Blogs from "./pages/Blogs";
 import Cart from "./pages/Cart";
 import Category from "./pages/Category";
 import Checkout from "./pages/Checkout";
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/blog" element={<Blogs />} />
             </Routes>
         </BrowserRouter>
     );
