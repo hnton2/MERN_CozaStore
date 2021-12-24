@@ -77,13 +77,10 @@
                 font-size: 16px;
             }
         }
+    }
 
-        & .product__favorite {
-            align-self: flex-start;
-
-            & > .product__icon {
-                color: $grey-color-2;
-            }
-        }
+    &__modal {
+        background: #fff;
+        margin: 60px 0 20px;
     }
 }

@@ -1,6 +1,14 @@
 @import "../../variables.scss";
 
 .product {
+    & .slick-slider {
+        padding-left: 120px;
+
+        @include mobile {
+            padding-left: 80px;
+        }
+    }
+
     & .slick-dots.slick-thumb {
         top: 0;
         left: 0;
@@ -12,6 +20,11 @@
             height: 84px;
             margin-bottom: 28px;
             border: 1px solid #ccc;
+
+            @include mobile {
+                width: 56px;
+                height: 56px;
+            }
 
             &.slick-active img {
                 border: 1px solid $dark-color-2;
@@ -29,13 +42,14 @@
         padding: 8px;
         background-color: rgba($color: #000000, $alpha: 0.5);
         top: 50%;
-        left: 0 !important;
+        left: 120px !important;
         font-size: 25px;
         color: #fff !important;
         z-index: 1;
 
         @include mobile {
             display: block !important;
+            left: 80px !important;
         }
 
         &:hover {
