@@ -161,6 +161,32 @@ img {
     }
 }
 
+.tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    & > .tag {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        min-height: 30px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: $grey-color;
+        padding: 0 15px;
+        margin: 0 5px 5px 0;
+        transition: all 0.3s;
+
+        &:hover {
+            border-color: #6c7ae0;
+            color: #6c7ae0;
+        }
+    }
+}
+
 // CUSTOM
 .main {
     margin-top: $header-height;

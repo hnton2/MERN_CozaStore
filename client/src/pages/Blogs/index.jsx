@@ -7,6 +7,29 @@ import TitlePage from "../../components/TitlePage";
 import Image from "../../constants/Image";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+import "./Blogs.scss";
+
+const dataProduct = [
+    {
+        path: "#",
+        name: "White Shirt With Pleat Detail Back",
+        image: Image.PRODUCT1,
+        price: "19.00",
+    },
+    {
+        path: "#",
+        name: "White Shirt With Pleat Detail Back",
+        image: Image.PRODUCT2,
+        price: "19.00",
+    },
+    {
+        path: "#",
+        name: "White Shirt With Pleat Detail Back",
+        image: Image.PRODUCT3,
+        price: "19.00",
+    },
+];
 
 const dataBlog = [
     {
@@ -35,15 +58,71 @@ const dataBlog = [
     },
 ];
 
+const CardContainer = styled.div`
+    display: flex;
+    margin-bottom: 30px;
+`;
+
+const ImageLink = styled(Link)`
+    display: block;
+    overflow: hidden;
+    margin-right: 20px;
+    min-width: 90px;
+    &:hover > img {
+        transform: scale(1.1);
+    }
+`;
+
+const ImageCard = styled.img`
+    width: 90px;
+    object-fit: contain;
+    transition: 0.8s ease;
+`;
+
+const DescriptionCard = styled.div`
+    padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+`;
+
+const TitleCard = styled(Link)`
+    font-size: 15px;
+    line-height: 1.4;
+    color: #555;
+    transition: 0.3s;
+
+    &:hover {
+        color: #6c7ae0;
+    }
+`;
+
+const PriceCard = styled.span`
+    font-size: 15px;
+    color: #888;
+    padding-top: 20px;
+`;
+
+const SidebarCard = ({ path, image, name, price }) => (
+    <CardContainer>
+        <ImageLink to={path}>
+            <ImageCard src={image} alt={name} />
+        </ImageLink>
+        <DescriptionCard>
+            <TitleCard to={path}>{name}</TitleCard>
+            <PriceCard>${price}</PriceCard>
+        </DescriptionCard>
+    </CardContainer>
+);
+
 function Blogs() {
     return (
         <>
             <Header />
             <div className="main">
                 <TitlePage background={Image.BACKGROUND2} title="Blog" />
-                <div className="blogs">
+                <div className="blog">
                     <Container>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={4}>
                             <Grid item md={8} lg={9}>
                                 {dataBlog.map((item, index) => (
                                     <BlogCard
@@ -61,15 +140,15 @@ function Blogs() {
                                 </div>
                             </Grid>
                             <Grid item md={4} lg={3}>
-                                <div className="sidebar">
-                                    <form className="sidebar__search">
+                                <div className="blog__menu">
+                                    <form className="search">
                                         <input type="text" placeholder="Search" />
                                         <button>
-                                            <SearchIcon />
+                                            <SearchIcon fontSize="small" />
                                         </button>
                                     </form>
-                                    <h3 className="sidebar__title">Categories</h3>
-                                    <ul className="category">
+                                    <h3 className="title">Categories</h3>
+                                    <ul className="blog-category">
                                         <li>
                                             <Link to="#" className="category__link">
                                                 Fashion
@@ -96,36 +175,18 @@ function Blogs() {
                                             </Link>
                                         </li>
                                     </ul>
-                                    <h3 className="sidebar__title">Featured Products</h3>
-                                    <div className="sidebar-product">
-                                        <Link to="#">
-                                            <img src={Image.PRODUCT1} alt="" />
-                                        </Link>
-                                        <div className="sidebar-product__desc">
-                                            <h4 className="title">White Shirt With Pleat Detail Back</h4>
-                                            <span className="price"> $19.00</span>
-                                        </div>
-                                    </div>
-                                    <div className="sidebar-product">
-                                        <Link to="#">
-                                            <img src={Image.PRODUCT2} alt="" />
-                                        </Link>
-                                        <div className="sidebar-product__desc">
-                                            <h4 className="title">White Shirt With Pleat Detail Back</h4>
-                                            <span className="price"> $19.00</span>
-                                        </div>
-                                    </div>
-                                    <div className="sidebar-product">
-                                        <Link to="#">
-                                            <img src={Image.PRODUCT3} alt="" />
-                                        </Link>
-                                        <div className="sidebar-product__desc">
-                                            <h4 className="title">White Shirt With Pleat Detail Back</h4>
-                                            <span className="price"> $19.00</span>
-                                        </div>
-                                    </div>
-                                    <h3 className="sidebar__title">Tags</h3>
-                                    <div className="category__filter-tags">
+                                    <h3 className="title">Featured Products</h3>
+                                    {dataProduct.map((item, index) => (
+                                        <SidebarCard
+                                            path={item.path}
+                                            image={item.image}
+                                            name={item.name}
+                                            price={item.price}
+                                            key={index + 1}
+                                        />
+                                    ))}
+                                    <h3 className="title">Tags</h3>
+                                    <div className="tags">
                                         <Link to="#" className="tag">
                                             Fashion
                                         </Link>

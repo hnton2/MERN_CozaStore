@@ -236,7 +236,7 @@ function Category() {
                                     </Grid>
                                     <Grid item xs={6} sm={6} md={3}>
                                         <h4 className="category__filter-title">Tags</h4>
-                                        <div className="category__filter-tags">
+                                        <div className="tags">
                                             <Link to="#" className="tag">
                                                 Fashion
                                             </Link>
