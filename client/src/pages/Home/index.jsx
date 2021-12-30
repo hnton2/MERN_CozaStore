@@ -105,9 +105,9 @@ function Home() {
             <div className="main">
                 <Carousel />
                 <div className="home-banner">
-                    <Banner title="Women" subtitle="Spring 2020" image={Image.BANNER4} />
-                    <Banner title="Men" subtitle="Spring 2020" image={Image.BANNER5} />
-                    <Banner title="Bags" subtitle="New Trend" image={Image.BANNER6} />
+                    <Banner title="Women" subtitle="Spring 2020" image={Image.BANNER4} slug="women" />
+                    <Banner title="Men" subtitle="Spring 2020" image={Image.BANNER5} slug="men" />
+                    <Banner title="Bags" subtitle="New Trend" image={Image.BANNER6} slug="bags" />
                 </div>
                 <section className="overview">
                     <Container>

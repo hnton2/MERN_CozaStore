@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import TabPanel from "../../components/TabPanel";
-import "./Category.scss";
+import "./Products.scss";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import ProductCard from "../../components/ProductCard";
 import Image from "../../constants/Image";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import CircleIcon from "@mui/icons-material/Circle";
 
 const dataTab1 = [
@@ -55,23 +55,28 @@ const dataTab1 = [
     },
 ];
 
-function Category() {
-    const [value, setValue] = React.useState(0);
+function Products() {
+    const location = useLocation();
+    const category = location.pathname.split("/")[2];
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
+    const [tab, setTab] = useState(0);
+
+    const handleChangeTab = (event, newValue) => {
+        setTab(newValue);
     };
 
-    const [filter, setFilter] = useState(false);
+    const [filters, setFilters] = useState({});
+    const [showFilter, setShowFilter] = useState(false);
     const handleSToggleSFilter = () => {
-        setFilter(!filter);
+        setShowFilter(!showFilter);
         setSearch(false);
     };
 
-    const [search, setSearch] = useState(false);
+    const [search, setSearch] = useState("");
+    const [showSearch, setShowSearch] = useState(false);
     const handleToggleSearch = () => {
-        setSearch(!search);
-        setFilter(false);
+        setShowSearch(!showSearch);
+        setShowFilter(false);
     };
 
     return (
@@ -84,7 +89,7 @@ function Category() {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={12} md={8}>
                                     <div className="tabs">
-                                        <Tabs value={value} onChange={handleChange}>
+                                        <Tabs value={tab} onChange={handleChangeTab}>
                                             <Tab label="Best Seller" />
                                             <Tab label="Featured" />
                                             <Tab label="Sale" />
@@ -95,24 +100,24 @@ function Category() {
                                 <Grid item xs={12} sm={12} md={4}>
                                     <div className="category__options">
                                         <button
-                                            className={`category__options-btn ${filter ? "show-filter" : ""}`}
+                                            className={`category__options-btn ${showFilter ? "show-filter" : ""}`}
                                             onClick={handleSToggleSFilter}
                                         >
-                                            {filter ? <ClearIcon /> : <FilterListIcon />}
+                                            {showFilter ? <ClearIcon /> : <FilterListIcon />}
                                             <span>Filter</span>
                                         </button>
                                         <button
-                                            className={`category__options-btn ${search ? "show-filter" : ""}`}
+                                            className={`category__options-btn ${showSearch ? "show-filter" : ""}`}
                                             onClick={handleToggleSearch}
                                         >
-                                            {search ? <ClearIcon /> : <SearchIcon />}
+                                            {showSearch ? <ClearIcon /> : <SearchIcon />}
                                             <span>Search</span>
                                         </button>
                                     </div>
                                 </Grid>
                             </Grid>
                         </div>
-                        <div className={`category__search ${search ? "active" : ""}`}>
+                        <div className={`category__search ${showSearch ? "active" : ""}`}>
                             <form>
                                 <button>
                                     <SearchIcon sx={{ fontSize: 24 }} />
@@ -120,7 +125,7 @@ function Category() {
                                 <input type="text" placeholder="Search" />
                             </form>
                         </div>
-                        <div className={`category__filter ${filter ? "active" : ""}`}>
+                        <div className={`category__filter ${showFilter ? "active" : ""}`}>
                             <div className="category__filter-wrapper">
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} sm={6} md={3}>
@@ -259,7 +264,7 @@ function Category() {
                         </div>
                         <div className="category__content">
                             <div className="tab-content">
-                                <TabPanel value={value} index={0}>
+                                <TabPanel value={tab} index={0}>
                                     <Grid container spacing={1}>
                                         {dataTab1.map((item, index) => (
                                             <Grid item xs={12} sm={6} md={3} key={index + 1}>
@@ -268,13 +273,13 @@ function Category() {
                                         ))}
                                     </Grid>
                                 </TabPanel>
-                                <TabPanel value={value} index={1}>
+                                <TabPanel value={tab} index={1}>
                                     2
                                 </TabPanel>
-                                <TabPanel value={value} index={2}>
+                                <TabPanel value={tab} index={2}>
                                     3
                                 </TabPanel>
-                                <TabPanel value={value} index={3}>
+                                <TabPanel value={tab} index={3}>
                                     4
                                 </TabPanel>
                             </div>
@@ -290,4 +295,4 @@ function Category() {
     );
 }
 
-export default Category;
+export default Products;

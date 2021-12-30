@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const cryptoJS = require("crypto-js");
-const JWT = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 // REGISTER
+// @localhost:5000/api/auth/register
 router.post("/register", async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -34,13 +35,15 @@ router.post("/register", async (req, res) => {
 });
 
 // LOGIN
-router.post("login", async (req, res) => {
-    const { username, password } = req.body;
+// @localhost:5000/api/auth/login
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
     if (!email || !password) return res.status(400).json({ success: false, message: "Missing email and/or password" });
 
     try {
-        const user = await User.findOne({ username: username });
-        if (!user) return res.status(400).json({ success: false, message: "Incorrect username" });
+        const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ success: false, message: "Incorrect email" });
 
         const hashedPassword = cryptoJS.AES.decrypt(user.password, process.env.PASS_SEC);
         const originalPassword = hashedPassword.toString(cryptoJS.enc.Utf8);

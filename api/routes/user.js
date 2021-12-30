@@ -20,11 +20,11 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 // DELETE
-router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
+router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
         const deletedUser = await User.findOneAndDelete(req.params.id);
         if (!deletedUser) return res.status(401).json({ success: false, message: "User not found" });
-        res.json("User has been deleted");
+        res.json({ success: true, message: "User has been deleted" });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

@@ -61,22 +61,22 @@ function Header() {
                             </Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="/category" className="nav__item-link">
+                            <Link to="/products/all" className="nav__item-link">
                                 Category
                             </Link>
                             <ul className="sub-nav">
                                 <li>
-                                    <Link className="sub-nav-link" to="#">
-                                        Man
+                                    <Link className="sub-nav-link" to="/products/men">
+                                        Men
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link className="sub-nav-link" to="#">
+                                    <Link className="sub-nav-link" to="/products/women">
                                         Women
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link className="sub-nav-link" to="#">
+                                    <Link className="sub-nav-link" to="/products/kid">
                                         Kid
                                     </Link>
                                 </li>
