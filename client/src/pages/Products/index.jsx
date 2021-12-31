@@ -7,69 +7,52 @@ import "./Products.scss";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import ProductCard from "../../components/ProductCard";
-import Image from "../../constants/Image";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Link, useLocation } from "react-router-dom";
 import CircleIcon from "@mui/icons-material/Circle";
+import { PRICE, COLOR, SORT, TAGS } from "../../constants/Filter";
+import queryString from "query-string";
+import ProductList from "../../components/ProductList";
+import TitlePage from "../../components/TitlePage";
+import Image from "../../constants/Image";
+import { useForm } from "react-hook-form";
+import WarningIcon from "@mui/icons-material/Warning";
 
-const dataTab1 = [
-    {
-        name: "Esprit Ruffle Shirt",
-        price: 16.64,
-        image: Image.PRODUCT1,
-    },
-    {
-        name: "Herschel Supply",
-        price: 16.64,
-        image: Image.PRODUCT2,
-    },
-    {
-        name: "Only Check Trouser",
-        price: 16.64,
-        image: Image.PRODUCT3,
-    },
-    {
-        name: "Classic Trench Coat",
-        price: 16.64,
-        image: Image.PRODUCT4,
-    },
-    {
-        name: "Front Pocket Jumper",
-        price: 16.64,
-        image: Image.PRODUCT5,
-    },
-    {
-        name: "Vintage Inspired Classic",
-        price: 16.64,
-        image: Image.PRODUCT6,
-    },
-    {
-        name: "Shirt in Stretch Cotton",
-        price: 16.64,
-        image: Image.PRODUCT7,
-    },
-    {
-        name: "Pieces Metallic Printed",
-        price: 16.64,
-        image: Image.PRODUCT8,
-    },
-];
+//@query: /products/men?category=shoes&sort=newest&color=black&price=200+&tags=sports
 
 function Products() {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm();
     const location = useLocation();
-    const category = location.pathname.split("/")[2];
+    const userObject = location.pathname.split("/")[2];
 
-    const [tab, setTab] = useState(0);
+    const [category, setCategory] = useState("all");
 
-    const handleChangeTab = (event, newValue) => {
-        setTab(newValue);
+    const handleChangeTab = (event, value) => {
+        setCategory(value);
+        setFilters({
+            ...filters,
+            category: value,
+        });
     };
 
     const [filters, setFilters] = useState({});
     const [showFilter, setShowFilter] = useState(false);
     const handleSToggleSFilter = () => {
         setShowFilter(!showFilter);
-        setSearch(false);
+        setShowSearch(false);
+    };
+    const handleFilter = (e) => {
+        const queryName = e.target.getAttribute("name");
+        const queryValue = e.target.getAttribute("slug");
+        setFilters({
+            ...filters,
+            [queryName]: queryValue,
+        });
     };
 
     const [search, setSearch] = useState("");
@@ -78,22 +61,26 @@ function Products() {
         setShowSearch(!showSearch);
         setShowFilter(false);
     };
+    const handleSearch = (val) => {
+        setSearch(val);
+    };
 
     return (
         <>
             <Header />
             <div className="main">
+                <TitlePage background={Image.BACKGROUND2} title="Men" />
                 <Container fixed>
                     <div className="category">
                         <div className="category__header">
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={12} md={8}>
                                     <div className="tabs">
-                                        <Tabs value={tab} onChange={handleChangeTab}>
-                                            <Tab label="Best Seller" />
-                                            <Tab label="Featured" />
-                                            <Tab label="Sale" />
-                                            <Tab label="Top Rate" />
+                                        <Tabs value={category} onChange={handleChangeTab}>
+                                            <Tab label="All" value="all" />
+                                            <Tab label="Shoes" value="shoes" />
+                                            <Tab label="Clothing" value="clothing" />
+                                            <Tab label="Accessory and Equipment" value="accessory" />
                                         </Tabs>
                                     </div>
                                 </Grid>
@@ -118,11 +105,16 @@ function Products() {
                             </Grid>
                         </div>
                         <div className={`category__search ${showSearch ? "active" : ""}`}>
-                            <form>
-                                <button>
+                            <form onSubmit={handleSubmit(handleSearch)}>
+                                <button type="submit">
                                     <SearchIcon sx={{ fontSize: 24 }} />
                                 </button>
-                                <input type="text" placeholder="Search" />
+                                {errors.search && (
+                                    <span className="validation">
+                                        <WarningIcon />
+                                    </span>
+                                )}
+                                <input type="text" placeholder="Search" {...register("search", { required: true })} />
                             </form>
                         </div>
                         <div className={`category__filter ${showFilter ? "active" : ""}`}>
@@ -130,162 +122,80 @@ function Products() {
                                 <Grid container spacing={2}>
                                     <Grid item xs={6} sm={6} md={3}>
                                         <h4 className="category__filter-title">Sort By</h4>
-                                        <ul>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    Default
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link active" to="#">
-                                                    Popularity
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    Average rating
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    Newness
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    Price: Low to High
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    Price: High to Low
-                                                </Link>
-                                            </li>
+                                        <ul className="filter-list">
+                                            {SORT.map((item, index) => (
+                                                <li key={index} onClick={handleFilter}>
+                                                    <span name="sort" slug={item.slug}>
+                                                        {item.name}
+                                                    </span>
+                                                </li>
+                                            ))}
                                         </ul>
                                     </Grid>
                                     <Grid item xs={6} sm={6} md={3}>
                                         <h4 className="category__filter-title">Price</h4>
-                                        <ul>
-                                            <li>
-                                                <Link className="category__filter-link active" to="#">
-                                                    All
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    $0.00 - $50.00
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    $50.00 - $100.00
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    $100.00 - $150.00
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    $150.00 - $200.00
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="category__filter-link" to="#">
-                                                    $200.00+
-                                                </Link>
-                                            </li>
+                                        <ul className="filter-list">
+                                            {PRICE.map((item, index) => (
+                                                <li key={index} onClick={handleFilter}>
+                                                    <span name="price" slug={item.slug}>
+                                                        {item.name}
+                                                    </span>
+                                                </li>
+                                            ))}
                                         </ul>
                                     </Grid>
                                     <Grid item xs={6} sm={6} md={3}>
                                         <h4 className="category__filter-title">Color</h4>
-                                        <ul>
-                                            <li>
-                                                <CircleIcon fontSize="small" sx={{ color: "black" }} />
-                                                <Link className="category__filter-link" to="#">
-                                                    Black
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <CircleIcon fontSize="small" sx={{ color: "blue" }} />
-                                                <Link className="category__filter-link" to="#">
-                                                    Blue
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <CircleIcon fontSize="small" sx={{ color: "grey" }} />
-                                                <Link className="category__filter-link" to="#">
-                                                    Grey
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <CircleIcon fontSize="small" sx={{ color: "green" }} />
-                                                <Link className="category__filter-link" to="#">
-                                                    Green
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <CircleIcon fontSize="small" sx={{ color: "white" }} />
-                                                <Link className="category__filter-link active" to="#">
-                                                    White
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <CircleIcon fontSize="small" sx={{ color: "red" }} />
-                                                <Link className="category__filter-link" to="#">
-                                                    Red
-                                                </Link>
-                                            </li>
+                                        <ul className="filter-list">
+                                            {COLOR.map((item, index) => (
+                                                <li key={index} onClick={handleFilter}>
+                                                    <CircleIcon fontSize="small" sx={{ color: `${item.slug}` }} />
+                                                    <span name="color" slug={item.slug}>
+                                                        {item.name}
+                                                    </span>
+                                                </li>
+                                            ))}
                                         </ul>
                                     </Grid>
                                     <Grid item xs={6} sm={6} md={3}>
                                         <h4 className="category__filter-title">Tags</h4>
-                                        <div className="tags">
-                                            <Link to="#" className="tag">
-                                                Fashion
-                                            </Link>
-                                            <Link to="#" className="tag">
-                                                Lifestyle
-                                            </Link>
-                                            <Link to="#" className="tag">
-                                                Sports
-                                            </Link>
-                                            <Link to="#" className="tag">
-                                                Street style
-                                            </Link>
-                                            <Link to="#" className="tag">
-                                                Crafts
-                                            </Link>
-                                        </div>
+                                        <ul className="tags">
+                                            {TAGS.map((item, index) => (
+                                                <li key={index} onClick={handleFilter} className="tag">
+                                                    <span name="tags" slug={item.slug}>
+                                                        {item.name}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </Grid>
                                 </Grid>
                             </div>
                         </div>
                         <div className="category__content">
                             <div className="tab-content">
-                                <TabPanel value={tab} index={0}>
-                                    <Grid container spacing={1}>
-                                        {dataTab1.map((item, index) => (
-                                            <Grid item xs={12} sm={6} md={3} key={index + 1}>
-                                                <ProductCard name={item.name} price={item.price} image={item.image} />
-                                            </Grid>
-                                        ))}
-                                    </Grid>
+                                <TabPanel value={category} index="all">
+                                    <h1>all</h1>
+                                    <ProductList
+                                        user={userObject}
+                                        category={category}
+                                        filters={filters}
+                                        search={search}
+                                    />
                                 </TabPanel>
-                                <TabPanel value={tab} index={1}>
-                                    2
+                                <TabPanel value={category} index="shoes">
+                                    <h1>shoes</h1>
+                                    <ProductList user={userObject} filters={filters} search={search} />
                                 </TabPanel>
-                                <TabPanel value={tab} index={2}>
-                                    3
+                                <TabPanel value={category} index="clothing">
+                                    <h1>clothing</h1>
+                                    <ProductList user={userObject} filters={filters} search={search} />
                                 </TabPanel>
-                                <TabPanel value={tab} index={3}>
-                                    4
+                                <TabPanel value={category} index="accessory">
+                                    <h1>accessory and equipment</h1>
+                                    <ProductList user={userObject} filters={filters} search={search} />
                                 </TabPanel>
                             </div>
-                        </div>
-                        <div className="category__pagination">
-                            <Pagination count={10} variant="outlined" size="large" color="secondary" />
                         </div>
                     </div>
                 </Container>

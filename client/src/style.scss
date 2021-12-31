@@ -185,6 +185,7 @@ img {
         transition: all 0.3s;
 
         &:hover {
+            cursor: pointer;
             border-color: #6c7ae0;
             color: #6c7ae0;
         }
