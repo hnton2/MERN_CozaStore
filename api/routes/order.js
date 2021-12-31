@@ -4,13 +4,11 @@ const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = requir
 const router = require("express").Router();
 
 //CREATE
-
 router.post("/", verifyToken, async (req, res) => {
     const newOrder = new Order(req.body);
-
     try {
         const savedOrder = await newOrder.save();
-        res.status(200).json(savedOrder);
+        res.status(200).json({ success: true, message: "Create cart successfully", products: savedOrder });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });
@@ -27,7 +25,7 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
             },
             { new: true }
         );
-        res.status(200).json(updatedOrder);
+        res.status(200).json({ success: true, message: "Update cart successfully", products: updatedOrder });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });
@@ -38,7 +36,7 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
         await Order.findByIdAndDelete(req.params.id);
-        res.status(200).json("Order has been deleted...");
+        res.status(200).json({ success: true, message: "Order has been deleted..." });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });
@@ -99,9 +97,10 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
                 },
             },
         ]);
-        res.status(200).json(income);
-    } catch (err) {
-        res.status(500).json(err);
+        res.json(income);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
 
