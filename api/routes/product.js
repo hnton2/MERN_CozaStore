@@ -2,23 +2,37 @@ const router = require("express").Router();
 
 const Product = require("../models/Product");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
+const { UploadFile, RemoveFile } = require("../helpers/file");
 
-// CREATE
-// @localhost:5000/api/product/
-router.post("/", verifyTokenAndAdmin, async (req, res) => {
+// @DESC Create a product
+// @ROUTE Post /api/product/
+// @ACCESS Public
+router.post("/", verifyTokenAndAdmin, UploadFile.array("thumb", 20), async (req, res) => {
     const newProduct = new Product(req.body);
+    const thumbs = req.files;
 
-    if (!newProduct.title || !newProduct.desc || !newProduct.thumb || !newProduct.price)
+    if (!newProduct.name || !newProduct.slug || !newProduct.description || !newProduct.price || !thumbs) {
+        if (thumbs) thumbs.map((item) => RemoveFile(item.filename));
         return res.status(401).json({ success: false, message: "Missing necessary information" });
+    }
 
     try {
         const existProduct = await Product.findOne({ title: newProduct.title });
-        if (existProduct) return res.status(400).json({ success: false, message: "Product already exist" });
-
+        if (existProduct) {
+            if (thumbs) thumbs.map((item) => RemoveFile(item.filename));
+            return res.status(400).json({ success: false, message: "Product already exist" });
+        }
+        if (thumbs.length > 0) {
+            let thumbsName = [];
+            thumbs.map((item) => thumbsName.push(item.filename));
+            newProduct.thumb = thumbsName;
+        }
+        console.log(newProduct);
         const savedProduct = await newProduct.save();
         res.json({ success: true, message: "Product created successfully", product: savedProduct });
     } catch (error) {
         console.log(error);
+        if (thumbs) thumbs.map((item) => RemoveFile(item.filename));
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
