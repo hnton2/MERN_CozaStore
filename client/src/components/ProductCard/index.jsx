@@ -4,7 +4,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link } from "react-router-dom";
 import "./ProductCard.scss";
 import { Checkbox, Container, Modal } from "@mui/material";
-import ProductDetail from "../../components/ProductDetail";
+import ProductDetail from "components/ProductDetail";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "styled-components";
 

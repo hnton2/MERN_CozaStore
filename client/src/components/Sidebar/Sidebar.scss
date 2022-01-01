@@ -58,6 +58,7 @@
             & .options-title {
                 font-size: 18px;
                 color: $black-color;
+                padding: 30px 0;
             }
         }
 
@@ -151,6 +152,45 @@
         }
     }
 
+    &-avatar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin-bottom: 36px;
+
+        & > img {
+            width: 80px;
+            height: 80px;
+            border: 1px solid $border-color;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        & > .description {
+            margin-left: 16px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        & h5 {
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1.4;
+            color: $dark-color;
+        }
+
+        & span {
+            text-transform: uppercase;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: $black-color;
+        }
+    }
+
     &-links {
         & > li {
             margin-bottom: 13px;
@@ -159,19 +199,23 @@
         & .sidebar-link {
             font-size: 14px;
             color: $dark-color;
+            display: flex;
+            align-items: center;
 
             &:hover {
                 color: $color-hover;
+            }
+
+            & > .sidebar-icon {
+                margin-right: 8px;
             }
         }
     }
 
     &-gallery {
         width: 100%;
-        padding: 30px 0;
 
         &__list {
-            padding-top: 36px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
@@ -193,7 +237,6 @@
 
     &-about {
         & > p {
-            padding-top: 27px;
             font-size: 14px;
             font-weight: 300;
             line-height: 1.4;

@@ -1,13 +1,13 @@
 import { Container, Grid } from "@mui/material";
 import React from "react";
-import Banner from "../../components/Banner";
-import BlogCard from "../../components/BlogCard";
-import Carousel from "../../components/Carousel";
-import CustomTabs from "../../components/CustomTabs";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import ProductsSlider from "../../components/ProductsSlider";
-import Image from "../../constants/Image";
+import Banner from "components/Banner";
+import BlogCard from "components/BlogCard";
+import Carousel from "components/Carousel";
+import CustomTabs from "components/CustomTabs";
+import Footer from "components/Footer";
+import Header from "components/Header";
+import ProductsSlider from "components/ProductsSlider";
+import Image from "constants/Image";
 
 const dataTab1 = [
     {

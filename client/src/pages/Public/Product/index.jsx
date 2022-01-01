@@ -1,14 +1,13 @@
 import React from "react";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import { Link } from "react-router-dom";
 import { Container, Grid, Rating } from "@mui/material";
-import ProductDetail from "../../components/ProductDetail";
-import ProductsSlider from "../../components/ProductsSlider";
+import Footer from "components/Footer";
+import Header from "components/Header";
+import ProductDetail from "components/ProductDetail";
+import ProductsSlider from "components/ProductsSlider";
 import "./Product.scss";
-import Image from "../../constants/Image";
-import CustomTabs from "../../components/CustomTabs";
-import Breadcrumbs from "../../components/Breadcumbs";
+import Image from "constants/Image";
+import CustomTabs from "components/CustomTabs";
+import Breadcrumbs from "components/Breadcumbs";
 
 const dataTab1 = [
     {

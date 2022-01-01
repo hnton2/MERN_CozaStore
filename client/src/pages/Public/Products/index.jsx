@@ -1,20 +1,19 @@
 import { Container, Grid, Pagination, Tab, Tabs } from "@mui/material";
 import React, { useState } from "react";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import TabPanel from "../../components/TabPanel";
 import "./Products.scss";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
-import ProductCard from "../../components/ProductCard";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Link, useLocation } from "react-router-dom";
 import CircleIcon from "@mui/icons-material/Circle";
-import { PRICE, COLOR, SORT, TAGS } from "../../constants/Filter";
 import queryString from "query-string";
-import ProductList from "../../components/ProductList";
-import TitlePage from "../../components/TitlePage";
-import Image from "../../constants/Image";
+import Footer from "components/Footer";
+import Header from "components/Header";
+import TabPanel from "components/TabPanel";
+import { PRICE, COLOR, SORT, TAGS } from "constants/Filter";
+import ProductList from "components/ProductList";
+import TitlePage from "components/TitlePage";
+import Image from "constants/Image";
 import { useForm } from "react-hook-form";
 import WarningIcon from "@mui/icons-material/Warning";
 

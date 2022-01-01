@@ -6,9 +6,16 @@ import { Badge, Button, Modal, Slide } from "@mui/material";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Image from "../../constants/Image";
+import Image from "constants/Image";
 import Sidebar from "../Sidebar";
 import "./Header.scss";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import CategoryIcon from "@mui/icons-material/Category";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import AttachEmailIcon from "@mui/icons-material/AttachEmail";
+import { ADMIN_SIDEBAR } from "constants/Data";
+import Dropdown from "components/Dropdown";
 
 const Backdrop = styled.div`
     z-index: -1;
@@ -245,7 +252,21 @@ function Header() {
                             <CloseIcon sx={{ fontSize: 36 }} />
                         </button>
                     </div>
+                    <div className="sidebar-avatar">
+                        <img src={Image.BANNER5} alt="" />
+                        <div className="description">
+                            <h5>Ho Ngoc Ton</h5>
+                            <span>Admin</span>
+                        </div>
+                    </div>
                     <div className="sidebar__content options">
+                        <h4 className="options-title">@Database</h4>
+                        <ul className="sidebar-links">
+                            {ADMIN_SIDEBAR.map((item, index) => (
+                                <Dropdown item={item} key={index} />
+                            ))}
+                        </ul>
+                        <h4 className="options-title">@General</h4>
                         <ul className="sidebar-links">
                             <li>
                                 <Link to="#" className="sidebar-link">

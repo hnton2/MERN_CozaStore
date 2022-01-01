@@ -1,9 +1,9 @@
 import { Container, Grid } from "@mui/material";
 import React from "react";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import TitlePage from "../../components/TitlePage";
-import Image from "../../constants/Image";
+import Footer from "components/Footer";
+import Header from "components/Header";
+import TitlePage from "components/TitlePage";
+import Image from "constants/Image";
 import "./Contact.scss";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";

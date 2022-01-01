@@ -1,6 +1,6 @@
 import React from "react";
 import "./BlogSidebar.scss";
-import Image from "../../constants/Image";
+import Image from "constants/Image";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
 import styled from "styled-components";

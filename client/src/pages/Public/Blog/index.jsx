@@ -1,12 +1,12 @@
 import { Container, Grid, Pagination } from "@mui/material";
 import React from "react";
-import BlogCard from "../../components/BlogCard";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import TitlePage from "../../components/TitlePage";
-import Image from "../../constants/Image";
+import BlogCard from "components/BlogCard";
+import Footer from "components/Footer";
+import Header from "components/Header";
+import TitlePage from "components/TitlePage";
+import Image from "constants/Image";
+import BlogSidebar from "components/BlogSidebar";
 import styled from "styled-components";
-import BlogSidebar from "../../components/BlogSidebar";
 
 const BlogContainer = styled.div`
     padding: 62px 0 60px;

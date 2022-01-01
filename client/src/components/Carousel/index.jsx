@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CustomSlide from "./CustomSlide";
-import Image from "../../constants/Image";
+import Image from "constants/Image";
 
 const carouselData = [
     {

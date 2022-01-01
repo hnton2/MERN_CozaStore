@@ -1,6 +1,6 @@
 import { Grid, Pagination } from "@mui/material";
 import React from "react";
-import { DATA_TAB } from "../../constants/Data";
+import { DATA_TAB } from "constants/Data";
 import ProductCard from "../ProductCard";
 
 function ProductList({ user, filters, search }) {

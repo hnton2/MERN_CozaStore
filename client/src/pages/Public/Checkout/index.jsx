@@ -1,8 +1,8 @@
 import React from "react";
 import "./Checkout.scss";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import Breadcrumbs from "../../components/Breadcumbs";
+import Footer from "components/Footer";
+import Header from "components/Header";
+import Breadcrumbs from "components/Breadcumbs";
 import { Container, Grid } from "@mui/material";
 import Select from "react-select";
 import { Link } from "react-router-dom";

@@ -1,12 +1,12 @@
 import React from "react";
 import { Container, Grid, IconButton, Tooltip } from "@mui/material";
-import Image from "../../constants/Image";
 import CloseIcon from "@mui/icons-material/Close";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import Breadcrumbs from "../../components/Breadcumbs";
+import Image from "constants/Image";
+import Footer from "components/Footer";
+import Header from "components/Header";
+import Breadcrumbs from "components/Breadcumbs";
+import QuantityButton from "components/QuantityButton";
 import "./Cart.scss";
-import QuantityButton from "../../components/QuantityButton";
 import InfoIcon from "@mui/icons-material/Info";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 
