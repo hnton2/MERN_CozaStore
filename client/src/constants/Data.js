@@ -71,7 +71,7 @@ export const DATA_TAB = [
 export const ADMIN_SIDEBAR = [
     {
         title: "Dashboard",
-        path: "/dashboard",
+        path: "/admin",
         icon: <DashboardIcon fontSize="small" />,
     },
     {

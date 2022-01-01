@@ -195,6 +195,7 @@ img {
 // CUSTOM
 .main {
     margin-top: $header-height;
+    margin-bottom: 90px;
 
     @include mobile {
         margin-top: 70px;
@@ -214,7 +215,6 @@ img {
 
 .blogs {
     padding-top: 60px;
-    padding-bottom: 90px;
 
     & .section__title {
         padding-bottom: 66px;

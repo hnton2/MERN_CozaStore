@@ -1,3 +1,4 @@
+import Dashboard from "pages/Admin/Dashboard";
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import About from "./pages/Public/About";
@@ -33,7 +34,7 @@ function App() {
                 <Route path="/blog/:id" element={<BlogDetail />} />
 
                 {/* Admin */}
-                <Route exact path="/admin" element={<Home />} />
+                <Route exact path="/admin" element={<Dashboard />} />
             </Routes>
         </BrowserRouter>
     );
