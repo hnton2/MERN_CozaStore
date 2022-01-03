@@ -118,3 +118,44 @@ export const ADMIN_SIDEBAR = [
         ],
     },
 ];
+
+export const CATEGORY_OPTIONS = [
+    { value: "men", label: "Men" },
+    { value: "women", label: "Women" },
+    { value: "kids", label: "Kids" },
+];
+
+export const COLOR_OPTIONS = [
+    { value: "ocean", label: "Ocean" },
+    { value: "blue", label: "Blue", isDisabled: true },
+    { value: "purple", label: "Purple" },
+    { value: "red", label: "Red" },
+    { value: "orange", label: "Orange" },
+    { value: "yellow", label: "Yellow" },
+    { value: "green", label: "Green" },
+    { value: "forest", label: "Forest" },
+    { value: "slate", label: "Slate" },
+    { value: "silver", label: "Silver" },
+];
+
+export const TAG_OPTIONS = [
+    { value: "lifestyle", label: "Lifestyle" },
+    { value: "sports", label: "Sports" },
+    { value: "fashion", label: "Fashion" },
+    { value: "classic", label: "Classic" },
+    { value: "romantic", label: "Romantic" },
+    { value: "traditional", label: "Traditional" },
+];
+
+export const SIZE_OPTIONS = [
+    { value: "extra-small", label: "XS" },
+    { value: "small", label: "S" },
+    { value: "medium", label: "M" },
+    { value: "large", label: "L" },
+    { value: "extra-large", label: "XL" },
+];
+
+export const STATUS_RADIO = [
+    { name: "Active", value: "active" },
+    { name: "Inactive", value: "inactive" },
+];

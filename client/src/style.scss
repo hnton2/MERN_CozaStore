@@ -133,6 +133,7 @@ img {
     }
 
     &.bg-white {
+        box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.15);
         background-color: $color-white;
         color: $primary-color;
 
@@ -149,6 +150,7 @@ img {
 
     &.hover-white:hover {
         background-color: $color-white;
+        box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.15);
         color: $primary-color;
     }
 
@@ -188,6 +190,59 @@ img {
             cursor: pointer;
             border-color: #6c7ae0;
             color: #6c7ae0;
+        }
+    }
+}
+
+.radio {
+    display: block;
+    position: relative;
+    padding-left: 24px;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 16px;
+
+    &-title {
+        color: $black-color;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.467;
+    }
+
+    & input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+
+        &:checked ~ .radio-checkmark {
+            background-color: $primary-color;
+
+            &::after {
+                display: block;
+            }
+        }
+    }
+
+    &-checkmark {
+        position: absolute;
+        top: 3px;
+        left: 0;
+        height: 16px;
+        width: 16px;
+        border: 1px solid $border-color-2;
+        border-radius: 50%;
+        background-color: $color-white;
+
+        &::after {
+            content: "";
+            position: absolute;
+            display: none;
+            top: 4px;
+            left: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: white;
         }
     }
 }

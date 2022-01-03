@@ -164,10 +164,10 @@ function Checkout() {
                                         </li>
                                     </ul>
                                     <div className="payment">
-                                        <label class="radio">
-                                            <div className="payment__title">Check Payments</div>
+                                        <label className="radio">
+                                            <div className="radio-label">Check Payments</div>
                                             <input type="radio" checked="checked" name="radio" />
-                                            <span class="radio-checkmark"></span>
+                                            <span className="radio-checkmark"></span>
                                         </label>
                                         <div className="payment__note">
                                             Please send a check to Store Name, Store Street, Store Town, Store State /
@@ -175,10 +175,10 @@ function Checkout() {
                                         </div>
                                     </div>
                                     <div className="payment">
-                                        <label class="radio">
-                                            <div className="payment__title">Paypal</div>
+                                        <label className="radio">
+                                            <div className="radio-label">Paypal</div>
                                             <input type="radio" name="radio" />
-                                            <span class="radio-checkmark"></span>
+                                            <span className="radio-checkmark"></span>
                                         </label>
                                         <div className="payment__note">
                                             Pay via PayPal; you can pay with your credit card if you don’t have a PayPal

@@ -1,0 +1,142 @@
+@import "../../variables.scss";
+
+.admin-form {
+    box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.08);
+
+    & > .form-header {
+        padding: 20px 40px;
+        border-bottom: 1px solid $border-color;
+        font-size: 20px;
+        font-weight: bold;
+        color: $dark-color;
+    }
+
+    & > .form-content {
+        padding: 40px 40px;
+
+        & .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+
+            & > .form-label {
+                flex: 3;
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 1.4;
+                color: $dark-color;
+            }
+
+            & > .form-control {
+                flex: 9;
+
+                & .form-input {
+                    width: 100%;
+                    outline: none;
+                    font-size: 16px;
+                    line-height: 1.5;
+                    color: $dark-color;
+                    border: 2px solid $border-color;
+                    border-radius: 4px;
+                    padding: 12px 16px;
+                }
+
+                & .form-radio {
+                    display: inline-block;
+                    margin-right: 36px;
+                }
+
+                & .form-select {
+                    width: 100%;
+                }
+
+                & .form-upload {
+                    display: none;
+                }
+            }
+
+            & .images-upload {
+                border: 2px solid $border-color;
+                border-radius: 8px;
+
+                & .preview {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    &__container {
+                        width: 100%;
+                        padding: 12px;
+                        display: flex;
+                        flex-wrap: wrap;
+                    }
+
+                    &-box {
+                        position: relative;
+                        margin: 4px;
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 8px;
+                        border: 1px solid $border-color;
+
+                        &__image {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 80px;
+                            height: 80px;
+                            border-radius: 8px;
+                            object-fit: cover;
+                        }
+
+                        &.button-add {
+                            cursor: pointer;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        & > label {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            height: 100%;
+
+                            & > span {
+                                font-size: 10px;
+                                margin-top: 4px;
+                            }
+                        }
+
+                        & > button {
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            transition: 0.3 ease-in;
+
+                            &:hover {
+                                opacity: 0.7;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        & p.error-message {
+            color: red;
+            font-size: 12px;
+            padding-left: 4px;
+        }
+
+        & .form-button {
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            column-gap: 12px;
+        }
+    }
+}

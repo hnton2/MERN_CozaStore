@@ -104,59 +104,6 @@
         & .payment {
             padding-bottom: 16px;
 
-            &__title {
-                color: $black-color;
-                font-size: 15px;
-                font-weight: 600;
-                line-height: 1.467;
-            }
-
-            & .radio {
-                display: block;
-                position: relative;
-                padding-left: 24px;
-                cursor: pointer;
-                user-select: none;
-                margin-bottom: 16px;
-
-                & input {
-                    position: absolute;
-                    opacity: 0;
-                    cursor: pointer;
-
-                    &:checked ~ .radio-checkmark {
-                        background-color: $primary-color;
-
-                        &::after {
-                            display: block;
-                        }
-                    }
-                }
-
-                &-checkmark {
-                    position: absolute;
-                    top: 3px;
-                    left: 0;
-                    height: 16px;
-                    width: 16px;
-                    border: 1px solid $border-color-2;
-                    border-radius: 50%;
-                    background-color: $color-white;
-
-                    &::after {
-                        content: "";
-                        position: absolute;
-                        display: none;
-                        top: 4px;
-                        left: 4px;
-                        width: 6px;
-                        height: 6px;
-                        border-radius: 50%;
-                        background-color: white;
-                    }
-                }
-            }
-
             &__note {
                 background-color: $color-white;
                 padding: 15px 20px;

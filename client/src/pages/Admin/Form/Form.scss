@@ -1,0 +1,56 @@
+@import "../../../variables.scss";
+
+.admin-form {
+    box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.08);
+
+    & > .form-header {
+        padding: 20px 40px;
+        border-bottom: 1px solid $border-color;
+        font-size: 20px;
+        font-weight: bold;
+        color: $dark-color;
+    }
+
+    & > .form-content {
+        padding: 20px 40px;
+
+        & .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+
+            & > .form-label {
+                flex: 3;
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 1.4;
+                color: $dark-color;
+                text-transform: capitalize;
+            }
+
+            & > .form-control {
+                flex: 9;
+
+                & .form-input {
+                    width: 100%;
+                    outline: none;
+                    font-size: 16px;
+                    line-height: 1.5;
+                    color: $dark-color;
+                    border: 1px solid $border-color;
+                    border-radius: 4px;
+                    padding: 12px 16px;
+                }
+
+                & .form-radio {
+                    display: inline-block;
+                    margin-right: 36px;
+                }
+
+                & .form-select {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

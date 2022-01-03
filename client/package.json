@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@emotion/styled": "^11.6.0",
+    "@hookform/resolvers": "^2.8.5",
     "@mui/icons-material": "^5.2.0",
     "@mui/material": "^5.2.2",
     "@mui/styled-engine-sc": "^5.1.0",
@@ -28,7 +29,8 @@
     "redux": "^4.1.2",
     "slick-carousel": "^1.8.1",
     "styled-components": "^5.3.3",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",
