@@ -7,7 +7,7 @@ import ProductsSlider from "components/ProductsSlider";
 import "./Product.scss";
 import Image from "constants/Image";
 import CustomTabs from "components/CustomTabs";
-import Breadcrumbs from "components/Breadcumbs";
+import Breadcrumbs from "components/Breadcrumbs";
 
 const dataTab1 = [
     {

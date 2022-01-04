@@ -1,5 +1,6 @@
 import Dashboard from "pages/Admin/Dashboard";
 import ProductForm from "pages/Admin/Form/ProductForm";
+import ProductTable from "pages/Admin/Table/ProductTable";
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import About from "./pages/Public/About";
@@ -37,6 +38,7 @@ function App() {
                 {/* Admin */}
                 <Route exact path="/admin" element={<Dashboard />} />
                 <Route exact path="/admin/product-form" element={<ProductForm />} />
+                <Route exact path="/admin/product-table" element={<ProductTable />} />
             </Routes>
         </BrowserRouter>
     );

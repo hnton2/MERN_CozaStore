@@ -293,3 +293,19 @@ img {
         }
     }
 }
+
+.section-admin {
+    box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.08);
+
+    &__header {
+        padding: 20px 40px;
+        border-bottom: 1px solid $border-color;
+        font-size: 20px;
+        font-weight: bold;
+        color: $dark-color;
+    }
+
+    &__content {
+        padding: 40px 40px;
+    }
+}

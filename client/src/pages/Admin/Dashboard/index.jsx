@@ -1,7 +1,7 @@
 import React from "react";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcumbs";
+import Breadcrumbs from "components/Breadcrumbs";
 import { Container, Grid } from "@mui/material";
 import styled from "styled-components";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";

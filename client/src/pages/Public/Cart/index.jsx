@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Image from "constants/Image";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcumbs";
+import Breadcrumbs from "components/Breadcrumbs";
 import QuantityButton from "components/QuantityButton";
 import "./Cart.scss";
 import InfoIcon from "@mui/icons-material/Info";

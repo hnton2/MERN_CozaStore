@@ -1,10 +1,9 @@
 import React from "react";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcumbs";
+import Breadcrumbs from "components/Breadcrumbs";
 import { Container } from "@mui/material";
 import { CATEGORY_OPTIONS, COLOR_OPTIONS, SIZE_OPTIONS, STATUS_RADIO, TAG_OPTIONS } from "constants/Data";
-import "./Form.scss";
 import { Form, InputField, SelectField, RadioField, ImageField } from "components/CustomForm";
 import * as yup from "yup";
 
@@ -68,9 +67,9 @@ function ProductForm() {
             <div className="main">
                 <Container>
                     <Breadcrumbs links={linkData} current="Product Form" />
-                    <div className="admin-form">
-                        <h3 className="form-header">Product Form</h3>
-                        <div className="form-content">
+                    <div className="section-admin">
+                        <h3 className="section-admin__header">Product Form</h3>
+                        <div className="section-admin__content">
                             <Form onSubmit={onSubmit} defaultValues={initialForm} validation={schema}>
                                 <InputField name="name" placeholder="Name" />
                                 <RadioField name="status" options={STATUS_RADIO} />
@@ -93,14 +92,6 @@ function ProductForm() {
                                     <button className="btn hover-black btn-md">Submit</button>
                                 </div>
                             </Form>
-                            {/* <form onSubmit={handleSubmit(onSubmit)}>
-                                <div className="form-group">
-                                    <label className="form-label" htmlFor="">
-                                        Thumb
-                                    </label>
-                                    <input type="file" className="form-control" />
-                                </div>
-                            </form> */}
                         </div>
                     </div>
                 </Container>

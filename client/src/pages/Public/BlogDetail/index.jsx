@@ -4,7 +4,7 @@ import Header from "components/Header";
 import Image from "constants/Image";
 import BlogSidebar from "components/BlogSidebar";
 import { Container, Grid } from "@mui/material";
-import Breadcrumbs from "components/Breadcumbs";
+import Breadcrumbs from "components/Breadcrumbs";
 import { Link } from "react-router-dom";
 import "./BlogDetail.scss";
 
