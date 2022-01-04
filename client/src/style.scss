@@ -112,6 +112,11 @@ img {
     padding: 5px 15px;
     transition: all 0.3s ease-in;
 
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
     &.btn-md {
         min-width: 160px;
         height: 43px;

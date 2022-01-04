@@ -2,6 +2,7 @@ import Dashboard from "pages/Admin/Dashboard";
 import ProductForm from "pages/Admin/Form/ProductForm";
 import ProductTable from "pages/Admin/Table/ProductTable";
 import React from "react";
+import { useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import About from "./pages/Public/About";
 import Blog from "./pages/Public/Blog";
@@ -17,7 +18,7 @@ import Register from "./pages/Public/Register";
 import "./style.scss";
 
 function App() {
-    const user = false;
+    const user = useSelector((state) => state.user.currentUser);
 
     return (
         <BrowserRouter>

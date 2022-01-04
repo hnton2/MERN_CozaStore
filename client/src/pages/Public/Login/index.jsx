@@ -5,6 +5,11 @@ import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { login } from "redux/apiCall";
+import { useDispatch, useSelector } from "react-redux";
 
 const Container = styled.div`
     width: 100vw;
@@ -140,6 +145,23 @@ const TabletOption = styled.div`
 `;
 
 function Login() {
+    const dispatch = useDispatch();
+    const { isFetching, error } = useSelector((state) => state.user);
+
+    const schema = yup.object({
+        email: yup.string().email().required(),
+        password: yup.string().required(),
+    });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({ resolver: yupResolver(schema) });
+
+    const onSubmit = (data) => {
+        login(dispatch, { email: data.email, password: data.password });
+    };
+
     return (
         <Container>
             <Wrapper>
@@ -151,7 +173,7 @@ function Login() {
                     </TextBox>
                 </Box>
                 <Box>
-                    <Form action="">
+                    <Form onSubmit={handleSubmit(onSubmit)}>
                         <Title black>Sign In</Title>
                         <Socials className="socials">
                             <IconButton>
@@ -165,12 +187,17 @@ function Login() {
                             </IconButton>
                         </Socials>
                         <Noted>or use your account</Noted>
-                        <Input type="email" placeholder="Email" />
-                        <Input type="password" placeholder="Password" />
+                        <Input type="email" {...register("email")} placeholder="Email" />
+                        <p className="error-message">{errors.email?.message}</p>
+                        <Input type="password" {...register("password")} placeholder="Password" />
+                        <p className="error-message">{errors.password?.message}</p>
                         <Link to="#" className="link">
                             Forgot your password?
                         </Link>
-                        <button className="btn btn-lg text-uppercase hover-black">Sign in</button>
+                        <button className="btn btn-lg text-uppercase hover-black" disabled={isFetching}>
+                            Sign in
+                        </button>
+                        {error && <span>Something was wrong...</span>}
                         <TabletOption>
                             <Noted2>Don't have an account? </Noted2>
                             <Link to="/register" className="link">
