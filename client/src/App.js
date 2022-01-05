@@ -18,8 +18,6 @@ import Register from "./pages/Public/Register";
 import "./style.scss";
 
 function App() {
-    const user = useSelector((state) => state.user.currentUser);
-
     return (
         <BrowserRouter>
             <Routes>
@@ -31,8 +29,8 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
-                <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-                <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/blogs/:category" element={<Blog />} />
                 <Route path="/blog/:id" element={<BlogDetail />} />
 

@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { IconButton } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useDispatch, useSelector } from "react-redux";
+import { SignUp } from "redux/authSlice";
+import Message from "components/Message";
 
 const Container = styled.div`
     width: 100vw;
@@ -25,7 +31,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     width: 768px;
     max-width: 100%;
-    min-height: 480px;
+    min-height: 560px;
     display: flex;
 
     @media (max-width: 800px) {
@@ -140,12 +146,38 @@ const TabletOption = styled.div`
 `;
 
 function Register() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const { isFetching, error, currentUser } = useSelector((state) => state.auth);
+    const { message } = useSelector((state) => state.message);
+    const schema = yup.object({
+        username: yup.string().required(),
+        email: yup.string().email().required(),
+        password: yup.string().required(),
+        confirmPassword: yup
+            .string()
+            .required()
+            .oneOf([yup.ref("password")], "Passwords must match"),
+    });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({ resolver: yupResolver(schema) });
+
+    const onSubmit = (data) => {
+        dispatch(SignUp({ username: data.username, email: data.email, password: data.password }));
+        navigate("/login");
+    };
+
     return (
         <Container>
             <Wrapper>
                 <Box>
-                    <Form action="">
+                    <Form onSubmit={handleSubmit(onSubmit)}>
                         <Title black>Create Account</Title>
+                        {error && <Message type="error">{message}</Message>}
                         <Socials className="socials">
                             <IconButton>
                                 <FacebookRoundedIcon sx={{ color: "#222" }} />
@@ -158,13 +190,17 @@ function Register() {
                             </IconButton>
                         </Socials>
                         <Noted>or use your email for registration</Noted>
-                        <Input type="text" placeholder="Name" />
-                        <Input type="email" placeholder="Email" />
-                        <Input type="password" placeholder="Password" />
-                        <Link to="#" className="link">
-                            Forgot your password?
-                        </Link>
-                        <button className="btn btn-lg text-uppercase hover-black">Sign up</button>
+                        <Input type="text" {...register("username")} placeholder="Username" />
+                        <p className="error-message">{errors.username?.message}</p>
+                        <Input type="email" {...register("email")} placeholder="Email" />
+                        <p className="error-message">{errors.email?.message}</p>
+                        <Input type="password" {...register("password")} placeholder="Password" />
+                        <p className="error-message">{errors.password?.message}</p>
+                        <Input type="password" {...register("confirmPassword")} placeholder="Confirm Password" />
+                        <p className="error-message">{errors.confirmPassword?.message}</p>
+                        <button className="btn btn-lg text-uppercase hover-black" disabled={isFetching}>
+                            Sign up
+                        </button>
                         <TabletOption>
                             <Noted2>Already have an account? </Noted2>
                             <Link to="/register" className="link">

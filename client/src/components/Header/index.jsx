@@ -2,20 +2,23 @@ import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Badge, Button, Modal, Slide } from "@mui/material";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Badge, Modal, Slide } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Image from "constants/Image";
 import Sidebar from "../Sidebar";
 import "./Header.scss";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import CategoryIcon from "@mui/icons-material/Category";
-import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
-import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import { ADMIN_SIDEBAR } from "constants/Data";
 import Dropdown from "components/Dropdown";
+import { useDispatch, useSelector } from "react-redux";
+import LogoutIcon from "@mui/icons-material/Logout";
+import HomeIcon from "@mui/icons-material/Home";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import HelpIcon from "@mui/icons-material/Help";
+import { LogOut } from "redux/authSlice";
+import { clearMessage } from "redux/messageSlice";
 
 const Backdrop = styled.div`
     z-index: -1;
@@ -29,29 +32,28 @@ const Backdrop = styled.div`
 `;
 
 function Header() {
+    const user = useSelector((state) => state.auth.currentUser);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        dispatch(clearMessage());
+    }, [dispatch]);
+
     const [openSearch, setOpenSearch] = useState(false);
     const [openCart, setOpenCart] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
 
-    const handleOpenSearch = () => {
-        setOpenSearch(true);
-    };
-    const handleCloseSearch = () => {
-        setOpenSearch(false);
-    };
+    const handleOpenSearch = () => setOpenSearch(true);
+    const handleCloseSearch = () => setOpenSearch(false);
+    const handleOpenCart = () => setOpenCart(true);
+    const handleCloseCart = () => setOpenCart(false);
+    const handleOpenMenu = () => setOpenMenu(true);
+    const handleCloseMenu = () => setOpenMenu(false);
 
-    const handleOpenCart = () => {
-        setOpenCart(true);
-    };
-    const handleCloseCart = () => {
-        setOpenCart(false);
-    };
-
-    const handleOpenMenu = () => {
-        setOpenMenu(true);
-    };
-    const handleCloseMenu = () => {
-        setOpenMenu(false);
+    const handleLogout = async () => {
+        await dispatch(LogOut());
+        navigate("/login");
     };
 
     return (
@@ -252,52 +254,55 @@ function Header() {
                             <CloseIcon sx={{ fontSize: 36 }} />
                         </button>
                     </div>
-                    <div className="sidebar-avatar">
-                        <img src={Image.BANNER5} alt="" />
-                        <div className="description">
-                            <h5>Ho Ngoc Ton</h5>
-                            <span>Admin</span>
+                    {user && (
+                        <div className="sidebar-avatar">
+                            <img src={Image.BANNER5} alt="" />
+                            <div className="description">
+                                <h5>{user.username}</h5>
+                                {user.isAdmin && <span>Admin</span>}
+                            </div>
                         </div>
-                    </div>
+                    )}
                     <div className="sidebar__content options">
-                        <h4 className="options-title">@Database</h4>
-                        <ul className="sidebar-links">
-                            {ADMIN_SIDEBAR.map((item, index) => (
-                                <Dropdown item={item} key={index} />
-                            ))}
-                        </ul>
+                        {user && user.isAdmin && (
+                            <>
+                                <h4 className="options-title">@Database</h4>
+                                <ul className="sidebar-links">
+                                    {ADMIN_SIDEBAR.map((item, index) => (
+                                        <Dropdown item={item} key={index} />
+                                    ))}
+                                </ul>
+                            </>
+                        )}
                         <h4 className="options-title">@General</h4>
                         <ul className="sidebar-links">
                             <li>
                                 <Link to="#" className="sidebar-link">
-                                    Home
+                                    <HomeIcon /> &nbsp; Home
                                 </Link>
                             </li>
                             <li>
                                 <Link to="#" className="sidebar-link">
-                                    My Wishlist
+                                    <ManageAccountsIcon /> &nbsp; My Account
                                 </Link>
                             </li>
                             <li>
                                 <Link to="#" className="sidebar-link">
-                                    My Account
+                                    <LocalShippingIcon /> &nbsp; Track Order
                                 </Link>
                             </li>
                             <li>
                                 <Link to="#" className="sidebar-link">
-                                    Track Order
+                                    <HelpIcon /> &nbsp; Help & FAQs
                                 </Link>
                             </li>
-                            <li>
-                                <Link to="#" className="sidebar-link">
-                                    Refunds
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="#" className="sidebar-link">
-                                    Help & FAQs
-                                </Link>
-                            </li>
+                            {user && (
+                                <li>
+                                    <button to="" className="sidebar-link" onClick={handleLogout}>
+                                        <LogoutIcon /> &nbsp; Logout
+                                    </button>
+                                </li>
+                            )}
                         </ul>
                         <div className="sidebar-gallery">
                             <h4 className="options-title">@CozaStore</h4>

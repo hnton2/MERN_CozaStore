@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { IconButton } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { login } from "redux/apiCall";
 import { useDispatch, useSelector } from "react-redux";
+import { SignIn } from "redux/authSlice";
+import Message from "components/Message";
 
 const Container = styled.div`
     width: 100vw;
@@ -146,8 +147,10 @@ const TabletOption = styled.div`
 
 function Login() {
     const dispatch = useDispatch();
-    const { isFetching, error } = useSelector((state) => state.user);
+    const navigate = useNavigate();
 
+    const { isFetching, error, currentUser } = useSelector((state) => state.auth);
+    const { message } = useSelector((state) => state.message);
     const schema = yup.object({
         email: yup.string().email().required(),
         password: yup.string().required(),
@@ -159,8 +162,14 @@ function Login() {
     } = useForm({ resolver: yupResolver(schema) });
 
     const onSubmit = (data) => {
-        login(dispatch, { email: data.email, password: data.password });
+        dispatch(SignIn({ email: data.email, password: data.password }));
     };
+
+    useEffect(() => {
+        if (currentUser) {
+            navigate("/");
+        }
+    }, [currentUser]);
 
     return (
         <Container>
@@ -175,6 +184,7 @@ function Login() {
                 <Box>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Title black>Sign In</Title>
+                        {error && <Message type="error">{message}</Message>}
                         <Socials className="socials">
                             <IconButton>
                                 <FacebookRoundedIcon sx={{ color: "#222" }} />
@@ -197,7 +207,6 @@ function Login() {
                         <button className="btn btn-lg text-uppercase hover-black" disabled={isFetching}>
                             Sign in
                         </button>
-                        {error && <span>Something was wrong...</span>}
                         <TabletOption>
                             <Noted2>Don't have an account? </Noted2>
                             <Link to="/register" className="link">
