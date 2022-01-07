@@ -18,6 +18,8 @@ import Register from "./pages/Public/Register";
 import "./style.scss";
 
 function App() {
+    const user = useSelector((state) => state.auth.currentUser);
+
     return (
         <BrowserRouter>
             <Routes>
@@ -35,9 +37,15 @@ function App() {
                 <Route path="/blog/:id" element={<BlogDetail />} />
 
                 {/* Admin */}
-                <Route exact path="/admin" element={<Dashboard />} />
-                <Route exact path="/admin/product-form" element={<ProductForm />} />
-                <Route exact path="/admin/product-table" element={<ProductTable />} />
+                {user && user.isAdmin ? (
+                    <>
+                        <Route exact path="/admin" element={<Dashboard />} />
+                        <Route exact path="/admin/product/create" element={<ProductForm />} />
+                        <Route exact path="/admin/product/table" element={<ProductTable />} />
+                    </>
+                ) : (
+                    <Route path="*" element={<Navigate to="/" />} />
+                )}
             </Routes>
         </BrowserRouter>
     );

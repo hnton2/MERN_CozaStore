@@ -12,6 +12,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import CheckroomSharpIcon from "@mui/icons-material/CheckroomSharp";
 import IceSkatingSharpIcon from "@mui/icons-material/IceSkatingSharp";
 import SportsMotorsportsSharpIcon from "@mui/icons-material/SportsMotorsportsSharp";
+import FiberNewIcon from "@mui/icons-material/FiberNew";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 
 export const OBJECTS = [
     { id: 0, name: "Men" },
@@ -94,7 +96,26 @@ export const ADMIN_SIDEBAR = [
         ],
     },
     {
-        title: "Products",
+        title: "Product",
+        path: "",
+        icon: <ShoppingBasketIcon />,
+        iconClosed: <KeyboardArrowLeftIcon fontSize="small" />,
+        iconOpened: <KeyboardArrowDownIcon fontSize="small" />,
+        SubMenu: [
+            {
+                title: "Product Table",
+                path: "/admin/product/table",
+                icon: <ListAltIcon fontSize="small" />,
+            },
+            {
+                title: "Create New Product",
+                path: "/admin/product/create",
+                icon: <FiberNewIcon fontSize="small" />,
+            },
+        ],
+    },
+    {
+        title: "Category",
         path: "",
         icon: <CategoryIcon />,
         iconClosed: <KeyboardArrowLeftIcon fontSize="small" />,

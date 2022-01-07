@@ -19,6 +19,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import HelpIcon from "@mui/icons-material/Help";
 import { LogOut } from "redux/authSlice";
 import { clearMessage } from "redux/messageSlice";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const Backdrop = styled.div`
     z-index: -1;
@@ -50,6 +51,10 @@ function Header() {
     const handleCloseCart = () => setOpenCart(false);
     const handleOpenMenu = () => setOpenMenu(true);
     const handleCloseMenu = () => setOpenMenu(false);
+
+    const handleLogin = () => {
+        navigate("/login");
+    };
 
     const handleLogout = async () => {
         await dispatch(LogOut());
@@ -123,9 +128,15 @@ function Header() {
                                 <ShoppingCartIcon className="header-icon" />
                             </Badge>
                         </button>
-                        <button className="header-btn" onClick={handleOpenMenu}>
-                            <MenuIcon className="header-icon" />
-                        </button>
+                        {user ? (
+                            <button className="header-btn border-left-right" onClick={handleOpenMenu}>
+                                <img src={Image.AVATAR1} alt="avatar" className="header-avatar" />
+                            </button>
+                        ) : (
+                            <button className="header-btn border-left-right" onClick={handleLogin}>
+                                <AccountCircleIcon className="header-icon" />
+                            </button>
+                        )}
                     </div>
                 </div>
             </nav>
@@ -246,15 +257,15 @@ function Header() {
                     </div>
                 </div>
             </Sidebar>
-            <Sidebar isOpen={openMenu} onClose={handleCloseMenu}>
-                <div className="sidebar__container p-0">
-                    <div className="sidebar__title">
-                        <h3></h3>
-                        <button onClick={handleCloseMenu}>
-                            <CloseIcon sx={{ fontSize: 36 }} />
-                        </button>
-                    </div>
-                    {user && (
+            {user && (
+                <Sidebar isOpen={openMenu} onClose={handleCloseMenu}>
+                    <div className="sidebar__container p-0">
+                        <div className="sidebar__title">
+                            <h3></h3>
+                            <button onClick={handleCloseMenu}>
+                                <CloseIcon sx={{ fontSize: 36 }} />
+                            </button>
+                        </div>
                         <div className="sidebar-avatar">
                             <img src={Image.BANNER5} alt="" />
                             <div className="description">
@@ -262,91 +273,89 @@ function Header() {
                                 {user.isAdmin && <span>Admin</span>}
                             </div>
                         </div>
-                    )}
-                    <div className="sidebar__content options">
-                        {user && user.isAdmin && (
-                            <>
-                                <h4 className="options-title">@Database</h4>
-                                <ul className="sidebar-links">
-                                    {ADMIN_SIDEBAR.map((item, index) => (
-                                        <Dropdown item={item} key={index} />
-                                    ))}
-                                </ul>
-                            </>
-                        )}
-                        <h4 className="options-title">@General</h4>
-                        <ul className="sidebar-links">
-                            <li>
-                                <Link to="#" className="sidebar-link">
-                                    <HomeIcon /> &nbsp; Home
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="#" className="sidebar-link">
-                                    <ManageAccountsIcon /> &nbsp; My Account
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="#" className="sidebar-link">
-                                    <LocalShippingIcon /> &nbsp; Track Order
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="#" className="sidebar-link">
-                                    <HelpIcon /> &nbsp; Help & FAQs
-                                </Link>
-                            </li>
-                            {user && (
+                        <div className="sidebar__content options">
+                            {user && user.isAdmin && (
+                                <>
+                                    <h4 className="options-title">@Database</h4>
+                                    <ul className="sidebar-links">
+                                        {ADMIN_SIDEBAR.map((item, index) => (
+                                            <Dropdown item={item} key={index} />
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
+                            <h4 className="options-title">@General</h4>
+                            <ul className="sidebar-links">
+                                <li>
+                                    <Link to="#" className="sidebar-link">
+                                        <HomeIcon /> &nbsp; Home
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="#" className="sidebar-link">
+                                        <ManageAccountsIcon /> &nbsp; My Account
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="#" className="sidebar-link">
+                                        <LocalShippingIcon /> &nbsp; Track Order
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="#" className="sidebar-link">
+                                        <HelpIcon /> &nbsp; Help & FAQs
+                                    </Link>
+                                </li>
                                 <li>
                                     <button to="" className="sidebar-link" onClick={handleLogout}>
                                         <LogoutIcon /> &nbsp; Logout
                                     </button>
                                 </li>
-                            )}
-                        </ul>
-                        <div className="sidebar-gallery">
-                            <h4 className="options-title">@CozaStore</h4>
-                            <div className="sidebar-gallery__list">
-                                <button>
-                                    <img src={Image.GALLERY1} alt="gallery" />
-                                </button>
-                                <button>
-                                    <img src={Image.GALLERY2} alt="gallery" />
-                                </button>
-                                <button>
-                                    <img src={Image.GALLERY3} alt="gallery" />
-                                </button>
-                                <button>
-                                    <img src={Image.GALLERY4} alt="gallery" />
-                                </button>
-                                <button>
-                                    <img src={Image.GALLERY5} alt="gallery" />
-                                </button>
-                                <button>
-                                    <img src={Image.GALLERY6} alt="gallery" />
-                                </button>
-                                <button>
-                                    <img src={Image.GALLERY7} alt="gallery" />
-                                </button>
-                                <button>
-                                    <img src={Image.GALLERY8} alt="gallery" />
-                                </button>
-                                <button>
-                                    <img src={Image.GALLERY9} alt="gallery" />
-                                </button>
+                            </ul>
+                            <div className="sidebar-gallery">
+                                <h4 className="options-title">@CozaStore</h4>
+                                <div className="sidebar-gallery__list">
+                                    <button>
+                                        <img src={Image.GALLERY1} alt="gallery" />
+                                    </button>
+                                    <button>
+                                        <img src={Image.GALLERY2} alt="gallery" />
+                                    </button>
+                                    <button>
+                                        <img src={Image.GALLERY3} alt="gallery" />
+                                    </button>
+                                    <button>
+                                        <img src={Image.GALLERY4} alt="gallery" />
+                                    </button>
+                                    <button>
+                                        <img src={Image.GALLERY5} alt="gallery" />
+                                    </button>
+                                    <button>
+                                        <img src={Image.GALLERY6} alt="gallery" />
+                                    </button>
+                                    <button>
+                                        <img src={Image.GALLERY7} alt="gallery" />
+                                    </button>
+                                    <button>
+                                        <img src={Image.GALLERY8} alt="gallery" />
+                                    </button>
+                                    <button>
+                                        <img src={Image.GALLERY9} alt="gallery" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="sidebar-about">
+                                <h4 className="options-title">About Us</h4>
+                                <p>
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum expedita animi
+                                    dolorum cum repudiandae similique nostrum dolorem facere commodi voluptatem!
+                                    Doloremque atque nobis veniam debitis corporis suscipit rem minima labore.
+                                </p>
                             </div>
                         </div>
-                        <div className="sidebar-about">
-                            <h4 className="options-title">About Us</h4>
-                            <p>
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum expedita animi dolorum
-                                cum repudiandae similique nostrum dolorem facere commodi voluptatem! Doloremque atque
-                                nobis veniam debitis corporis suscipit rem minima labore.
-                            </p>
-                        </div>
                     </div>
-                </div>
-            </Sidebar>
+                </Sidebar>
+            )}
         </header>
     );
 }
