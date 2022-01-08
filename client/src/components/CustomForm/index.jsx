@@ -70,7 +70,7 @@ export function InputField({ register, errors, name, ...rest }) {
                 </label>
                 <div className="form-control">
                     <input type="text" {...register(name)} {...rest} id={name} className="form-input" />
-                    <p className="error-message">{errors[name]?.message}</p>
+                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
                 </div>
             </div>
         </>
@@ -89,7 +89,7 @@ export function SelectField({ control, errors, options, name, isMultiple, ...res
                         render={({ field }) => (
                             <Select
                                 {...field}
-                                closeMenuOnSelect={false}
+                                closeMenuOnSelect={isMultiple ? false : true}
                                 components={animatedComponents}
                                 isMulti={isMultiple}
                                 options={options}
@@ -98,7 +98,7 @@ export function SelectField({ control, errors, options, name, isMultiple, ...res
                             />
                         )}
                     />
-                    <p className="error-message">{errors[name]?.message}</p>
+                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
                 </div>
             </div>
         </>
@@ -120,7 +120,7 @@ export function RadioField({ register, errors, options, name, ...rest }) {
                             </label>
                         </div>
                     ))}
-                    <p className="error-message">{errors[name]?.message}</p>
+                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
                 </div>
             </div>
         </>
@@ -188,7 +188,7 @@ export function ImageField({ control, register, errors, name, ...rest }) {
                                 <button
                                     type="button"
                                     className="preview-box button-add"
-                                    onClick={() => append({ name: "" })}
+                                    onClick={() => append({ name: null })}
                                 >
                                     <AddPhotoAlternateIcon fontSize="large" />
                                     <span>Add Image</span>
@@ -196,7 +196,8 @@ export function ImageField({ control, register, errors, name, ...rest }) {
                             </div>
                         </div>
                     </div>
-                    <p className="error-message">{fields.length === 0 && errors[name]?.message}</p>
+                    {errors[name]?.message && <p className="error-message">*{errors[name].message}</p>}
+                    {errors[name]?.[0] && <p className="error-message">*{errors[name]?.[0]?.name.message}</p>}
                 </div>
             </div>
         </>

@@ -141,9 +141,10 @@ export const ADMIN_SIDEBAR = [
 ];
 
 export const CATEGORY_OPTIONS = [
-    { value: "men", label: "Men" },
-    { value: "women", label: "Women" },
-    { value: "kids", label: "Kids" },
+    { value: "shoes", label: "Shoes" },
+    { value: "clothing", label: "Clothing" },
+    { value: "accessory-equipment", label: "Accessory & Equipment" },
+    { value: "jewelry", label: "Jewelry" },
 ];
 
 export const COLOR_OPTIONS = [
@@ -160,6 +161,9 @@ export const COLOR_OPTIONS = [
 ];
 
 export const TAG_OPTIONS = [
+    { value: "men", label: "Men" },
+    { value: "women", label: "Women" },
+    { value: "kids", label: "Kids" },
     { value: "lifestyle", label: "Lifestyle" },
     { value: "sports", label: "Sports" },
     { value: "fashion", label: "Fashion" },

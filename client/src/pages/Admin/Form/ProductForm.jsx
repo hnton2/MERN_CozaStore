@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
-import { Container } from "@mui/material";
+import { Backdrop, CircularProgress, Container } from "@mui/material";
 import { CATEGORY_OPTIONS, COLOR_OPTIONS, SIZE_OPTIONS, STATUS_RADIO, TAG_OPTIONS } from "constants/Data";
 import { Form, InputField, SelectField, RadioField, ImageField } from "components/CustomForm";
 import * as yup from "yup";
+import { productValidation } from "helpers/validation";
+import productServices from "services/product";
+import Message from "components/Message";
 
 const linkData = [
     {
@@ -15,6 +18,9 @@ const linkData = [
 ];
 
 function ProductForm() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState();
+
     const initialForm = {
         name: "",
         status: "active",
@@ -29,37 +35,23 @@ function ProductForm() {
         description: "",
     };
 
-    const schema = yup.object().shape({
-        name: yup
-            .string()
-            .test("len", "can be empty or with string at least 2 characters and not more than 10", (val) => {
-                if (val == undefined) {
-                    return true;
-                }
-                return val.length == 0 || (val.length >= 2 && val.length <= 40);
-            })
-            .required(),
-        status: yup.string().required(),
-        category: yup.array().min(1).required(),
-        images: yup.array().min(1).required(),
-        color: yup.array().min(1).required(),
-        tag: yup.array().min(1).required(),
-        size: yup.array().min(1).required(),
-        quantity: yup.number().min(1).required(),
-        price: yup.number().min(1).required(),
-        discount: yup.number().min(1).required(),
-        description: yup
-            .string()
-            .test("len", "can be empty or with string at least 2 characters and not more than 10", (val) => {
-                if (val == undefined) {
-                    return true;
-                }
-                return val.length == 0 || (val.length >= 2 && val.length <= 1000);
-            })
-            .required(),
-    });
-
-    const onSubmit = (data) => console.log(data);
+    const onSubmit = async (data) => {
+        setIsLoading(true);
+        setMessage();
+        let imageList = [];
+        data.images.map((item) => {
+            imageList.push(item.name[0]);
+        });
+        try {
+            const response = await productServices.createNewProduct({ ...data, images: imageList });
+            console.log(response);
+            setMessage({ type: "success", content: response.data.message });
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            setMessage({ type: "error", content: error.response.data.message });
+        }
+    };
 
     return (
         <>
@@ -68,18 +60,17 @@ function ProductForm() {
                 <Container>
                     <Breadcrumbs links={linkData} current="Product Form" />
                     <div className="section-admin">
+                        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
                         <h3 className="section-admin__header">Product Form</h3>
                         <div className="section-admin__content">
-                            <Form onSubmit={onSubmit} defaultValues={initialForm} validation={schema}>
+                            {message && <Message type={message.type}>{message.content}</Message>}
+                            <Form onSubmit={onSubmit} defaultValues={initialForm} validation={productValidation}>
                                 <InputField name="name" placeholder="Name" />
                                 <RadioField name="status" options={STATUS_RADIO} />
                                 <ImageField name="images" />
-                                <SelectField
-                                    name="category"
-                                    options={CATEGORY_OPTIONS}
-                                    isMultiple
-                                    placeholder="Category..."
-                                />
+                                <SelectField name="category" options={CATEGORY_OPTIONS} placeholder="Category..." />
                                 <SelectField name="tag" options={TAG_OPTIONS} isMultiple placeholder="Tags..." />
                                 <SelectField name="size" options={SIZE_OPTIONS} isMultiple placeholder="Size..." />
                                 <SelectField name="color" options={COLOR_OPTIONS} isMultiple placeholder="Color..." />
@@ -88,7 +79,6 @@ function ProductForm() {
                                 <InputField name="discount" placeholder="Name" />
                                 <InputField name="description" placeholder="Description" />
                                 <div className="form-button">
-                                    <button className="btn bg-white hover-white btn-md">Reset</button>
                                     <button className="btn hover-black btn-md">Submit</button>
                                 </div>
                             </Form>

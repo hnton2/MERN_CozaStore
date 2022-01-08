@@ -58,7 +58,7 @@ function Header() {
 
     const handleLogout = async () => {
         await dispatch(LogOut());
-        navigate("/login");
+        navigate("/");
     };
 
     return (

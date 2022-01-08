@@ -1,5 +1,5 @@
 const router = require("express").Router();
-
+const { changeAlias } = require("../helpers/string");
 const Product = require("../models/Product");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
@@ -7,32 +7,39 @@ const { UploadFile, RemoveFile } = require("../helpers/file");
 // @DESC Create a product
 // @ROUTE Post /api/product/
 // @ACCESS Public
-router.post("/", verifyTokenAndAdmin, UploadFile.array("thumb", 20), async (req, res) => {
-    const newProduct = new Product(req.body);
-    const thumbs = req.files;
+router.post("/", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
+    const newProduct = new Product({
+        ...req.body,
+        name: JSON.parse(req.body.name),
+        description: JSON.parse(req.body.description),
+        size: JSON.parse(req.body.size),
+        color: JSON.parse(req.body.color),
+        tag: JSON.parse(req.body.tag),
+    });
+    const images = req.files;
+    newProduct.slug = changeAlias(newProduct.name);
 
-    if (!newProduct.name || !newProduct.slug || !newProduct.description || !newProduct.price || !thumbs) {
-        if (thumbs) thumbs.map((item) => RemoveFile(item.filename));
+    if (!newProduct.name || !newProduct.description || !newProduct.price || !images) {
+        if (images) images.map((item) => RemoveFile(item.filename));
         return res.status(401).json({ success: false, message: "Missing necessary information" });
     }
 
     try {
-        const existProduct = await Product.findOne({ title: newProduct.title });
+        const existProduct = await Product.findOne({ name: newProduct.name });
         if (existProduct) {
-            if (thumbs) thumbs.map((item) => RemoveFile(item.filename));
+            if (images) images.map((item) => RemoveFile(item.filename));
             return res.status(400).json({ success: false, message: "Product already exist" });
         }
-        if (thumbs.length > 0) {
-            let thumbsName = [];
-            thumbs.map((item) => thumbsName.push(item.filename));
-            newProduct.thumb = thumbsName;
+        if (images.length > 0) {
+            let imagesName = [];
+            images.map((item) => imagesName.push(item.filename));
+            newProduct.images = imagesName;
         }
-        console.log(newProduct);
         const savedProduct = await newProduct.save();
         res.json({ success: true, message: "Product created successfully", product: savedProduct });
     } catch (error) {
         console.log(error);
-        if (thumbs) thumbs.map((item) => RemoveFile(item.filename));
+        if (images) images.map((item) => RemoveFile(item.filename));
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
