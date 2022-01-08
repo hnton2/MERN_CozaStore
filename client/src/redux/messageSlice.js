@@ -2,13 +2,15 @@ const { createSlice } = require("@reduxjs/toolkit");
 
 const messageSlice = createSlice({
     name: "message",
-    initialState: { message: "" },
+    initialState: { type: "", content: "" },
     reducers: {
         setMessage: (state, action) => {
-            state.message = action.payload;
+            state.content = action.payload.content;
+            state.type = action.payload.type;
         },
         clearMessage: (state) => {
-            state.message = "";
+            state.content = "";
+            state.type = "";
         },
     },
 });

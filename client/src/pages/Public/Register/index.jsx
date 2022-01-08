@@ -11,6 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { SignUp } from "redux/authSlice";
 import Message from "components/Message";
+import { clearMessage } from "redux/messageSlice";
 
 const Container = styled.div`
     width: 100vw;
@@ -149,8 +150,12 @@ function Register() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { isFetching, error, currentUser } = useSelector((state) => state.auth);
-    const { message } = useSelector((state) => state.message);
+    useEffect(() => {
+        dispatch(clearMessage());
+    }, [dispatch]);
+
+    const { isFetching, error } = useSelector((state) => state.auth);
+    const { type, content } = useSelector((state) => state.message);
     const schema = yup.object({
         username: yup.string().required(),
         email: yup.string().email().required(),
@@ -168,8 +173,11 @@ function Register() {
 
     const onSubmit = (data) => {
         dispatch(SignUp({ username: data.username, email: data.email, password: data.password }));
-        navigate("/login");
     };
+
+    useEffect(() => {
+        if (type === "success") navigate("/login");
+    }, [type]);
 
     return (
         <Container>
@@ -177,7 +185,7 @@ function Register() {
                 <Box>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Title black>Create Account</Title>
-                        {error && <Message type="error">{message}</Message>}
+                        {type && content && <Message type={type}>{content}</Message>}
                         <Socials className="socials">
                             <IconButton>
                                 <FacebookRoundedIcon sx={{ color: "#222" }} />

@@ -11,6 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { SignIn } from "redux/authSlice";
 import Message from "components/Message";
+import { clearMessage } from "redux/messageSlice";
 
 const Container = styled.div`
     width: 100vw;
@@ -149,8 +150,12 @@ function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        dispatch(clearMessage());
+    }, [dispatch]);
+
     const { isFetching, error, currentUser } = useSelector((state) => state.auth);
-    const { message } = useSelector((state) => state.message);
+    const { content, type } = useSelector((state) => state.message);
     const schema = yup.object({
         email: yup.string().email().required(),
         password: yup.string().required(),
@@ -184,7 +189,7 @@ function Login() {
                 <Box>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Title black>Sign In</Title>
-                        {error && <Message type="error">{message}</Message>}
+                        {type && content && <Message type={type}>{content}</Message>}
                         <Socials className="socials">
                             <IconButton>
                                 <FacebookRoundedIcon sx={{ color: "#222" }} />

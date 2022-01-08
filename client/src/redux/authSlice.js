@@ -5,11 +5,12 @@ import { clearMessage, setMessage } from "./messageSlice";
 export const SignIn = createAsyncThunk("auth/SignIn", async ({ email, password }, thunkAPI) => {
     try {
         const response = await authService.login({ email, password });
+        thunkAPI.dispatch(setMessage({ content: response.data.message, type: "success" }));
         return response.data;
     } catch (error) {
         const message =
             (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.dispatch(setMessage(message));
+        thunkAPI.dispatch(setMessage({ content: message, type: "error" }));
         return thunkAPI.rejectWithValue();
     }
 });
@@ -17,11 +18,12 @@ export const SignIn = createAsyncThunk("auth/SignIn", async ({ email, password }
 export const SignUp = createAsyncThunk("auth/SignUp", async ({ username, email, password }, thunkAPI) => {
     try {
         const response = await authService.register({ username, email, password });
+        thunkAPI.dispatch(setMessage({ content: response.data.message, type: "success" }));
         return response.data;
     } catch (error) {
         const message =
             (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.dispatch(setMessage(message));
+        thunkAPI.dispatch(setMessage({ content: message, type: "error" }));
         return thunkAPI.rejectWithValue();
     }
 });
