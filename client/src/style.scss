@@ -101,75 +101,82 @@ img {
 }
 // button
 .btn {
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    border-radius: 50px;
+    cursor: pointer;
     min-width: 140px;
-    height: 40px;
-    border-radius: 24px;
-    background-color: $primary-color;
-    color: $color-white;
+    transition: opacity 0.3s ease;
+    user-select: none;
     font-size: 15px;
     font-weight: 500;
     line-height: 1.4667;
-    padding: 5px 15px;
-    transition: all 0.3s ease-in;
+    padding: 8px 24px;
+    margin-right: 4px;
 
-    &:disabled {
+    &:hover {
         opacity: 0.7;
-        cursor: not-allowed;
     }
 
-    &.btn-md {
-        min-width: 160px;
-        height: 43px;
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &.btn-sm {
+        padding: 4px 8px;
     }
 
     &.btn-lg {
-        min-width: 180px;
-        height: 46px;
+        padding: 12px 32px;
     }
 
-    &.bg-dark {
-        background-color: $black-color;
-        color: $color-white;
-
-        &:hover {
-            background-color: $primary-color;
-            color: $color-white;
-        }
+    &.btn-primary {
+        background-color: $primary-color;
     }
 
-    &.bg-white {
-        box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.15);
-        background-color: $color-white;
-        color: $primary-color;
-
-        &:hover {
-            background-color: $primary-color;
-            color: $color-white;
-        }
+    &.btn-success {
+        background-color: $success-color;
     }
 
-    &.hover-black:hover {
-        background-color: $black-color;
-        color: $color-white;
+    &.btn-warning {
+        background-color: $warning-color;
+        color: $dark-color !important;
     }
 
-    &.hover-white:hover {
-        background-color: $color-white;
-        box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.15);
-        color: $primary-color;
+    &.btn-danger {
+        background-color: $danger-color;
     }
 
-    &.text-uppercase {
-        text-transform: uppercase;
-        font-weight: 600;
+    &.btn-light {
+        background-color: #fff;
+        color: $black-color !important;
     }
 
-    &.btn-circle {
-        min-width: 40px;
-        height: 40px;
-        padding: 0;
-        border-radius: 50%;
+    &.btn-dark {
+        background-color: $dark-color;
     }
+
+    &.btn-rounded {
+        padding: 0.25rem 0.5rem;
+        min-width: 32px !important;
+        border-radius: 50% !important;
+    }
+}
+
+.text-uppercase {
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+}
+
+.text-center {
+    text-align: center !important;
 }
 
 .tags {
@@ -236,7 +243,7 @@ img {
         width: 16px;
         border: 1px solid $border-color-2;
         border-radius: 50%;
-        background-color: $color-white;
+        background-color: #fff;
 
         &::after {
             content: "";
@@ -248,6 +255,59 @@ img {
             height: 6px;
             border-radius: 50%;
             background-color: white;
+        }
+    }
+}
+
+// table
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border-left: 1px solid $border-color;
+    border-right: 1px solid $border-color;
+
+    & th,
+    & td {
+        padding: 12px;
+    }
+
+    &.table-border {
+        & td,
+        & th {
+            border: 1px solid $border-color-2;
+        }
+    }
+
+    & thead {
+        width: 100%;
+        border-top: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
+
+        & > tr:hover {
+            color: transparent;
+            background-color: transparent;
+        }
+    }
+
+    & th {
+        font-size: 16px;
+        color: #555;
+        line-height: 1.6;
+        text-transform: uppercase;
+    }
+
+    & tr {
+        border-top: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
+
+        &:hover {
+            color: #212529;
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        & img {
+            width: 100px;
+            object-fit: contain;
         }
     }
 }
@@ -299,10 +359,12 @@ img {
     }
 }
 
-.section-admin {
+.card {
+    border-top: 3px solid #17a2b8;
     box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.08);
+    margin: 36px 0;
 
-    &__header {
+    &-header {
         padding: 20px 40px;
         border-bottom: 1px solid $border-color;
         font-size: 20px;
@@ -310,7 +372,18 @@ img {
         color: $dark-color;
     }
 
-    &__content {
+    &-body {
         padding: 40px 40px;
+    }
+
+    &-footer {
+        padding: 20px 40px;
+        border-top: 1px solid $border-color;
+
+        & .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
     }
 }

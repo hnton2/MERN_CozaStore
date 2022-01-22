@@ -1,109 +1,69 @@
 @import "../../../variables.scss";
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-.MuiDataGrid-panel {
-    top: -160px !important;
-    left: 120px !important;
-}
+    & .filter {
+        display: flex;
+        align-items: center;
 
-.MuiDataGrid-columnHeaders {
-    background-color: rgba(52, 40, 104, 0.05);
-}
-.MuiDataGrid-renderingZone {
-    max-height: none !important;
-}
-.MuiDataGrid-cell {
-    line-height: unset !important;
-    max-height: none !important;
-    white-space: normal;
-}
-.MuiDataGrid-row {
-    max-height: none !important;
-}
-
-.table {
-    height: 500px;
-    width: 100%;
-
-    & .MuiDataGrid-root {
-        border: none;
-    }
-
-    &__toolbar {
-        padding-bottom: 30px;
-        margin-bottom: 16px;
-        border-bottom: 2px solid $border-color;
-
-        & .table-search {
+        & .btn {
             display: flex;
-            justify-content: space-between;
-            border: 2px solid $border-color;
-            border-radius: 40px;
-            padding: 10px 16px;
+            align-items: center;
+            border-radius: 4px;
+            min-width: 64px;
+            padding: 6px 8px;
+            margin-right: 4px;
+            text-transform: uppercase;
+            font-weight: 400;
 
-            & > input {
-                margin-left: 8px;
-                border: none;
-                outline: none;
-                color: $black-color;
-                font-size: 16px;
-                font-weight: 400;
-                line-height: 0.14;
+            & span {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 4px;
+                background-color: #fff;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                font-size: 12px;
+                font-weight: 600;
+                color: $dark-color;
             }
         }
-
-        & button.MuiButton-root {
-            color: #222;
-            padding: 10px;
-            border: 2px solid #e6e6e6;
-            border-radius: 40px;
-        }
     }
 
-    &-header {
-        font-size: 15px;
-        font-weight: 600;
-        color: $dark-color;
-        line-height: 1.4;
-    }
-
-    &-cell {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        text-align: center !important;
-        font-size: 15px;
-        font-weight: 300;
-        color: $dark-color-2;
-    }
-
-    &-thumb {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-    }
-
-    &-status {
+    & .search {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        margin: 0 auto;
-        background-color: $success-color;
-        padding: 4px;
-        border-radius: 50%;
-        color: $color-white;
-
-        &.disable {
-            background-color: $disable-color;
-            opacity: 0.7;
-        }
-    }
-
-    &-action {
-        width: 100%;
-        display: flex;
-        align-items: center;
         justify-content: space-between;
+        border: 2px solid $border-color;
+        border-radius: 4px;
+        padding: 10px 16px;
+
+        & > input {
+            margin-left: 8px;
+            border: none;
+            outline: none;
+            color: $black-color;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 0.14;
+        }
+    }
+}
+
+.actions {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    & .btn {
+        display: flex;
+        align-items: center;
+        border-radius: 4px;
+        min-width: 64px;
+        padding: 6px 8px;
     }
 }

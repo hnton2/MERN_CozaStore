@@ -85,7 +85,7 @@ function BlogDetail() {
                                     <input type="text" placeholder="Name*" />
                                     <input type="text" placeholder="Email*" />
                                     <textarea cols="30" rows="10" placeholder="Comment..."></textarea>
-                                    <button className="btn bg-dark btn-lg text-uppercase">Post Comment</button>
+                                    <button className="btn btn-dark btn-lg text-uppercase">Post Comment</button>
                                 </form>
                             </div>
                         </Grid>

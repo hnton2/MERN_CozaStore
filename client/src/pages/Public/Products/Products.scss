@@ -65,7 +65,7 @@
 
             &:hover {
                 background-color: $primary-color !important;
-                color: $color-white !important;
+                color: #fff !important;
 
                 &.show-filter::after,
                 &.show-search::after {
@@ -73,7 +73,7 @@
                 }
 
                 & > .MuiSvgIcon-root {
-                    color: $color-white;
+                    color: #fff;
                 }
             }
 

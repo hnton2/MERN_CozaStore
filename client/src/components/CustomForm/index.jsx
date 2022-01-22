@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,6 +8,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import CloseIcon from "@mui/icons-material/Close";
 
 import "./CustomForm.scss";
+import { IMAGE_CLOUDINARY } from "constants/Data";
 
 const animatedComponents = makeAnimated();
 const customStyles = {
@@ -28,9 +29,16 @@ export function Form({ defaultValues, validation, children, onSubmit }) {
     const {
         control,
         handleSubmit,
+        reset,
         register,
         formState: { errors },
     } = useForm({ defaultValues, resolver: yupResolver(validation) });
+
+    useEffect(() => {
+        if (defaultValues) {
+            reset(defaultValues);
+        }
+    }, [defaultValues]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
@@ -112,10 +120,10 @@ export function RadioField({ register, errors, options, name, ...rest }) {
                 <label className="form-label">{name}</label>
                 <div className="form-control flex">
                     {options.map((option) => (
-                        <div className="form-radio" key={option.name}>
+                        <div className="form-radio" key={option.label}>
                             <label className="radio">
-                                <div className="radio-label">{option.name}</div>
-                                <input {...register(name)} type="radio" name="radio" value={option.value} />
+                                <div className="radio-label">{option.label}</div>
+                                <input {...register(name)} type="radio" name="radio" {...rest} value={option.value} />
                                 <span className="radio-checkmark"></span>
                             </label>
                         </div>
@@ -127,20 +135,20 @@ export function RadioField({ register, errors, options, name, ...rest }) {
     );
 }
 
-export function ImageField({ control, register, errors, name, ...rest }) {
+export function ImageField({ control, register, errors, name }) {
     const { fields, append, remove } = useFieldArray({
         control,
         name: "images",
     });
-    const [currentFiles, setCurrentFiles] = useState([]);
-    const handleUpload = (e) => {
-        const filesUpload = e.target.files[0];
-        setCurrentFiles((prev) => [...prev, URL.createObjectURL(filesUpload)]);
-    };
 
-    const handleRemoveUpload = (key) => {
-        setCurrentFiles(currentFiles.filter((item, index) => index != key));
-    };
+    const [currentFiles, setCurrentFiles] = useState([]);
+    const imageList = control._defaultValues.images;
+    useEffect(() => {
+        if (imageList) setCurrentFiles(imageList.map((item) => IMAGE_CLOUDINARY + item.name));
+    }, [imageList]);
+
+    const handleUpload = (e) => setCurrentFiles((prev) => [...prev, URL.createObjectURL(e.target.files[0])]);
+    const handleRemoveUpload = (key) => setCurrentFiles(currentFiles.filter((item, index) => index != key));
 
     return (
         <>
@@ -197,7 +205,9 @@ export function ImageField({ control, register, errors, name, ...rest }) {
                         </div>
                     </div>
                     {errors[name]?.message && <p className="error-message">*{errors[name].message}</p>}
-                    {errors[name]?.[0] && <p className="error-message">*{errors[name]?.[0]?.name.message}</p>}
+                    {errors[name]?.[fields.length - 1] && (
+                        <p className="error-message">*{errors[name]?.[fields.length - 1]?.name.message}</p>
+                    )}
                 </div>
             </div>
         </>

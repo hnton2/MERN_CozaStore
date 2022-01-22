@@ -14,4 +14,12 @@ function changeAlias(alias) {
     return str;
 }
 
-module.exports = { changeAlias };
+function changeToJson(data) {
+    const newData = {};
+    Object.keys(data).map((key) => {
+        newData[key] = JSON.parse(data[key]);
+    });
+    return newData;
+}
+
+module.exports = { changeAlias, changeToJson };

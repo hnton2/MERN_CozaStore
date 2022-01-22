@@ -14,11 +14,11 @@ function QuantityButton() {
 
     return (
         <div className="quantity-button">
-            <button className="btn bg-white" onClick={handleDecrement}>
+            <button className="btn btn-light" onClick={handleDecrement}>
                 <RemoveIcon fontSize="small" />
             </button>
             <input type="text" value={quantity} />
-            <button className="btn bg-white" onClick={handleIncrement}>
+            <button className="btn btn-light" onClick={handleIncrement}>
                 <AddIcon fontSize="small" />
             </button>
         </div>

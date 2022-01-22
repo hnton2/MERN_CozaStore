@@ -15,6 +15,8 @@ import SportsMotorsportsSharpIcon from "@mui/icons-material/SportsMotorsportsSha
 import FiberNewIcon from "@mui/icons-material/FiberNew";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 
+export const IMAGE_CLOUDINARY = "https://res.cloudinary.com/hnt-46/image/upload/v1641628910/";
+
 export const OBJECTS = [
     { id: 0, name: "Men" },
     { id: 1, name: "Women" },
@@ -96,6 +98,25 @@ export const ADMIN_SIDEBAR = [
         ],
     },
     {
+        title: "Product Category",
+        path: "",
+        icon: <CategoryIcon />,
+        iconClosed: <KeyboardArrowLeftIcon fontSize="small" />,
+        iconOpened: <KeyboardArrowDownIcon fontSize="small" />,
+        SubMenu: [
+            {
+                title: "Product Category Table",
+                path: "/admin/product-category/table",
+                icon: <ListAltIcon fontSize="small" />,
+            },
+            {
+                title: "Create New Product",
+                path: "/admin/product-category/form",
+                icon: <FiberNewIcon fontSize="small" />,
+            },
+        ],
+    },
+    {
         title: "Product",
         path: "",
         icon: <ShoppingBasketIcon />,
@@ -109,7 +130,7 @@ export const ADMIN_SIDEBAR = [
             },
             {
                 title: "Create New Product",
-                path: "/admin/product/create",
+                path: "/admin/product/form",
                 icon: <FiberNewIcon fontSize="small" />,
             },
         ],
@@ -181,6 +202,20 @@ export const SIZE_OPTIONS = [
 ];
 
 export const STATUS_RADIO = [
-    { name: "Active", value: "active" },
-    { name: "Inactive", value: "inactive" },
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
 ];
+
+export const DEFAULT_VALUE_PRODUCT = {
+    name: "",
+    status: "active",
+    images: [],
+    category: [],
+    color: [],
+    tag: [],
+    size: [],
+    quantity: 0,
+    price: 0,
+    discount: 0,
+    description: "",
+};

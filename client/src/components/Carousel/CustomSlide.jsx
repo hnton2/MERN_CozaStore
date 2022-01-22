@@ -18,7 +18,7 @@ function CustomSlide({ event, title, img, nAnimate }) {
                 <div className={`carousel__content animation${nAnimate}`}>
                     <h3 className="carousel__content-event">{event}</h3>
                     <span className="carousel__content-title">{title}</span>
-                    <button className="btn btn-md text-uppercase hover-black">shop now</button>
+                    <button className="btn btn-light text-uppercase">shop now</button>
                 </div>
             </Slide>
         </div>

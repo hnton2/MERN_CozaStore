@@ -36,3 +36,14 @@ export const productValidation = yup.object().shape({
     discount: yup.number().typeError("discount must be a number").required(),
     description: yup.string().max(1000).required(),
 });
+
+export const productCategoryValidation = yup.object().shape({
+    name: yup
+        .string()
+        .min(5)
+        .max(100)
+        .matches(/^[aA-zZ\s]+$/, "name is not in correct format")
+        .required(),
+    status: yup.string().required(),
+    description: yup.string().max(1000).required(),
+});

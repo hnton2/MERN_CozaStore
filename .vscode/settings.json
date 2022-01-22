@@ -1,3 +1,4 @@
 {
-    "cSpell.words": ["checkmark", "cloudinary"]
+    "cSpell.words": ["checkmark", "cloudinary"],
+    "editor.formatOnSave": true,
 }

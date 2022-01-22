@@ -206,7 +206,7 @@ function Register() {
                         <p className="error-message">{errors.password?.message}</p>
                         <Input type="password" {...register("confirmPassword")} placeholder="Confirm Password" />
                         <p className="error-message">{errors.confirmPassword?.message}</p>
-                        <button className="btn btn-lg text-uppercase hover-black" disabled={isFetching}>
+                        <button className="btn btn-primary btn-lg text-uppercase" disabled={isFetching}>
                             Sign up
                         </button>
                         <TabletOption>

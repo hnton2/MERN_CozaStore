@@ -54,10 +54,7 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL1} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button
-                                            className="btn bg-white btn-circle"
-                                            onClick={() => setIsOpenModal(true)}
-                                        >
+                                        <button className="btn bg-light" onClick={() => setIsOpenModal(true)}>
                                             <ZoomOutMapIcon />
                                         </button>
                                     </div>
@@ -69,10 +66,7 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL2} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button
-                                            className="btn bg-white btn-circle"
-                                            onClick={() => setIsOpenModal(true)}
-                                        >
+                                        <button className="btn bg-light" onClick={() => setIsOpenModal(true)}>
                                             <ZoomOutMapIcon />
                                         </button>
                                     </div>
@@ -84,10 +78,7 @@ function ProductDetail() {
                                         <img src={Image.PRODUCT_DETAIL3} />
                                     </div>
                                     <div className="btn-expand">
-                                        <button
-                                            className="btn bg-white btn-circle"
-                                            onClick={() => setIsOpenModal(true)}
-                                        >
+                                        <button className="btn bg-light" onClick={() => setIsOpenModal(true)}>
                                             <ZoomOutMapIcon />
                                         </button>
                                     </div>
@@ -120,9 +111,7 @@ function ProductDetail() {
                                             <QuantityButton />
                                         </Grid>
                                         <Grid item lg={12} md={6} sm={6}>
-                                            <button className="btn btn-md text-uppercase hover-black">
-                                                Add to cart
-                                            </button>
+                                            <button className="btn text-uppercase">Add to cart</button>
                                         </Grid>
                                     </Grid>
                                 </div>

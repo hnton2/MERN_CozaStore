@@ -108,7 +108,7 @@ const Review = ({ reviews }) => (
                     </Grid>
                 </Grid>
             </Grid>
-            <button className="submit-btn btn text-uppercase hover-black">Submit</button>
+            <button className="submit-btn btn text-uppercase">Submit</button>
         </form>
     </Container>
 );

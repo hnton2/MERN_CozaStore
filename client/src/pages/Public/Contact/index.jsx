@@ -33,7 +33,7 @@ function Contact() {
                                             className="form-control"
                                         ></textarea>
                                     </div>
-                                    <button className="btn btn-lg bg-dark text-uppercase contact-btn">Submit</button>
+                                    <button className="btn btn-lg btn-dark text-uppercase contact-btn">Submit</button>
                                 </form>
                             </Grid>
                             <Grid item xs={12} sm={12} md={6} lg={6}>

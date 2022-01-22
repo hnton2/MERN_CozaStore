@@ -70,7 +70,7 @@
                 padding: 5px 0;
 
                 @include tablet {
-                    color: $color-white;
+                    color: #fff;
                 }
 
                 &:hover,
@@ -78,7 +78,7 @@
                     color: $color-hover;
 
                     @include tablet {
-                        color: $color-white;
+                        color: #fff;
                     }
                 }
             }

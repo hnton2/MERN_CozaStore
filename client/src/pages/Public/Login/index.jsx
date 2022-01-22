@@ -209,7 +209,7 @@ function Login() {
                         <Link to="#" className="link">
                             Forgot your password?
                         </Link>
-                        <button className="btn btn-lg text-uppercase hover-black" disabled={isFetching}>
+                        <button className="btn btn-primary btn-lg text-uppercase" disabled={isFetching}>
                             Sign in
                         </button>
                         <TabletOption>

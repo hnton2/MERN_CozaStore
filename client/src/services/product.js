@@ -1,20 +1,29 @@
-import { userRequest } from "helpers/requestMethod";
+import { createFormData } from "helpers/form";
+import { publicRequest, userRequest } from "helpers/requestMethod";
 
 const createNewProduct = (product) => {
-    const formData = new FormData();
-    product.images.forEach((file) => {
-        formData.append("images", file);
-    });
-    Object.keys(product).map((key) => {
-        if (key !== "images") {
-            formData.append(key, JSON.stringify(product[key]));
-        }
-    });
-    return userRequest.post("product", formData);
+    const formData = createFormData(product);
+    return userRequest.post("product", formData, { headers: { "Content-Type": "multipart/form-data" } });
+};
+
+const getAllProduct = () => {
+    return publicRequest.get("product");
+};
+
+const getOneProduct = (currentId) => {
+    return userRequest.get(`product/find/${currentId}`);
+};
+
+const updateProduct = (currentId, product) => {
+    const formData = createFormData(product);
+    return userRequest.put(`product/${currentId}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
 };
 
 const productServices = {
     createNewProduct,
+    getAllProduct,
+    getOneProduct,
+    updateProduct,
 };
 
 export default productServices;

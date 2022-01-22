@@ -1,21 +1,14 @@
 const router = require("express").Router();
-const { changeAlias } = require("../helpers/string");
+const { changeAlias, changeToJson } = require("../helpers/string");
 const Product = require("../models/Product");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
 
 // @DESC Create a product
-// @ROUTE Post /api/product/
-// @ACCESS Public
+// @ROUTE POST /api/product/
+// @ACCESS Private
 router.post("/", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
-    const newProduct = new Product({
-        ...req.body,
-        name: JSON.parse(req.body.name),
-        description: JSON.parse(req.body.description),
-        size: JSON.parse(req.body.size),
-        color: JSON.parse(req.body.color),
-        tag: JSON.parse(req.body.tag),
-    });
+    const newProduct = new Product(changeToJson(req.body));
     const images = req.files;
     newProduct.slug = changeAlias(newProduct.name);
 
@@ -44,14 +37,46 @@ router.post("/", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req
     }
 });
 
-// UPDATE
-router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
+// @DESC Update a product
+// @ROUTE PUT /api/product/:id
+// @ACCESS Privates
+router.put("/:id", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
+    const images = req.files;
+    const updateProduct = changeToJson(req.body);
+    updateProduct.images = [];
     try {
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
-        res.json({ success: true, message: "Update product successfully", product: updatedProduct });
+        if (images.length > 0) {
+            let imagesName = [];
+            images.map((item) => imagesName.push(item.filename));
+            updateProduct.images = imagesName;
+        }
+
+        const oldProduct = await Product.findById(req.params.id);
+        if (oldProduct) {
+            // remove old images and update
+            updateProduct.oldImages.map((oldImage) => {
+                if (updateProduct.remainImages.length > 0) {
+                    updateProduct.remainImages.map((remainImage) => {
+                        if (oldImage === remainImage) updateProduct.images.push(remainImage);
+                        else RemoveFile(oldImage);
+                    });
+                } else RemoveFile(oldImage);
+            });
+            // change slug value if alternative name
+            updateProduct.slug = changeAlias(updateProduct.name);
+            const updatedProduct = await Product.findByIdAndUpdate({ _id: req.params.id }, updateProduct, {
+                new: true,
+            });
+            return res.json({ success: true, message: "Update product successfully", product: updatedProduct });
+        } else {
+            return res.status(401).json({ success: false, message: "Product is invalid" });
+        }
     } catch (error) {
+        if (images) images.map((item) => RemoveFile(item.filename));
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        let msg = "Internal server error";
+        if (error.code === 11000) msg = "Invalid data";
+        res.status(500).json({ success: false, message: msg });
     }
 });
 
@@ -80,9 +105,11 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 // GET ALL PRODUCT
-router.get("/", verifyTokenAndAdmin, async (req, res) => {
+router.get("/", async (req, res) => {
     try {
-        const product = await Product.find();
+        const product = await Product.find().select(
+            "id name slug images status category tag color size quantity price"
+        );
         if (!product) return res.status(401).json({ success: false, message: "Products not found" });
         res.json({ success: true, message: "Get products successfully", product });
     } catch (error) {

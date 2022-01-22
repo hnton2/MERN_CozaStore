@@ -251,8 +251,8 @@ function Header() {
                     <div className="sidebar__footer">
                         <div className="cart__total">Total: $75.00</div>
                         <div className="cart__buttons">
-                            <button className="btn bg-dark text-uppercase">View Cart</button>
-                            <button className="btn bg-dark text-uppercase">Check Out</button>
+                            <button className="btn btn-dark text-uppercase">View Cart</button>
+                            <button className="btn btn-dark text-uppercase">Check Out</button>
                         </div>
                     </div>
                 </div>

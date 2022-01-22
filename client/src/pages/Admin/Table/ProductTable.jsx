@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
-import { Badge, Container, Grid } from "@mui/material";
+import { Container, Grid, Pagination, Skeleton, Stack } from "@mui/material";
 import { DataGrid, GridToolbarFilterButton } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
@@ -12,6 +12,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import "./Table.scss";
 import Image from "constants/Image";
 import CheckIcon from "@mui/icons-material/Check";
+import { escapeRegExp } from "helpers/string";
+import productServices from "services/product";
+import { CATEGORY_OPTIONS, IMAGE_CLOUDINARY } from "constants/Data";
+import AddIcon from "@mui/icons-material/Add";
+import Select from "react-select";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const linkData = [
     {
@@ -20,167 +27,15 @@ const linkData = [
     },
 ];
 
-const dataRows = [
-    {
-        id: 1,
-        name: "054-01-FR",
-        image: Image.PRODUCT1,
-        status: "active",
-        category: "Active",
-        tag: "$139.45",
-        color: "$139.45",
-        size: "$139.45",
-        quantity: "$139.45",
-        price: "$139.45",
-    },
-    {
-        id: 2,
-        name: "054-01-FR",
-        image: Image.PRODUCT2,
-        status: "inactive",
-        category: "Active",
-        tag: "$139.45",
-        color: "$139.45",
-        size: "$139.45",
-        quantity: "$139.45",
-        price: "$139.45",
-    },
-];
-
-const dataColumns = [
-    {
-        field: "name",
-        headerName: "Name",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 150,
-    },
-    {
-        field: "image",
-        headerName: "Image",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 140,
-        renderCell: (params) => <img className="table-thumb" src={params.value} />,
-    },
-    {
-        field: "status",
-        headerName: "Status",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 100,
-        renderCell: (params) => (
-            <button className={`table-status ${params.value !== "active" && "disable"}`}>
-                {params.value !== "active" ? <ClearIcon /> : <CheckIcon />}
-            </button>
-        ),
-    },
-    {
-        field: "category",
-        headerName: "Category",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 100,
-    },
-    {
-        field: "tag",
-        headerName: "Tags",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 100,
-        renderCell: (params) => <span>{params.value}</span>,
-    },
-    {
-        field: "color",
-        headerName: "Color",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 100,
-        renderCell: (params) => <span>{params.value}</span>,
-    },
-    {
-        field: "size",
-        headerName: "Size",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 100,
-        renderCell: (params) => <span>{params.value}</span>,
-    },
-    {
-        field: "quantity",
-        headerName: "Quantity",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 100,
-    },
-    {
-        field: "price",
-        headerName: "Price",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 100,
-    },
-    {
-        field: "action",
-        headerName: "Action",
-        headerClassName: "table-header",
-        cellClassName: "table-cell",
-        width: 80,
-        renderCell: (params) => (
-            <div className="table-action">
-                <Link to="#">
-                    <EditIcon />
-                </Link>
-                <Link to="#">
-                    <ClearIcon />
-                </Link>
-            </div>
-        ),
-    },
-];
-
-function escapeRegExp(value) {
-    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-}
-
-function QuickSearchToolbar(props) {
-    return (
-        <div className="table__toolbar">
-            <Grid container justifyContent="space-between">
-                <Grid item md={9} lg={9}>
-                    <GridToolbarFilterButton />
-                </Grid>
-                <Grid item md={3} lg={3}>
-                    <div className="table-search">
-                        <SearchIcon className="search-icon" />
-                        <input
-                            placeholder="Search"
-                            value={props.value}
-                            onChange={props.onChange}
-                            className="search-input"
-                        />
-                        <CloseIcon
-                            className="search-icon delete"
-                            onClick={props.clearSearch}
-                            style={{
-                                visibility: props.value ? "visible" : "hidden",
-                            }}
-                        />
-                    </div>
-                </Grid>
-            </Grid>
-        </div>
-    );
-}
-
 function ProductTable() {
     const [searchText, setSearchText] = useState("");
-    const [rows, setRows] = useState(dataRows);
+    const [products, setProducts] = useState();
+    const [rows, setRows] = useState([]);
 
     const requestSearch = (searchValue) => {
         setSearchText(searchValue);
         const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = dataRows.filter((row) => {
+        const filteredRows = products.filter((row) => {
             return Object.keys(row).some((field) => {
                 return searchRegex.test(row[field].toString());
             });
@@ -189,32 +44,127 @@ function ProductTable() {
     };
 
     useEffect(() => {
-        setRows(dataRows);
-    }, [dataRows]);
+        const fetchAllProduct = async () => {
+            const res = await productServices.getAllProduct();
+            setProducts(res.data.product);
+            setRows(res.data.product);
+        };
+        fetchAllProduct();
+    }, []);
+    console.log("rows:", rows);
 
     return (
         <>
             <Header />
             <div className="main">
                 <Container>
-                    <Breadcrumbs links={linkData} current="Product List" />
-                    <div className="section-admin">
-                        <h3 className="section-admin__header">Product Table</h3>
-                        <div className="section-admin__content">
-                            <div className="table">
-                                <DataGrid
-                                    rows={rows}
-                                    columns={dataColumns}
-                                    pageSize={5}
-                                    components={{ Toolbar: QuickSearchToolbar }}
-                                    componentsProps={{
-                                        toolbar: {
-                                            value: searchText,
-                                            onChange: (event) => requestSearch(event.target.value),
-                                            clearSearch: () => requestSearch(""),
-                                        },
-                                    }}
-                                />
+                    <Breadcrumbs links={linkData} current="Product Table" />
+                    <div className="card">
+                        <h3 className="card-header">Filter & Search</h3>
+                        <div className="card-body">
+                            <div className="toolbar">
+                                <div className="filter">
+                                    <button className="btn btn-success btn-sm">
+                                        All <span>8</span>
+                                    </button>
+                                    <button className="btn btn-primary btn-sm">
+                                        Active<span>5</span>
+                                    </button>
+                                    <button className="btn btn-danger btn-sm">
+                                        Inactive<span>3</span>
+                                    </button>
+                                </div>
+                                <div style={{ width: "240px" }}>
+                                    <Select options={CATEGORY_OPTIONS} />
+                                </div>
+                                <div className="search">
+                                    <SearchIcon className="search-icon" />
+                                    <input
+                                        placeholder="Search"
+                                        // value={props.value}
+                                        // onChange={props.onChange}
+                                        className="search-input"
+                                    />
+                                    <CloseIcon
+                                        className="search-icon delete"
+                                        // onClick={props.clearSearch}
+                                        // style={{
+                                        //     visibility: props.value ? "visible" : "hidden",
+                                        // }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card">
+                        <h3 className="card-header">Product Table</h3>
+                        <div className="card-body">
+                            <div className="actions">
+                                <button className="btn btn-danger">
+                                    <FileDownloadIcon />
+                                    Export
+                                </button>
+                                <Link to="/admin/product/form" className="btn btn-primary">
+                                    <AddIcon />
+                                    Add New
+                                </Link>
+                            </div>
+                            {rows.length > 0 ? (
+                                <table className="table table-border">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Category</th>
+                                            <th>Status</th>
+                                            <th>Price</th>
+                                            <th>Color</th>
+                                            <th>Size</th>
+                                            <th>Tag</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {rows.map((item) => (
+                                            <tr key={item._id}>
+                                                <td className="text-center">
+                                                    <div>
+                                                        <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
+                                                    </div>
+                                                    <Link to={`/product-detail/${item.slug}`}>{item.name}</Link>
+                                                </td>
+                                                <td className="text-center">{item.category.name}</td>
+                                                <td className="text-center">{item.status}</td>
+                                                <td className="text-center">${item.price}</td>
+                                                <td className="text-center">{item.color[0].label}</td>
+                                                <td className="text-center">{item.size[0].label}</td>
+                                                <td className="text-center">{item.tag[0].label}</td>
+                                                <td className="text-center">
+                                                    <Link
+                                                        to={`/admin/product/form/${item._id}`}
+                                                        className="btn btn-rounded btn-primary btn-sm"
+                                                    >
+                                                        <EditIcon fontSize="small" />
+                                                    </Link>
+                                                    <button className="btn btn-rounded btn-danger btn-sm">
+                                                        <DeleteIcon fontSize="small" />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <Skeleton animation="wave" variant="rectangular" width={1072} height={200} />
+                            )}
+                        </div>
+                        <div className="card-footer">
+                            <div className="pagination">
+                                <div className="left">
+                                    <h4>Pagination</h4>
+                                </div>
+                                <div className="right">
+                                    <Pagination count={10} color="primary" />
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -186,7 +186,7 @@ function Checkout() {
                                         </div>
                                     </div>
                                     <div className="checkout__button">
-                                        <button className="btn btn-lg bg-dark text-uppercase">Place Order</button>
+                                        <button className="btn btn-lg btn-dark text-uppercase">Place Order</button>
                                     </div>
                                 </div>
                             </Grid>

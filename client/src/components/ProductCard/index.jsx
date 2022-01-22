@@ -32,7 +32,7 @@ function ProductCard({ name, price, image }) {
         <div className="product-card">
             <div className="product-card__image">
                 <img src={image} alt={name} />
-                <button className="btn bg-white" onClick={handleShowDetail}>
+                <button className="btn btn-light" onClick={handleShowDetail}>
                     Quick View
                 </button>
             </div>
