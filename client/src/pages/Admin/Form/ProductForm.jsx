@@ -113,8 +113,7 @@ function ProductForm() {
                                 <InputField name="quantity" placeholder="Quantity" />
                                 <InputField name="price" placeholder="Discount" />
                                 <InputField name="discount" placeholder="Name" />
-                                {/* <InputField name="description" placeholder="Description" /> */}
-                                <TextEditorField name="description" placeholder="Description" />
+                                <TextEditorField name="description" />
                                 <div className="form-button">
                                     <Link to="/admin/product/table" className="btn btn-danger">
                                         Cancel

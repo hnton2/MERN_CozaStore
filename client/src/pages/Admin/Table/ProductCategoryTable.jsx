@@ -1,26 +1,23 @@
-import React, { useEffect, useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SearchIcon from "@mui/icons-material/Search";
+import { Backdrop, CircularProgress, Container, Pagination, Skeleton } from "@mui/material";
+import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcrumbs";
-import { Backdrop, CircularProgress, Container, Grid, Pagination, Skeleton, Stack } from "@mui/material";
-import { DataGrid, GridToolbarFilterButton } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
-import ClearIcon from "@mui/icons-material/Clear";
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
-import "./Table.scss";
-import Image from "constants/Image";
-import CheckIcon from "@mui/icons-material/Check";
-import { escapeRegExp } from "helpers/string";
-import productServices from "services/product";
-import { CATEGORY_OPTIONS, IMAGE_CLOUDINARY } from "constants/Data";
-import AddIcon from "@mui/icons-material/Add";
-import Select from "react-select";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Message from "components/Message";
 import StatusFilter from "components/StatusFilter";
+import { CATEGORY_OPTIONS, IMAGE_CLOUDINARY } from "constants/Data";
+import { escapeRegExp } from "helpers/string";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Select from "react-select";
+import productCategoryServices from "services/productCategory";
+import "./Table.scss";
 
 const linkData = [
     {
@@ -29,9 +26,9 @@ const linkData = [
     },
 ];
 
-function ProductTable() {
+function ProductCategoryTable() {
     const [searchText, setSearchText] = useState("");
-    const [products, setProducts] = useState();
+    const [categories, setCategories] = useState();
     const [rows, setRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState();
@@ -39,7 +36,7 @@ function ProductTable() {
     const requestSearch = (searchValue) => {
         setSearchText(searchValue);
         const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = products.filter((row) => {
+        const filteredRows = categories.filter((row) => {
             return Object.keys(row).some((field) => {
                 return searchRegex.test(row[field].toString());
             });
@@ -49,25 +46,23 @@ function ProductTable() {
 
     useEffect(() => {
         const fetchAllProduct = async () => {
-            const res = await productServices.getAllProduct();
-            setProducts(res.data.product);
-            setRows(res.data.product);
+            const res = await productCategoryServices.getAllProductCategory();
+            setCategories(res.data.category);
+            setRows(res.data.category);
         };
         fetchAllProduct();
-    }, []);
+    }, [categories]);
 
     const handleDelete = async (id) => {
-        console.log(id);
         try {
             setIsLoading(true);
             setMessage("");
-            const res = await productServices.deleteProduct(id);
+            const res = await productCategoryServices.deleteProductCategory(id);
             setIsLoading(false);
             if (res.data.success) {
+                setCategories("");
                 setMessage({ type: "error", content: res.data.message });
-            } else {
-                setMessage({ type: "success", content: res.data.message });
-            }
+            } else setMessage({ type: "success", content: res.data.message });
         } catch (error) {
             console.log(error);
             setMessage({ type: "error", content: error.data.message });
@@ -79,7 +74,7 @@ function ProductTable() {
             <Header />
             <div className="main">
                 <Container>
-                    <Breadcrumbs links={linkData} current="Product Table" />
+                    <Breadcrumbs links={linkData} current="Product Category Table" />
                     <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
                         <CircularProgress color="inherit" />
                     </Backdrop>
@@ -111,7 +106,7 @@ function ProductTable() {
                         </div>
                     </div>
                     <div className="card">
-                        <h3 className="card-header">Product Table</h3>
+                        <h3 className="card-header">Product Category Table</h3>
                         {message && <Message type={message.type}>{message.content}</Message>}
                         <div className="card-body">
                             <div className="actions">
@@ -119,7 +114,7 @@ function ProductTable() {
                                     <FileDownloadIcon />
                                     Export
                                 </button>
-                                <Link to="/admin/product/form" className="btn btn-primary">
+                                <Link to="/admin/product-category/form" className="btn btn-primary">
                                     <AddIcon />
                                     Add New
                                 </Link>
@@ -128,26 +123,17 @@ function ProductTable() {
                                 <table className="table table-border">
                                     <thead>
                                         <tr>
-                                            <th>Product</th>
-                                            <th>Category</th>
+                                            <th>Name</th>
                                             <th>Status</th>
-                                            <th>Price</th>
-                                            <th>Color</th>
-                                            <th>Size</th>
-                                            <th>Tag</th>
+                                            <th>Slug</th>
+                                            <th>Desciption</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {rows.map((item) => (
                                             <tr key={item._id}>
-                                                <td className="text-center">
-                                                    <div>
-                                                        <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
-                                                    </div>
-                                                    <Link to={`/product-detail/${item.slug}`}>{item.name}</Link>
-                                                </td>
-                                                <td className="text-center">{item.category.name}</td>
+                                                <td className="text-center">{item.name}</td>
                                                 <td className="text-center">
                                                     <button
                                                         className={`btn btn-rounded ${
@@ -159,13 +145,11 @@ function ProductTable() {
                                                         <CheckIcon fontSize="small" />
                                                     </button>
                                                 </td>
-                                                <td className="text-center">${item.price}</td>
-                                                <td className="text-center">{item.color[0].label}</td>
-                                                <td className="text-center">{item.size[0].label}</td>
-                                                <td className="text-center">{item.tag[0].label}</td>
+                                                <td className="text-center">{item.slug}</td>
+                                                <td className="text-center">{item.description}</td>
                                                 <td className="text-center">
                                                     <Link
-                                                        to={`/admin/product/form/${item._id}`}
+                                                        to={`/admin/product-category/form/${item._id}`}
                                                         className="btn btn-rounded btn-primary btn-sm"
                                                     >
                                                         <EditIcon fontSize="small" />
@@ -203,4 +187,4 @@ function ProductTable() {
     );
 }
 
-export default ProductTable;
+export default ProductCategoryTable;

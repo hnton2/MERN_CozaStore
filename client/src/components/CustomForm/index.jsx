@@ -114,7 +114,7 @@ export function SelectField({ control, errors, options, name, isMultiple, ...res
     );
 }
 
-export function RadioField({ register, errors, options, name, ...rest }) {
+export function RadioField({ register, errors, options, name }) {
     return (
         <>
             <div className="form-group">
@@ -124,7 +124,7 @@ export function RadioField({ register, errors, options, name, ...rest }) {
                         <div className="form-radio" key={option.label}>
                             <label className="radio">
                                 <div className="radio-label">{option.label}</div>
-                                <input {...register(name)} type="radio" name="radio" {...rest} value={option.value} />
+                                <input {...register(name)} type="radio" value={option.value} />
                                 <span className="radio-checkmark"></span>
                             </label>
                         </div>

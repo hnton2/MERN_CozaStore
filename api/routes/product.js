@@ -4,13 +4,12 @@ const Product = require("../models/Product");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
 
-// @DESC Create a product
+// @DESC Create new product
 // @ROUTE POST /api/product/
 // @ACCESS Private
 router.post("/", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
     const newProduct = new Product(changeToJson(req.body));
     const images = req.files;
-    newProduct.slug = changeAlias(newProduct.name);
 
     if (!newProduct.name || !newProduct.description || !newProduct.price || !images) {
         if (images) images.map((item) => RemoveFile(item.filename));
@@ -18,6 +17,7 @@ router.post("/", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req
     }
 
     try {
+        newProduct.slug = changeAlias(newProduct.name);
         const existProduct = await Product.findOne({ name: newProduct.name });
         if (existProduct) {
             if (images) images.map((item) => RemoveFile(item.filename));

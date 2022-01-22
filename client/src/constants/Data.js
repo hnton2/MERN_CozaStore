@@ -219,3 +219,9 @@ export const DEFAULT_VALUE_PRODUCT = {
     discount: 0,
     description: "",
 };
+
+export const DEFAULT_VALUE_CATEGORY_PRODUCT = {
+    name: "",
+    status: "active",
+    description: "",
+};
