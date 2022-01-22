@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
-import { Container, Grid, Pagination, Skeleton, Stack } from "@mui/material";
+import { Backdrop, CircularProgress, Container, Grid, Pagination, Skeleton, Stack } from "@mui/material";
 import { DataGrid, GridToolbarFilterButton } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
@@ -19,6 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Select from "react-select";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Message from "components/Message";
 
 const linkData = [
     {
@@ -27,10 +28,33 @@ const linkData = [
     },
 ];
 
+const StatusFilter = ({ rows }) => {
+    let statusCount = { active: 0, inactive: 0 };
+    rows.map((item) => {
+        if (item.status === "active") statusCount["active"]++;
+        if (item.status === "inactive") statusCount["inactive"]++;
+    });
+    return (
+        <div className="filter">
+            <button className="btn btn-success btn-sm">
+                All <span>{rows.length}</span>
+            </button>
+            <button className="btn btn-primary btn-sm">
+                Active<span>{statusCount.active}</span>
+            </button>
+            <button className="btn btn-danger btn-sm">
+                Inactive<span>{statusCount.inactive}</span>
+            </button>
+        </div>
+    );
+};
+
 function ProductTable() {
     const [searchText, setSearchText] = useState("");
     const [products, setProducts] = useState();
     const [rows, setRows] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState();
 
     const requestSearch = (searchValue) => {
         setSearchText(searchValue);
@@ -51,7 +75,24 @@ function ProductTable() {
         };
         fetchAllProduct();
     }, []);
-    console.log("rows:", rows);
+
+    const handleDelete = async (id) => {
+        console.log(id);
+        try {
+            setIsLoading(true);
+            setMessage("");
+            const res = await productServices.deleteProduct(id);
+            setIsLoading(false);
+            if (res.data.success) {
+                setMessage({ type: "error", content: res.data.message });
+            } else {
+                setMessage({ type: "success", content: res.data.message });
+            }
+        } catch (error) {
+            console.log(error);
+            setMessage({ type: "error", content: error.data.message });
+        }
+    };
 
     return (
         <>
@@ -59,21 +100,14 @@ function ProductTable() {
             <div className="main">
                 <Container>
                     <Breadcrumbs links={linkData} current="Product Table" />
+                    <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
                     <div className="card">
                         <h3 className="card-header">Filter & Search</h3>
                         <div className="card-body">
                             <div className="toolbar">
-                                <div className="filter">
-                                    <button className="btn btn-success btn-sm">
-                                        All <span>8</span>
-                                    </button>
-                                    <button className="btn btn-primary btn-sm">
-                                        Active<span>5</span>
-                                    </button>
-                                    <button className="btn btn-danger btn-sm">
-                                        Inactive<span>3</span>
-                                    </button>
-                                </div>
+                                <StatusFilter rows={rows} />
                                 <div style={{ width: "240px" }}>
                                     <Select options={CATEGORY_OPTIONS} />
                                 </div>
@@ -81,16 +115,16 @@ function ProductTable() {
                                     <SearchIcon className="search-icon" />
                                     <input
                                         placeholder="Search"
-                                        // value={props.value}
-                                        // onChange={props.onChange}
+                                        value={searchText}
+                                        onChange={(event) => requestSearch(event.target.value)}
                                         className="search-input"
                                     />
                                     <CloseIcon
                                         className="search-icon delete"
-                                        // onClick={props.clearSearch}
-                                        // style={{
-                                        //     visibility: props.value ? "visible" : "hidden",
-                                        // }}
+                                        onClick={() => setSearchText("")}
+                                        style={{
+                                            visibility: searchText ? "visible" : "hidden",
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -98,6 +132,7 @@ function ProductTable() {
                     </div>
                     <div className="card">
                         <h3 className="card-header">Product Table</h3>
+                        {message && <Message type={message.type}>{message.content}</Message>}
                         <div className="card-body">
                             <div className="actions">
                                 <button className="btn btn-danger">
@@ -133,7 +168,17 @@ function ProductTable() {
                                                     <Link to={`/product-detail/${item.slug}`}>{item.name}</Link>
                                                 </td>
                                                 <td className="text-center">{item.category.name}</td>
-                                                <td className="text-center">{item.status}</td>
+                                                <td className="text-center">
+                                                    <button
+                                                        className={`btn btn-rounded ${
+                                                            item.status === "active"
+                                                                ? "btn-success"
+                                                                : "btn-secondary btn-disabled"
+                                                        } btn-sm`}
+                                                    >
+                                                        <CheckIcon fontSize="small" />
+                                                    </button>
+                                                </td>
                                                 <td className="text-center">${item.price}</td>
                                                 <td className="text-center">{item.color[0].label}</td>
                                                 <td className="text-center">{item.size[0].label}</td>
@@ -145,7 +190,10 @@ function ProductTable() {
                                                     >
                                                         <EditIcon fontSize="small" />
                                                     </Link>
-                                                    <button className="btn btn-rounded btn-danger btn-sm">
+                                                    <button
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="btn btn-rounded btn-danger btn-sm"
+                                                    >
                                                         <DeleteIcon fontSize="small" />
                                                     </button>
                                                 </td>

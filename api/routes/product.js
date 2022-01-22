@@ -80,11 +80,14 @@ router.put("/:id", verifyTokenAndAdmin, UploadFile.array("images", 20), async (r
     }
 });
 
-// DELETE
+// @DESC Delete a product
+// @ROUTE DELETE /api/product/:id
+// @ACCESS Privates
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedProduct = await Product.findOneAndDelete(req.params.id);
+        const deletedProduct = await Product.findOneAndDelete({ _id: req.params.id });
         if (!deletedProduct) return res.status(401).json({ success: false, message: "Product not found" });
+        else deletedProduct.images.map((item) => RemoveFile(item));
         res.json({ success: true, message: "Product has been deleted" });
     } catch (error) {
         console.log(error);
@@ -92,7 +95,9 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// GET PRODUCT
+// @DESC Find a product
+// @ROUTE GET /api/product/find/:id
+// @ACCESS Privates
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -105,6 +110,9 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 // GET ALL PRODUCT
+// @DESC Get all  product
+// @ROUTE GET /api/product/
+// @ACCESS Public
 router.get("/", async (req, res) => {
     try {
         const product = await Product.find().select(

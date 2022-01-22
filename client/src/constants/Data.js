@@ -170,7 +170,7 @@ export const CATEGORY_OPTIONS = [
 
 export const COLOR_OPTIONS = [
     { value: "ocean", label: "Ocean" },
-    { value: "blue", label: "Blue", isDisabled: true },
+    { value: "blue", label: "Blue" },
     { value: "purple", label: "Purple" },
     { value: "red", label: "Red" },
     { value: "orange", label: "Orange" },

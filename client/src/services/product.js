@@ -19,11 +19,16 @@ const updateProduct = (currentId, product) => {
     return userRequest.put(`product/${currentId}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
 };
 
+const deleteProduct = (id) => {
+    return userRequest.delete(`product/${id}`);
+};
+
 const productServices = {
     createNewProduct,
     getAllProduct,
     getOneProduct,
     updateProduct,
+    deleteProduct,
 };
 
 export default productServices;

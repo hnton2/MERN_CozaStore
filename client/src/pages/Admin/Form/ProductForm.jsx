@@ -7,7 +7,6 @@ import {
     CATEGORY_OPTIONS,
     COLOR_OPTIONS,
     DEFAULT_VALUE_PRODUCT,
-    IMAGE_CLOUDINARY,
     SIZE_OPTIONS,
     STATUS_RADIO,
     TAG_OPTIONS,
@@ -18,6 +17,7 @@ import productServices from "services/product";
 import Message from "components/Message";
 import productCategoryServices from "services/productCategory";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { TextEditorField } from "components/CustomForm";
 
 const linkData = [
     {
@@ -57,7 +57,7 @@ function ProductForm() {
                 }
             } catch (error) {
                 console.log(error);
-                // setMessage({ type: "error", content: error });
+                setMessage({ type: "error", content: error.response.data.message });
             }
         };
         fetchData();
@@ -113,7 +113,8 @@ function ProductForm() {
                                 <InputField name="quantity" placeholder="Quantity" />
                                 <InputField name="price" placeholder="Discount" />
                                 <InputField name="discount" placeholder="Name" />
-                                <InputField name="description" placeholder="Description" />
+                                {/* <InputField name="description" placeholder="Description" /> */}
+                                <TextEditorField name="description" placeholder="Description" />
                                 <div className="form-button">
                                     <Link to="/admin/product/table" className="btn btn-danger">
                                         Cancel

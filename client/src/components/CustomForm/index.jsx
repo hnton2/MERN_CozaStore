@@ -6,7 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import CloseIcon from "@mui/icons-material/Close";
-
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "./CustomForm.scss";
 import { IMAGE_CLOUDINARY } from "constants/Data";
 
@@ -208,6 +209,39 @@ export function ImageField({ control, register, errors, name }) {
                     {errors[name]?.[fields.length - 1] && (
                         <p className="error-message">*{errors[name]?.[fields.length - 1]?.name.message}</p>
                     )}
+                </div>
+            </div>
+        </>
+    );
+}
+
+export function TextEditorField({ control, register, errors, name, placeholder, ...rest }) {
+    return (
+        <>
+            <div className="form-group">
+                <label className="form-label" htmlFor={name}>
+                    {name}
+                </label>
+                <div className="form-control">
+                    <Controller
+                        name={name}
+                        control={control}
+                        render={({ field }) => (
+                            <CKEditor
+                                className="form-input"
+                                {...field}
+                                editor={ClassicEditor}
+                                data={field.value}
+                                {...register(name)}
+                                onChange={(event, editor) => {
+                                    const data = editor.getData();
+                                    field.onChange(data);
+                                }}
+                                onBlur={(event, editor) => field.onBlur()}
+                            />
+                        )}
+                    />
+                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
                 </div>
             </div>
         </>

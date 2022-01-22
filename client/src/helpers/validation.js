@@ -1,12 +1,7 @@
 import * as yup from "yup";
 
 export const productValidation = yup.object().shape({
-    name: yup
-        .string()
-        .min(5)
-        .max(100)
-        .matches(/^[aA-zZ\s]+$/, "name is not in correct format")
-        .required(),
+    name: yup.string().min(5).max(100).required(),
     status: yup.string().required(),
     category: yup.object().nullable().required(),
     images: yup
