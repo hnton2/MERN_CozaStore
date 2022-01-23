@@ -33,9 +33,11 @@ const Backdrop = styled.div`
 `;
 
 function Header() {
-    const user = useSelector((state) => state.auth.currentUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const user = useSelector((state) => state.auth.currentUser);
+    const categoryProduct = useSelector((state) => state.category.categoryProduct);
 
     useEffect(() => {
         dispatch(clearMessage());
@@ -52,9 +54,7 @@ function Header() {
     const handleOpenMenu = () => setOpenMenu(true);
     const handleCloseMenu = () => setOpenMenu(false);
 
-    const handleLogin = () => {
-        navigate("/login");
-    };
+    const handleLogin = () => navigate("/login");
 
     const handleLogout = async () => {
         await dispatch(LogOut());
@@ -79,21 +79,14 @@ function Header() {
                                 Category
                             </Link>
                             <ul className="sub-nav">
-                                <li>
-                                    <Link className="sub-nav-link" to="/products/men">
-                                        Men
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="sub-nav-link" to="/products/women">
-                                        Women
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="sub-nav-link" to="/products/kid">
-                                        Kid
-                                    </Link>
-                                </li>
+                                {categoryProduct &&
+                                    categoryProduct.map((item) => (
+                                        <li key={item._id}>
+                                            <Link className="sub-nav-link" to={`/product-category/${item.slug}`}>
+                                                {item.name}
+                                            </Link>
+                                        </li>
+                                    ))}
                             </ul>
                         </li>
                         <li className="nav__item">

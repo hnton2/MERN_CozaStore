@@ -16,9 +16,9 @@ import { Form, InputField, SelectField, RadioField, ImageField } from "component
 import { productValidation } from "helpers/validation";
 import productServices from "services/product";
 import Message from "components/Message";
-import productCategoryServices from "services/productCategory";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TextEditorField } from "components/CustomForm";
+import { useSelector } from "react-redux";
 
 const linkData = [
     {
@@ -32,10 +32,16 @@ function ProductForm() {
     const { id: currentId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState();
-    const [categoryOptions, setCategoryOptions] = useState(CATEGORY_OPTIONS);
     const [initialValue, setInitialValue] = useState(DEFAULT_VALUE_PRODUCT);
     const [oldImages, setOldImages] = useState();
     const [tagOptions, setTagOptions] = useState(TAG_SHOES_OPTIONS);
+    let categoryOptions = CATEGORY_OPTIONS;
+
+    const categoryProduct = useSelector((state) => state.category.categoryProduct);
+    if (categoryProduct) {
+        const cateOptions = categoryProduct.map((item) => ({ value: item._id, label: item.name }));
+        categoryOptions = cateOptions;
+    }
 
     const handleWatchFields = (data) => {
         if (data.category.label === "Shoes") setTagOptions(TAG_SHOES_OPTIONS);
@@ -70,15 +76,6 @@ function ProductForm() {
         };
         fetchData();
     }, [currentId]);
-
-    useEffect(() => {
-        const fetchAllCategory = async () => {
-            const res = await productCategoryServices.getAllProductCategory();
-            const cateOptions = res.data.category.map((item) => ({ value: item._id, label: item.name }));
-            setCategoryOptions(cateOptions);
-        };
-        fetchAllCategory();
-    }, []);
 
     const onSubmit = async (data) => {
         if (oldImages) data.oldImages = oldImages;
@@ -124,8 +121,8 @@ function ProductForm() {
                                 <SelectField name="size" options={SIZE_OPTIONS} isMultiple placeholder="Size..." />
                                 <SelectField name="color" options={COLOR_OPTIONS} isMultiple placeholder="Color..." />
                                 <InputField name="quantity" placeholder="Quantity" />
-                                <InputField name="price" placeholder="Discount" />
-                                <InputField name="discount" placeholder="Name" />
+                                <InputField name="price" placeholder="Price" />
+                                <InputField name="discount" placeholder="Discount" />
                                 <TextEditorField name="description" />
                                 <div className="form-button">
                                     <Link to="/admin/product/table" className="btn btn-danger">

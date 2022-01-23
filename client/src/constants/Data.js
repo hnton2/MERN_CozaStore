@@ -204,6 +204,7 @@ export const TAG_CLOTHING_OPTIONS = [
     { value: "jackets", label: "Jackets" },
     { value: "hoodies", label: "Hoodies" },
     { value: "t-shirts", label: "T-shirts" },
+    { value: "long-sleeve", label: "Long-Sleeve" },
 ];
 
 export const SIZE_OPTIONS = [

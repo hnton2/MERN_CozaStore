@@ -69,7 +69,7 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
 
 function ProductTable() {
     let [searchParams, setSearchParams] = useSearchParams();
-    let currentPage = searchParams.get("page");
+    let currentPage = searchParams.get("page") || 1;
 
     const [searchText, setSearchText] = useState("");
     const [products, setProducts] = useState([]);

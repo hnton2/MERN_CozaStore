@@ -4,8 +4,9 @@ import ProductForm from "pages/Admin/Form/ProductForm";
 import ProductCategoryTable from "pages/Admin/Table/ProductCategoryTable";
 import ProductTable from "pages/Admin/Table/ProductTable";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { GetALlCategoryProduct } from "redux/categorySlice";
 import About from "./pages/Public/About";
 import Blog from "./pages/Public/Blog";
 import BlogDetail from "./pages/Public/BlogDetail";
@@ -20,14 +21,16 @@ import Register from "./pages/Public/Register";
 import "./style.scss";
 
 function App() {
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.currentUser);
+    dispatch(GetALlCategoryProduct());
 
     return (
         <BrowserRouter>
             <Routes>
                 {/* Public */}
                 <Route exact path="/" element={<Home />} />
-                <Route path="/products/:category" element={<Products />} />
+                <Route path="/product-category/:category" element={<Products />} />
                 <Route path="/product/:id" element={<Product />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
