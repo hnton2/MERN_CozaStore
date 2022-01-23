@@ -9,7 +9,8 @@ import {
     DEFAULT_VALUE_PRODUCT,
     SIZE_OPTIONS,
     STATUS_RADIO,
-    TAG_OPTIONS,
+    TAG_CLOTHING_OPTIONS,
+    TAG_SHOES_OPTIONS,
 } from "constants/Data";
 import { Form, InputField, SelectField, RadioField, ImageField } from "components/CustomForm";
 import { productValidation } from "helpers/validation";
@@ -34,6 +35,13 @@ function ProductForm() {
     const [categoryOptions, setCategoryOptions] = useState(CATEGORY_OPTIONS);
     const [initialValue, setInitialValue] = useState(DEFAULT_VALUE_PRODUCT);
     const [oldImages, setOldImages] = useState();
+    const [tagOptions, setTagOptions] = useState(TAG_SHOES_OPTIONS);
+
+    const handleWatchFields = (data) => {
+        if (data.category.label === "Shoes") setTagOptions(TAG_SHOES_OPTIONS);
+        else if (data.category.label === "Clothing") setTagOptions(TAG_CLOTHING_OPTIONS);
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -102,12 +110,17 @@ function ProductForm() {
                         <h3 className="card-header">Product Form</h3>
                         <div className="card-body">
                             {message && <Message type={message.type}>{message.content}</Message>}
-                            <Form onSubmit={onSubmit} defaultValues={initialValue} validation={productValidation}>
+                            <Form
+                                onSubmit={onSubmit}
+                                defaultValues={initialValue}
+                                validation={productValidation}
+                                onWatchFields={handleWatchFields}
+                            >
                                 <InputField name="name" placeholder="Name" />
                                 <RadioField name="status" options={STATUS_RADIO} />
                                 <ImageField name="images" />
                                 <SelectField name="category" options={categoryOptions} placeholder="Category..." />
-                                <SelectField name="tag" options={TAG_OPTIONS} isMultiple placeholder="Tags..." />
+                                <SelectField name="tag" options={tagOptions} isMultiple placeholder="Tags..." />
                                 <SelectField name="size" options={SIZE_OPTIONS} isMultiple placeholder="Size..." />
                                 <SelectField name="color" options={COLOR_OPTIONS} isMultiple placeholder="Color..." />
                                 <InputField name="quantity" placeholder="Quantity" />

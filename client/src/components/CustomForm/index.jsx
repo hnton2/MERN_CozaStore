@@ -26,14 +26,17 @@ const customStyles = {
     }),
 };
 
-export function Form({ defaultValues, validation, children, onSubmit }) {
+export function Form({ defaultValues, validation, children, onSubmit, onWatchFields }) {
     const {
         control,
         handleSubmit,
         reset,
+        watch,
         register,
         formState: { errors },
     } = useForm({ defaultValues, resolver: yupResolver(validation) });
+
+    onWatchFields(watch());
 
     useEffect(() => {
         if (defaultValues) {

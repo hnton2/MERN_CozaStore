@@ -169,28 +169,41 @@ export const CATEGORY_OPTIONS = [
 ];
 
 export const COLOR_OPTIONS = [
-    { value: "ocean", label: "Ocean" },
+    { value: "black", label: "Black" },
     { value: "blue", label: "Blue" },
     { value: "purple", label: "Purple" },
     { value: "red", label: "Red" },
+    { value: "grey", label: "Grey" },
     { value: "orange", label: "Orange" },
     { value: "yellow", label: "Yellow" },
     { value: "green", label: "Green" },
-    { value: "forest", label: "Forest" },
-    { value: "slate", label: "Slate" },
+    { value: "pink", label: "Pink" },
+    { value: "white", label: "White" },
     { value: "silver", label: "Silver" },
 ];
 
-export const TAG_OPTIONS = [
+export const TAG_SHOES_OPTIONS = [
     { value: "men", label: "Men" },
     { value: "women", label: "Women" },
     { value: "kids", label: "Kids" },
     { value: "lifestyle", label: "Lifestyle" },
     { value: "sports", label: "Sports" },
-    { value: "fashion", label: "Fashion" },
-    { value: "classic", label: "Classic" },
-    { value: "romantic", label: "Romantic" },
-    { value: "traditional", label: "Traditional" },
+    { value: "jordan", label: "Jordan" },
+    { value: "running", label: "Running" },
+    { value: "basketball", label: "Basketball" },
+    { value: "football", label: "Football" },
+    { value: "training-gym", label: "Training & Gym" },
+    { value: "tennis", label: "Tennis" },
+];
+
+export const TAG_CLOTHING_OPTIONS = [
+    { value: "men", label: "Men" },
+    { value: "women", label: "Women" },
+    { value: "kids", label: "Kids" },
+    { value: "shorts", label: "Shorts" },
+    { value: "jackets", label: "Jackets" },
+    { value: "hoodies", label: "Hoodies" },
+    { value: "t-shirts", label: "T-shirts" },
 ];
 
 export const SIZE_OPTIONS = [
@@ -225,3 +238,5 @@ export const DEFAULT_VALUE_CATEGORY_PRODUCT = {
     status: "active",
     description: "",
 };
+
+export const NUMBER_ITEM_PERPAGE = 5;

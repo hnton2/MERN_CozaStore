@@ -28,15 +28,18 @@ function ProductsSlider({ products }) {
             },
         ],
     };
+    console.log("slider", products);
 
     return (
         <div className="products-slider">
             <Slider {...settings}>
-                {products.map((item, index) => (
-                    <div key={index + 1}>
-                        <ProductCard name={item.name} price={item.price} image={item.image} />
-                    </div>
-                ))}
+                {products.map((item, index) => {
+                    return (
+                        <div key={index + 1}>
+                            <ProductCard product={item} />
+                        </div>
+                    );
+                })}
             </Slider>
         </div>
     );

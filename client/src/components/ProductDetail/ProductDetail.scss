@@ -12,7 +12,15 @@
     & .slick-dots.slick-thumb {
         top: 0;
         left: 0;
+        bottom: 28px;
         max-width: 100px;
+        overflow-y: scroll;
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         & li {
             display: block;

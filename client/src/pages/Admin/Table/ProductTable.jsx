@@ -3,14 +3,11 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
 import { Backdrop, CircularProgress, Container, Grid, Pagination, Skeleton, Stack } from "@mui/material";
-import { DataGrid, GridToolbarFilterButton } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
-import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import "./Table.scss";
-import Image from "constants/Image";
 import CheckIcon from "@mui/icons-material/Check";
 import { escapeRegExp } from "helpers/string";
 import productServices from "services/product";
@@ -29,23 +26,56 @@ const linkData = [
     },
 ];
 
+const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
+    const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
+
+    return (
+        <>
+            {dataRender.map((item) => (
+                <tr key={item._id}>
+                    <td className="text-center">
+                        <div>
+                            <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
+                        </div>
+                        <Link to={`/product-detail/${item.slug}`}>{item.name}</Link>
+                    </td>
+                    <td className="text-center">{item.category.name}</td>
+                    <td className="text-center">
+                        <button
+                            className={`btn btn-rounded ${
+                                item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
+                            } btn-sm`}
+                        >
+                            <CheckIcon fontSize="small" />
+                        </button>
+                    </td>
+                    <td className="text-center">${item.price}</td>
+                    <td className="text-center">{item.color[0].label}</td>
+                    <td className="text-center">{item.size[0].label}</td>
+                    <td className="text-center">{item.tag[0].label}</td>
+                    <td className="text-center">
+                        <Link to={`/admin/product/form/${item._id}`} className="btn btn-rounded btn-primary btn-sm">
+                            <EditIcon fontSize="small" />
+                        </Link>
+                        <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
+                            <DeleteIcon fontSize="small" />
+                        </button>
+                    </td>
+                </tr>
+            ))}
+        </>
+    );
+};
+
 function ProductTable() {
+    let [searchParams, setSearchParams] = useSearchParams();
+    let currentPage = searchParams.get("page");
+
     const [searchText, setSearchText] = useState("");
-    const [products, setProducts] = useState();
+    const [products, setProducts] = useState([]);
     const [rows, setRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState();
-
-    const requestSearch = (searchValue) => {
-        setSearchText(searchValue);
-        const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = products.filter((row) => {
-            return Object.keys(row).some((field) => {
-                return searchRegex.test(row[field].toString());
-            });
-        });
-        setRows(filteredRows);
-    };
 
     useEffect(() => {
         const fetchAllProduct = async () => {
@@ -56,23 +86,35 @@ function ProductTable() {
         fetchAllProduct();
     }, []);
 
+    const requestSearch = (searchValue) => {
+        setSearchText(searchValue);
+        const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
+        const filteredRows = products.filter((row) =>
+            Object.keys(row).some((field) => searchRegex.test(row[field].toString()))
+        );
+        setRows(filteredRows);
+        setSearchParams({ page: 1 });
+    };
+
     const handleDelete = async (id) => {
-        console.log(id);
         try {
             setIsLoading(true);
             setMessage("");
             const res = await productServices.deleteProduct(id);
             setIsLoading(false);
             if (res.data.success) {
-                setMessage({ type: "error", content: res.data.message });
-            } else {
+                const updateProducts = products.filter((product) => product._id !== id);
+                setProducts(updateProducts);
+                setRows(updateProducts);
                 setMessage({ type: "success", content: res.data.message });
-            }
+            } else setMessage({ type: "error", content: res.data.message });
         } catch (error) {
             console.log(error);
             setMessage({ type: "error", content: error.data.message });
         }
     };
+
+    const handleChangePage = (event, value) => setSearchParams({ page: value });
 
     return (
         <>
@@ -139,46 +181,7 @@ function ProductTable() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {rows.map((item) => (
-                                            <tr key={item._id}>
-                                                <td className="text-center">
-                                                    <div>
-                                                        <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
-                                                    </div>
-                                                    <Link to={`/product-detail/${item.slug}`}>{item.name}</Link>
-                                                </td>
-                                                <td className="text-center">{item.category.name}</td>
-                                                <td className="text-center">
-                                                    <button
-                                                        className={`btn btn-rounded ${
-                                                            item.status === "active"
-                                                                ? "btn-success"
-                                                                : "btn-secondary btn-disabled"
-                                                        } btn-sm`}
-                                                    >
-                                                        <CheckIcon fontSize="small" />
-                                                    </button>
-                                                </td>
-                                                <td className="text-center">${item.price}</td>
-                                                <td className="text-center">{item.color[0].label}</td>
-                                                <td className="text-center">{item.size[0].label}</td>
-                                                <td className="text-center">{item.tag[0].label}</td>
-                                                <td className="text-center">
-                                                    <Link
-                                                        to={`/admin/product/form/${item._id}`}
-                                                        className="btn btn-rounded btn-primary btn-sm"
-                                                    >
-                                                        <EditIcon fontSize="small" />
-                                                    </Link>
-                                                    <button
-                                                        onClick={() => handleDelete(item._id)}
-                                                        className="btn btn-rounded btn-danger btn-sm"
-                                                    >
-                                                        <DeleteIcon fontSize="small" />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        <RenderTable data={rows} currentPage={currentPage} onDelete={handleDelete} />
                                     </tbody>
                                 </table>
                             ) : (
@@ -191,7 +194,14 @@ function ProductTable() {
                                     <h4>Pagination</h4>
                                 </div>
                                 <div className="right">
-                                    <Pagination count={10} color="primary" />
+                                    <Pagination
+                                        page={Number(currentPage)}
+                                        count={Math.ceil(rows.length / 5)}
+                                        onChange={handleChangePage}
+                                        variant="outlined"
+                                        shape="rounded"
+                                        color="primary"
+                                    />
                                 </div>
                             </div>
                         </div>

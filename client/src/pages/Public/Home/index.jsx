@@ -1,5 +1,5 @@
 import { Container, Grid } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "components/Banner";
 import BlogCard from "components/BlogCard";
 import Carousel from "components/Carousel";
@@ -8,6 +8,7 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import ProductsSlider from "components/ProductsSlider";
 import Image from "constants/Image";
+import productServices from "services/product";
 
 const dataTab1 = [
     {
@@ -79,26 +80,39 @@ const dataBlog = [
     },
 ];
 
-const overviewData = [
-    {
-        label: "Best Seller",
-        content: <ProductsSlider products={dataTab1} />,
-    },
-    {
-        label: "Featured",
-        content: <ProductsSlider products={dataTab1} />,
-    },
-    {
-        label: "Sale",
-        content: <ProductsSlider products={dataTab1} />,
-    },
-    {
-        label: "Top Rate",
-        content: <ProductsSlider products={dataTab1} />,
-    },
-];
-
 function Home() {
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+        const fetchAllProduct = async () => {
+            try {
+                const response = await productServices.getAllProduct();
+                setProducts(response.data.product);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchAllProduct();
+    }, []);
+
+    const overviewData = [
+        {
+            label: "Best Seller",
+            content: products,
+        },
+        {
+            label: "Featured",
+            content: dataTab1,
+        },
+        {
+            label: "New Product",
+            content: dataTab1,
+        },
+        {
+            label: "Top Rate",
+            content: dataTab1,
+        },
+    ];
+
     return (
         <>
             <Header />
@@ -112,7 +126,7 @@ function Home() {
                 <section className="overview">
                     <Container>
                         <h3 className="section__title">Store Overview</h3>
-                        <CustomTabs panels={overviewData} />
+                        <CustomTabs data={overviewData} />
                     </Container>
                 </section>
                 <section className="blogs">

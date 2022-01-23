@@ -51,7 +51,7 @@ function ProductCategoryTable() {
             setRows(res.data.category);
         };
         fetchAllProduct();
-    }, [categories]);
+    }, []);
 
     const handleDelete = async (id) => {
         try {
@@ -60,7 +60,9 @@ function ProductCategoryTable() {
             const res = await productCategoryServices.deleteProductCategory(id);
             setIsLoading(false);
             if (res.data.success) {
-                setCategories("");
+                const updateCategories = categories.filter((product) => product._id !== id);
+                setCategories(updateCategories);
+                setRows(updateCategories);
                 setMessage({ type: "error", content: res.data.message });
             } else setMessage({ type: "success", content: res.data.message });
         } catch (error) {
@@ -68,6 +70,8 @@ function ProductCategoryTable() {
             setMessage({ type: "error", content: error.data.message });
         }
     };
+
+    const handleChangePage = () => {};
 
     return (
         <>
@@ -175,7 +179,13 @@ function ProductCategoryTable() {
                                     <h4>Pagination</h4>
                                 </div>
                                 <div className="right">
-                                    <Pagination count={10} color="primary" />
+                                    <Pagination
+                                        count={10}
+                                        onChange={handleChangePage}
+                                        variant="outlined"
+                                        shape="rounded"
+                                        color="primary"
+                                    />
                                 </div>
                             </div>
                         </div>

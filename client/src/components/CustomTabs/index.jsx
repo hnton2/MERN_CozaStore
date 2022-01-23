@@ -1,27 +1,25 @@
 import { Tab, Tabs } from "@mui/material";
+import ProductsSlider from "components/ProductsSlider";
 import React from "react";
 import TabPanel from "../TabPanel";
 
-function CustomTabs({ panels }) {
+function CustomTabs({ data }) {
     const [value, setValue] = React.useState(0);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    const handleChange = (event, newValue) => setValue(newValue);
 
     return (
         <>
             <div className="tabs">
                 <Tabs value={value} onChange={handleChange}>
-                    {panels.map((panel, index) => (
-                        <Tab label={panel.label} key={index + 1} />
+                    {data.map((item, index) => (
+                        <Tab label={item.label} key={index + 1} />
                     ))}
                 </Tabs>
             </div>
             <div className="tab-content">
-                {panels.map((panel, index) => (
-                    <TabPanel value={value} index={index}>
-                        {panel.content}
+                {data.map((item, index) => (
+                    <TabPanel value={value} index={index} key={index}>
+                        <ProductsSlider products={item.content} />
                     </TabPanel>
                 ))}
             </div>

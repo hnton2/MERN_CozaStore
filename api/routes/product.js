@@ -116,7 +116,7 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const product = await Product.find().select(
-            "id name slug images status category tag color size quantity price"
+            "id name slug images status category tag color size quantity price description"
         );
         if (!product) return res.status(401).json({ success: false, message: "Products not found" });
         res.json({ success: true, message: "Get products successfully", product });
