@@ -31,7 +31,7 @@ function App() {
                 {/* Public */}
                 <Route exact path="/" element={<Home />} />
                 <Route path="/product-category/:category" element={<Products />} />
-                <Route path="/product/:id" element={<Product />} />
+                <Route path="/product/:slug" element={<Product />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/cart" element={<Cart />} />
@@ -39,7 +39,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/blogs/:category" element={<Blog />} />
-                <Route path="/blog/:id" element={<BlogDetail />} />
+                <Route path="/blog/:slug" element={<BlogDetail />} />
 
                 {/* Admin */}
                 {user && user.isAdmin ? (

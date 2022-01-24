@@ -6,6 +6,7 @@ import TabPanel from "../TabPanel";
 function CustomTabs({ data }) {
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => setValue(newValue);
+    console.log("tabs: ", data);
 
     return (
         <>
@@ -19,7 +20,7 @@ function CustomTabs({ data }) {
             <div className="tab-content">
                 {data.map((item, index) => (
                     <TabPanel value={value} index={index} key={index}>
-                        <ProductsSlider products={item.content} />
+                        {item.content}
                     </TabPanel>
                 ))}
             </div>

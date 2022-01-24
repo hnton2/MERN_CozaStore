@@ -1,46 +1,10 @@
-@import "../../../variables.scss";
+@import "../../../variables";
 
 .product {
-    &-tabs {
+    &-review {
         margin: 50px 0 40px;
         padding: 44px 0 40px;
-        border: 1px solid #e6e6e6;
-
-        & .tab-content {
-            margin-top: 44px;
-        }
-
-        &__desc {
-            padding: 0 10% 20px;
-            font-size: 14px;
-            font-weight: 400;
-            color: $grey-color;
-        }
-
-        &__info {
-            & ul {
-                padding: 0 44px 20px;
-
-                & li {
-                    margin-bottom: 12px;
-                    font-size: 14px;
-                    line-height: 1.6;
-                    display: flex;
-                    align-items: center;
-
-                    & .info-name {
-                        min-width: 145px;
-                        font-weight: 400;
-                        color: $dark-color-2;
-                    }
-
-                    & .info-detail {
-                        color: $grey-color;
-                    }
-                }
-            }
-        }
-
+        border: 1px solid $border-color-2;
         & .review-list {
             margin-bottom: 68px;
 
@@ -90,48 +54,6 @@
                 font-weight: 300;
                 color: $grey-color;
                 margin-bottom: 48px;
-            }
-
-            & .form-group {
-                display: flex;
-
-                &.fxd-col {
-                    flex-direction: column;
-                }
-
-                & > label {
-                    min-width: 80px;
-                    font-size: 14px;
-                    padding-right: 16px;
-                    color: $dark-color-2;
-                    margin-bottom: 8px;
-                }
-
-                & textarea {
-                    margin-bottom: 12px;
-                    border: none;
-                    outline: none;
-                    border: 1px solid #e6e6e6;
-                    border-radius: 2px;
-                    padding: 10px 20px;
-                }
-
-                & input {
-                    border: none;
-                    outline: none;
-                    border: 1px solid #e6e6e6;
-                    border-radius: 2px;
-                    width: 100%;
-                    height: 40px;
-                    font-size: 14px;
-                    line-height: 1.7;
-                    color: $dark-color;
-                    padding: 0 20px;
-                }
-            }
-
-            & .submit-btn {
-                margin-top: 25px;
             }
         }
     }

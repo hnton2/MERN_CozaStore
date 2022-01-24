@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import "./ProductCard.scss";
 import { Checkbox, Container, Modal } from "@mui/material";
 import ProductDetail from "components/ProductDetail";
-import CloseIcon from "@mui/icons-material/Close";
 import styled from "styled-components";
 import { IMAGE_CLOUDINARY } from "constants/Data";
 
@@ -28,14 +27,14 @@ function ProductCard({ product }) {
     return (
         <div className="product-card">
             <div className="product-card__image">
-                <img src={IMAGE_CLOUDINARY + product.images[0] || product.images} alt={product.name} />
+                <img src={IMAGE_CLOUDINARY + product.images[0] || product.image} alt={product.name} />
                 <button className="btn btn-light" onClick={handleShowDetail}>
                     Quick View
                 </button>
             </div>
             <div className="product-card__desc">
                 <div>
-                    <Link to="#" className="product__title">
+                    <Link to={`/product/${product.slug}`} className="product__title">
                         {product.name}
                     </Link>
                     <div className="product__price">${product.price}</div>

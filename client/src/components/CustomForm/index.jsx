@@ -36,7 +36,7 @@ export function Form({ defaultValues, validation, children, onSubmit, onWatchFie
         formState: { errors },
     } = useForm({ defaultValues, resolver: yupResolver(validation) });
 
-    onWatchFields(watch());
+    onWatchFields && onWatchFields(watch());
 
     useEffect(() => {
         if (defaultValues) {

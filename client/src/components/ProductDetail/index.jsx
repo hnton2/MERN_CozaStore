@@ -1,33 +1,24 @@
-import { Container, Grid, Modal } from "@mui/material";
-import React, { useState } from "react";
-import Slider from "react-slick";
-import Image from "../../constants/Image";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import GoogleIcon from "@mui/icons-material/Google";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-import "./ProductDetail.scss";
-import Select from "react-select";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import GoogleIcon from "@mui/icons-material/Google";
+import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
+import { Grid } from "@mui/material";
+import { IMAGE_CLOUDINARY } from "constants/Data";
+import React, { useState } from "react";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import Select from "react-select";
+import Slider from "react-slick";
 import QuantityButton from "../QuantityButton";
-import { IMAGE_CLOUDINARY } from "constants/Data";
-
-const images = [Image.PRODUCT_DETAIL1, Image.PRODUCT_DETAIL2, Image.PRODUCT_DETAIL3];
+import "./ProductDetail.scss";
+import parse from "html-react-parser";
 
 function ProductDetail({ product }) {
-    console.log("detail: ", product);
     const [photoIndex, setPhotoIndex] = useState(0);
     const [isOpenModal, setIsOpenModal] = useState(false);
-
-    const options = [
-        { value: "chocolate", label: "Chocolate" },
-        { value: "strawberry", label: "Strawberry" },
-        { value: "vanilla", label: "Vanilla" },
-    ];
 
     const settings = {
         customPaging: function (i) {
@@ -71,7 +62,7 @@ function ProductDetail({ product }) {
                     <div className="product__content">
                         <h3 className="product__content-title">{product.name}</h3>
                         <span className="product__content-price">${product.price}</span>
-                        <p className="product__content-summary">{product.description}</p>
+                        <p className="product__content-summary">{parse(product.description)}</p>
                         <form className="product__content-form">
                             <div className="form-group">
                                 <label>Size</label>

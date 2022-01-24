@@ -23,12 +23,22 @@ const deleteProduct = (id) => {
     return userRequest.delete(`product/${id}`);
 };
 
+const getProductByCategory = (slugCategory) => {
+    return publicRequest.get(`product/${slugCategory}`);
+};
+
+const getProductDetailBySlug = (slug) => {
+    return publicRequest.get(`product/find-by-slug/${slug}`);
+};
+
 const productServices = {
     createNewProduct,
     getAllProduct,
     getOneProduct,
     updateProduct,
     deleteProduct,
+    getProductByCategory,
+    getProductDetailBySlug,
 };
 
 export default productServices;

@@ -109,13 +109,42 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// GET ALL PRODUCT
+// @DESC Find a product by slug
+// @ROUTE GET /api/product/find-by-slug/:slug
+// @ACCESS Public
+router.get("/find-by-slug/:slug", async (req, res) => {
+    try {
+        const product = await Product.findOne({ slug: req.params.slug });
+        if (!product) return res.status(401).json({ success: false, message: "Product not found" });
+        res.json({ success: true, message: "Get product successfully", product });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
 // @DESC Get all  product
 // @ROUTE GET /api/product/
 // @ACCESS Public
 router.get("/", async (req, res) => {
     try {
         const product = await Product.find().select(
+            "id name slug images status category tag color size quantity price description"
+        );
+        if (!product) return res.status(401).json({ success: false, message: "Products not found" });
+        res.json({ success: true, message: "Get products successfully", product });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// @DESC Get products by category
+// @ROUTE GET /api/product/:category
+// @ACCESS Public
+router.get("/:category", async (req, res) => {
+    try {
+        const product = await Product.find({ "category.slug": req.params.category }).select(
             "id name slug images status category tag color size quantity price description"
         );
         if (!product) return res.status(401).json({ success: false, message: "Products not found" });

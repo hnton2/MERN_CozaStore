@@ -1,33 +1,40 @@
 import { Container, Grid, Pagination, Tab, Tabs } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Products.scss";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import CircleIcon from "@mui/icons-material/Circle";
 import queryString from "query-string";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import TabPanel from "components/TabPanel";
 import { PRICE, COLOR, SORT, TAGS } from "constants/Filter";
-import ProductList from "components/ProductList";
 import TitlePage from "components/TitlePage";
 import Image from "constants/Image";
-import { useForm } from "react-hook-form";
 import WarningIcon from "@mui/icons-material/Warning";
+import productServices from "services/product";
+import Skeleton from "@mui/material/Skeleton";
+import ProductCard from "components/ProductCard";
 
-//@query: /products/men?category=shoes&sort=newest&color=black&price=200+&tags=sports
+//@query: /product-category/men?category=shoes&sort=newest&color=black&price=200+&tags=sports
 
 function Products() {
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors },
-    } = useForm();
-    const location = useLocation();
-    const userObject = location.pathname.split("/")[2];
+    const { category: currentCategory } = useParams();
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await productServices.getProductByCategory(currentCategory);
+                if (response.data.success) setProducts(response.data.product);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     const [category, setCategory] = useState("all");
 
@@ -60,9 +67,7 @@ function Products() {
         setShowSearch(!showSearch);
         setShowFilter(false);
     };
-    const handleSearch = (val) => {
-        setSearch(val);
-    };
+    const handleSearch = (val) => setSearch(val);
 
     return (
         <>
@@ -104,17 +109,13 @@ function Products() {
                             </Grid>
                         </div>
                         <div className={`category__search ${showSearch ? "active" : ""}`}>
-                            <form onSubmit={handleSubmit(handleSearch)}>
-                                <button type="submit">
-                                    <SearchIcon sx={{ fontSize: 24 }} />
-                                </button>
-                                {errors.search && (
-                                    <span className="validation">
-                                        <WarningIcon />
-                                    </span>
-                                )}
-                                <input type="text" placeholder="Search" {...register("search", { required: true })} />
-                            </form>
+                            <button type="submit">
+                                <SearchIcon sx={{ fontSize: 24 }} />
+                            </button>
+                            <span className="validation">
+                                <WarningIcon />
+                            </span>
+                            <input type="text" placeholder="Search" />
                         </div>
                         <div className={`category__filter ${showFilter ? "active" : ""}`}>
                             <div className="category__filter-wrapper">
@@ -172,29 +173,22 @@ function Products() {
                             </div>
                         </div>
                         <div className="category__content">
-                            <div className="tab-content">
-                                <TabPanel value={category} index="all">
-                                    <h1>all</h1>
-                                    <ProductList
-                                        user={userObject}
-                                        category={category}
-                                        filters={filters}
-                                        search={search}
-                                    />
-                                </TabPanel>
-                                <TabPanel value={category} index="shoes">
-                                    <h1>shoes</h1>
-                                    <ProductList user={userObject} filters={filters} search={search} />
-                                </TabPanel>
-                                <TabPanel value={category} index="clothing">
-                                    <h1>clothing</h1>
-                                    <ProductList user={userObject} filters={filters} search={search} />
-                                </TabPanel>
-                                <TabPanel value={category} index="accessory">
-                                    <h1>accessory and equipment</h1>
-                                    <ProductList user={userObject} filters={filters} search={search} />
-                                </TabPanel>
-                            </div>
+                            {products.length > 0 ? (
+                                <>
+                                    <Grid container spacing={1}>
+                                        {products.map((product) => (
+                                            <Grid item xs={12} sm={6} md={3} key={product._id}>
+                                                <ProductCard product={product} />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                    <div className="category__pagination">
+                                        <Pagination count={10} variant="outlined" size="large" color="secondary" />
+                                    </div>
+                                </>
+                            ) : (
+                                <Skeleton variant="rectangular" width={1200} height={400} />
+                            )}
                         </div>
                     </div>
                 </Container>

@@ -39,7 +39,7 @@ function ProductForm() {
 
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
     if (categoryProduct) {
-        const cateOptions = categoryProduct.map((item) => ({ value: item._id, label: item.name }));
+        const cateOptions = categoryProduct.map((item) => ({ value: item.slug, label: item.name }));
         categoryOptions = cateOptions;
     }
 

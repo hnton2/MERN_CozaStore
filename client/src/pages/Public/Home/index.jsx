@@ -97,19 +97,19 @@ function Home() {
     const overviewData = [
         {
             label: "Best Seller",
-            content: products,
+            content: <ProductsSlider products={products} />,
         },
         {
             label: "Featured",
-            content: dataTab1,
+            content: <ProductsSlider products={products} />,
         },
         {
             label: "New Product",
-            content: dataTab1,
+            content: <ProductsSlider products={products} />,
         },
         {
             label: "Top Rate",
-            content: dataTab1,
+            content: <ProductsSlider products={products} />,
         },
     ];
 

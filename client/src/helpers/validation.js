@@ -42,3 +42,9 @@ export const productCategoryValidation = yup.object().shape({
     status: yup.string().required(),
     description: yup.string().max(1000).required(),
 });
+
+export const reviewValidation = yup.object().shape({
+    name: yup.string().min(5).max(100).required(),
+    email: yup.string().email().required(),
+    content: yup.string().max(1000).required(),
+});

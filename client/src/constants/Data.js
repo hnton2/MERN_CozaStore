@@ -239,5 +239,3 @@ export const DEFAULT_VALUE_CATEGORY_PRODUCT = {
     status: "active",
     description: "",
 };
-
-export const NUMBER_ITEM_PERPAGE = 5;
