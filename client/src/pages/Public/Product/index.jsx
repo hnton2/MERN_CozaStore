@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import productServices from "services/product";
 import { Form, InputField } from "components/CustomForm";
 import { reviewValidation } from "helpers/validation";
+import Preloader from "components/Preloader";
 
 const linkData = [
     {
@@ -59,6 +60,7 @@ function Product() {
     return (
         <>
             <Header />
+            <Preloader isHidden={productDetail} />
             {productDetail && (
                 <div className="main">
                     <Container>

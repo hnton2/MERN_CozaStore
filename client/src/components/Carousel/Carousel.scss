@@ -47,6 +47,11 @@
 }
 
 // slick
+.slick-prev::before,
+.slick-next::before {
+    display: none;
+}
+
 .slick-prev {
     left: 2% !important;
     color: $grey-color !important;
@@ -61,12 +66,12 @@
     }
 }
 .slick-next {
-    right: 2% !important;
+    right: 4% !important;
     color: $grey-color !important;
     z-index: 1;
 
     @include tablet {
-        right: -2% !important;
+        right: 5% !important;
     }
 
     @include mobile {

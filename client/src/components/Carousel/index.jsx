@@ -8,6 +8,29 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CustomSlide from "./CustomSlide";
 import Image from "constants/Image";
 
+const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
+    <button
+        {...props}
+        className={"slick-prev slick-arrow" + (currentSlide === 0 ? " slick-disabled" : "")}
+        aria-hidden="true"
+        aria-disabled={currentSlide === 0 ? true : false}
+        type="button"
+    >
+        <ArrowLeftIcon sx={{ fontSize: 80 }} />
+    </button>
+);
+const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
+    <button
+        {...props}
+        className={"slick-next slick-arrow" + (currentSlide === slideCount - 1 ? " slick-disabled" : "")}
+        aria-hidden="true"
+        aria-disabled={currentSlide === slideCount - 1 ? true : false}
+        type="button"
+    >
+        <ArrowRightIcon sx={{ fontSize: 80 }} />,
+    </button>
+);
+
 const carouselData = [
     {
         event: "Men Collection 2020",
@@ -37,8 +60,8 @@ function Carousel() {
         autoplaySpeed: 8000,
         slidesToShow: 1,
         slidesToScroll: 1,
-        nextArrow: <ArrowRightIcon sx={{ fontSize: 80 }} />,
-        prevArrow: <ArrowLeftIcon sx={{ fontSize: 80 }} />,
+        nextArrow: <SlickArrowRight />,
+        prevArrow: <SlickArrowLeft />,
     };
 
     return (

@@ -9,6 +9,7 @@ import Header from "components/Header";
 import ProductsSlider from "components/ProductsSlider";
 import Image from "constants/Image";
 import productServices from "services/product";
+import Preloader from "components/Preloader";
 
 const dataTab1 = [
     {
@@ -116,6 +117,7 @@ function Home() {
     return (
         <>
             <Header />
+            <Preloader isHidden={products} />
             <div className="main">
                 <Carousel />
                 <div className="home-banner">

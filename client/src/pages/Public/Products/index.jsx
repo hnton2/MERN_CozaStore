@@ -17,6 +17,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 import productServices from "services/product";
 import Skeleton from "@mui/material/Skeleton";
 import ProductCard from "components/ProductCard";
+import Preloader from "components/Preloader";
 
 //@query: /product-category/men?category=shoes&sort=newest&color=black&price=200+&tags=sports
 
@@ -34,7 +35,7 @@ function Products() {
             }
         };
         fetchProducts();
-    }, []);
+    }, [currentCategory]);
 
     const [category, setCategory] = useState("all");
 
@@ -72,6 +73,7 @@ function Products() {
     return (
         <>
             <Header />
+            <Preloader isHidden={products.length > 0} />
             <div className="main">
                 <TitlePage background={Image.BACKGROUND2} title="Men" />
                 <Container fixed>
