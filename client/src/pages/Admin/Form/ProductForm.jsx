@@ -19,6 +19,7 @@ import Message from "components/Message";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TextEditorField } from "components/CustomForm";
 import { useSelector } from "react-redux";
+import { useCallback } from "react";
 
 const linkData = [
     {
@@ -30,23 +31,14 @@ const linkData = [
 function ProductForm() {
     const navigate = useNavigate();
     const { id: currentId } = useParams();
+    const categoryProduct = useSelector((state) => state.category.categoryProduct);
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState();
     const [initialValue, setInitialValue] = useState(DEFAULT_VALUE_PRODUCT);
     const [oldImages, setOldImages] = useState();
-    const [tagOptions, setTagOptions] = useState(TAG_SHOES_OPTIONS);
-    let categoryOptions = CATEGORY_OPTIONS;
-
-    const categoryProduct = useSelector((state) => state.category.categoryProduct);
-    if (categoryProduct) {
-        const cateOptions = categoryProduct.map((item) => ({ value: item.slug, label: item.name }));
-        categoryOptions = cateOptions;
-    }
-
-    const handleWatchFields = (data) => {
-        if (data.category.label === "Shoes") setTagOptions(TAG_SHOES_OPTIONS);
-        else if (data.category.label === "Clothing") setTagOptions(TAG_CLOTHING_OPTIONS);
-    };
+    const [categoryOptions, setCategoryOptions] = useState([]);
+    const [options, setOptions] = useState({ tag: [], color: [], size: [] });
+    const [watchCategory, setWatchCategory] = useState();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,7 +51,7 @@ function ProductForm() {
                         name: productDetail.name,
                         status: productDetail.status,
                         images: productDetail.images.map((item) => ({ name: item })),
-                        category: { value: productDetail.category.id, label: productDetail.category.name },
+                        category: { value: productDetail.category.slug, label: productDetail.category.name },
                         color: productDetail.color,
                         tag: productDetail.tag,
                         size: productDetail.size,
@@ -76,6 +68,27 @@ function ProductForm() {
         };
         fetchData();
     }, [currentId]);
+
+    useEffect(() => {
+        if (categoryProduct) {
+            const cateOptions = categoryProduct.map((item) => ({ value: item.slug, label: item.name }));
+            setCategoryOptions(cateOptions);
+        }
+    }, []);
+
+    const handleWatchFields = useCallback((data) => {
+        const watchCat = data.category.value;
+        if (watchCat) setWatchCategory(watchCat);
+    });
+
+    useEffect(() => {
+        if (watchCategory || initialValue.category.value) {
+            categoryProduct.map((item) => {
+                if (item.slug === watchCategory || item.slug === initialValue.category.value)
+                    setOptions({ tag: item.tag, color: item.color, size: item.size });
+            });
+        }
+    }, [watchCategory, initialValue]);
 
     const onSubmit = async (data) => {
         if (oldImages) data.oldImages = oldImages;
@@ -117,9 +130,9 @@ function ProductForm() {
                                 <RadioField name="status" options={STATUS_RADIO} />
                                 <ImageField name="images" />
                                 <SelectField name="category" options={categoryOptions} placeholder="Category..." />
-                                <SelectField name="tag" options={tagOptions} isMultiple placeholder="Tags..." />
-                                <SelectField name="size" options={SIZE_OPTIONS} isMultiple placeholder="Size..." />
-                                <SelectField name="color" options={COLOR_OPTIONS} isMultiple placeholder="Color..." />
+                                <SelectField name="tag" options={options.tag} isMultiple placeholder="Tags..." />
+                                <SelectField name="size" options={options.size} isMultiple placeholder="Size..." />
+                                <SelectField name="color" options={options.color} isMultiple placeholder="Color..." />
                                 <InputField name="quantity" placeholder="Quantity" />
                                 <InputField name="price" placeholder="Price" />
                                 <InputField name="discount" placeholder="Discount" />

@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import { Backdrop, CircularProgress, Container } from "@mui/material";
+import Breadcrumbs from "components/Breadcrumbs";
+import { CreatableSelectField, Form, InputField, RadioField, TextEditorField } from "components/CustomForm";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcrumbs";
-import { Backdrop, CircularProgress, Container } from "@mui/material";
-import { DEFAULT_VALUE_CATEGORY_PRODUCT, STATUS_RADIO } from "constants/Data";
-import { Form, InputField, RadioField } from "components/CustomForm";
-import { productCategoryValidation } from "helpers/validation";
-import productCategoryServices from "services/productCategory";
 import Message from "components/Message";
-import { TextEditorField } from "components/CustomForm";
+import { COLOR_OPTIONS, DEFAULT_VALUE_CATEGORY_PRODUCT, SIZE_OPTIONS, STATUS_RADIO, TAG_OPTIONS } from "constants/Data";
+import { productCategoryValidation } from "helpers/validation";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import productCategoryServices from "services/productCategory";
+import { GetALlCategoryProduct } from "redux/categorySlice";
+import { useDispatch } from "react-redux";
 
 const linkData = [
     {
@@ -20,6 +20,9 @@ const linkData = [
 ];
 
 function ProductCategoryForm() {
+    const dispatch = useDispatch();
+    dispatch(GetALlCategoryProduct());
+
     const navigate = useNavigate();
     const { id: currentId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +38,9 @@ function ProductCategoryForm() {
                     setInitialValue({
                         name: categoryDetail.name,
                         status: categoryDetail.status,
+                        color: categoryDetail.color,
+                        tag: categoryDetail.tag,
+                        size: categoryDetail.size,
                         description: categoryDetail.description,
                     });
                 }
@@ -82,6 +88,24 @@ function ProductCategoryForm() {
                             >
                                 <InputField name="name" placeholder="Name" />
                                 <RadioField name="status" options={STATUS_RADIO} />
+                                <CreatableSelectField
+                                    name="tag"
+                                    options={TAG_OPTIONS}
+                                    isMultiple
+                                    placeholder="Tag..."
+                                />
+                                <CreatableSelectField
+                                    name="size"
+                                    options={SIZE_OPTIONS}
+                                    isMultiple
+                                    placeholder="Size..."
+                                />
+                                <CreatableSelectField
+                                    name="color"
+                                    options={COLOR_OPTIONS}
+                                    isMultiple
+                                    placeholder="Color..."
+                                />
                                 <TextEditorField name="description" />
                                 <div className="form-button">
                                     <Link to="/admin/product-category/table" className="btn btn-danger">

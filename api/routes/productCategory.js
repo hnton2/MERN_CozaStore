@@ -91,7 +91,7 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 // @ACCESS Public
 router.get("/", async (req, res) => {
     try {
-        const category = await ProductCategory.find().select("id name status slug description");
+        const category = await ProductCategory.find().select("id name status color size tag slug description");
         if (!category) return res.status(401).json({ success: false, message: "Product categories not found" });
         res.json({ success: true, message: "Get product categories successfully", category });
     } catch (error) {

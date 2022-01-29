@@ -23,12 +23,6 @@ export const OBJECTS = [
     { id: 2, name: "Kids" },
 ];
 
-export const CATEGORY_PRODUCT = [
-    { id: 0, name: "Shoes" },
-    { id: 1, name: "Clothing" },
-    { id: 2, name: "Accessory and Equipment" },
-];
-
 export const DATA_TAB = [
     {
         name: "Esprit Ruffle Shirt",
@@ -180,6 +174,25 @@ export const COLOR_OPTIONS = [
     { value: "pink", label: "Pink" },
     { value: "white", label: "White" },
     { value: "silver", label: "Silver" },
+];
+
+export const TAG_OPTIONS = [
+    { value: "men", label: "Men" },
+    { value: "women", label: "Women" },
+    { value: "kids", label: "Kids" },
+    { value: "lifestyle", label: "Lifestyle" },
+    { value: "sports", label: "Sports" },
+    { value: "jordan", label: "Jordan" },
+    { value: "running", label: "Running" },
+    { value: "basketball", label: "Basketball" },
+    { value: "football", label: "Football" },
+    { value: "training-gym", label: "Training & Gym" },
+    { value: "tennis", label: "Tennis" },
+    { value: "shorts", label: "Shorts" },
+    { value: "jackets", label: "Jackets" },
+    { value: "hoodies", label: "Hoodies" },
+    { value: "t-shirts", label: "T-shirts" },
+    { value: "long-sleeve", label: "Long-Sleeve" },
 ];
 
 export const TAG_SHOES_OPTIONS = [

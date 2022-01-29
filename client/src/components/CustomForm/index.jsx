@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
@@ -10,6 +10,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "./CustomForm.scss";
 import { IMAGE_CLOUDINARY } from "constants/Data";
+import CreatableSelect from "react-select/creatable";
 
 const animatedComponents = makeAnimated();
 const customStyles = {
@@ -26,7 +27,7 @@ const customStyles = {
     }),
 };
 
-export function Form({ defaultValues, validation, children, onSubmit, onWatchFields }) {
+const Form = memo(function Form({ defaultValues, validation, children, onSubmit, onWatchFields }) {
     const {
         control,
         handleSubmit,
@@ -71,9 +72,9 @@ export function Form({ defaultValues, validation, children, onSubmit, onWatchFie
                   })}
         </form>
     );
-}
+});
 
-export function InputField({ register, errors, name, ...rest }) {
+const InputField = memo(function InputField({ register, errors, name, ...rest }) {
     return (
         <>
             <div className="form-group">
@@ -87,9 +88,9 @@ export function InputField({ register, errors, name, ...rest }) {
             </div>
         </>
     );
-}
+});
 
-export function SelectField({ control, errors, options, name, isMultiple, ...rest }) {
+const SelectField = memo(function SelectField({ control, errors, options, name, isMultiple, ...rest }) {
     return (
         <>
             <div className="form-group">
@@ -115,9 +116,44 @@ export function SelectField({ control, errors, options, name, isMultiple, ...res
             </div>
         </>
     );
-}
+});
 
-export function RadioField({ register, errors, options, name }) {
+const CreatableSelectField = memo(function CreatableSelectField({
+    control,
+    errors,
+    options,
+    name,
+    isMultiple,
+    ...rest
+}) {
+    return (
+        <>
+            <div className="form-group">
+                <label className="form-label">{name}</label>
+                <div className="form-control">
+                    <Controller
+                        name={name}
+                        control={control}
+                        render={({ field }) => (
+                            <CreatableSelect
+                                {...field}
+                                closeMenuOnSelect={isMultiple ? false : true}
+                                components={animatedComponents}
+                                isMulti={isMultiple}
+                                options={options}
+                                styles={customStyles}
+                                {...rest}
+                            />
+                        )}
+                    />
+                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
+                </div>
+            </div>
+        </>
+    );
+});
+
+const RadioField = memo(function RadioField({ register, errors, options, name }) {
     return (
         <>
             <div className="form-group">
@@ -137,9 +173,9 @@ export function RadioField({ register, errors, options, name }) {
             </div>
         </>
     );
-}
+});
 
-export function ImageField({ control, register, errors, name }) {
+const ImageField = memo(function ImageField({ control, register, errors, name }) {
     const { fields, append, remove } = useFieldArray({
         control,
         name: "images",
@@ -216,9 +252,9 @@ export function ImageField({ control, register, errors, name }) {
             </div>
         </>
     );
-}
+});
 
-export function TextEditorField({ control, register, errors, name, placeholder, ...rest }) {
+const TextEditorField = memo(function TextEditorField({ control, register, errors, name, placeholder, ...rest }) {
     return (
         <>
             <div className="form-group">
@@ -249,4 +285,6 @@ export function TextEditorField({ control, register, errors, name, placeholder, 
             </div>
         </>
     );
-}
+});
+
+export { Form, InputField, SelectField, CreatableSelectField, RadioField, ImageField, TextEditorField };

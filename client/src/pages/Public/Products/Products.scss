@@ -27,6 +27,25 @@
         }
     }
 
+    &__list {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        & .category-link {
+            color: $dark-color;
+            font-size: 16px;
+            margin: 5px 32px 5px 0;
+            line-height: 1.4;
+            transition: all 0.3s ease-in;
+
+            &.active,
+            &:hover {
+                border-bottom: 1px solid #797979;
+            }
+        }
+    }
+
     &__options {
         display: flex;
         align-items: center;
@@ -153,52 +172,43 @@
         overflow: hidden;
         transition: max-height 0.5s ease-out;
         max-height: 0;
+        position: relative;
+        display: flex;
+        align-items: center;
+        border: 1px solid #e6e6e6;
+        border-radius: 2px;
+        padding-left: 15px;
 
         &.active {
             margin: 10px 0 15px;
             max-height: 65px;
         }
 
-        & > form {
-            position: relative;
-            display: flex;
-            align-items: center;
-            border: 1px solid #e6e6e6;
-            border-radius: 2px;
-            padding-left: 15px;
+        & > button {
+            width: 38px;
+            height: 60px;
+            color: $dark-color;
 
-            & > button {
-                width: 38px;
-                height: 60px;
-                color: $dark-color;
-
-                &:hover {
-                    color: $color-hover;
-                }
+            &:hover {
+                color: $color-hover;
             }
+        }
 
-            & > input {
-                border: none;
-                outline: none;
-                height: 60px;
-                width: calc(100% - 38px);
+        & > input {
+            border: none;
+            outline: none;
+            height: 60px;
+            width: calc(100% - 38px);
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.6;
+            color: $dark-color;
+
+            &::placeholder {
                 font-size: 16px;
                 font-weight: 400;
                 line-height: 1.6;
                 color: $dark-color;
-
-                &::placeholder {
-                    font-size: 16px;
-                    font-weight: 400;
-                    line-height: 1.6;
-                    color: $dark-color;
-                }
-            }
-
-            & > .validation {
-                position: absolute;
-                right: 12px;
-                color: $danger-color;
             }
         }
     }

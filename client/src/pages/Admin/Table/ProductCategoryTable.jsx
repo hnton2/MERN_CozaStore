@@ -14,10 +14,11 @@ import StatusFilter from "components/StatusFilter";
 import { CATEGORY_OPTIONS, IMAGE_CLOUDINARY } from "constants/Data";
 import { escapeRegExp } from "helpers/string";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import productCategoryServices from "services/productCategory";
 import "./Table.scss";
+import parse from "html-react-parser";
 
 const linkData = [
     {
@@ -26,7 +27,46 @@ const linkData = [
     },
 ];
 
+const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
+    const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
+
+    return (
+        <>
+            {dataRender.map((item) => (
+                <tr key={item._id}>
+                    <td className="text-center">{item.name}</td>
+                    <td className="text-center">
+                        <button
+                            className={`btn btn-rounded ${
+                                item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
+                            } btn-sm`}
+                        >
+                            <CheckIcon fontSize="small" />
+                        </button>
+                    </td>
+                    <td className="text-center">{item.slug}</td>
+                    <td className="text-center">{parse(item.description)}</td>
+                    <td className="text-center">
+                        <Link
+                            to={`/admin/product-category/form/${item._id}`}
+                            className="btn btn-rounded btn-primary btn-sm"
+                        >
+                            <EditIcon fontSize="small" />
+                        </Link>
+                        <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
+                            <DeleteIcon fontSize="small" />
+                        </button>
+                    </td>
+                </tr>
+            ))}
+        </>
+    );
+};
+
 function ProductCategoryTable() {
+    let [searchParams, setSearchParams] = useSearchParams();
+    let currentPage = searchParams.get("page") || 1;
+
     const [searchText, setSearchText] = useState("");
     const [categories, setCategories] = useState();
     const [rows, setRows] = useState([]);
@@ -54,6 +94,7 @@ function ProductCategoryTable() {
     }, []);
 
     const handleDelete = async (id) => {
+        console.log(id);
         try {
             setIsLoading(true);
             setMessage("");
@@ -71,7 +112,7 @@ function ProductCategoryTable() {
         }
     };
 
-    const handleChangePage = () => {};
+    const handleChangePage = (event, value) => setSearchParams({ page: value });
 
     return (
         <>
@@ -135,38 +176,7 @@ function ProductCategoryTable() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {rows.map((item) => (
-                                            <tr key={item._id}>
-                                                <td className="text-center">{item.name}</td>
-                                                <td className="text-center">
-                                                    <button
-                                                        className={`btn btn-rounded ${
-                                                            item.status === "active"
-                                                                ? "btn-success"
-                                                                : "btn-secondary btn-disabled"
-                                                        } btn-sm`}
-                                                    >
-                                                        <CheckIcon fontSize="small" />
-                                                    </button>
-                                                </td>
-                                                <td className="text-center">{item.slug}</td>
-                                                <td className="text-center">{item.description}</td>
-                                                <td className="text-center">
-                                                    <Link
-                                                        to={`/admin/product-category/form/${item._id}`}
-                                                        className="btn btn-rounded btn-primary btn-sm"
-                                                    >
-                                                        <EditIcon fontSize="small" />
-                                                    </Link>
-                                                    <button
-                                                        onClick={() => handleDelete(item._id)}
-                                                        className="btn btn-rounded btn-danger btn-sm"
-                                                    >
-                                                        <DeleteIcon fontSize="small" />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        <RenderTable data={rows} currentPage={currentPage} onDelete={handleDelete} />
                                     </tbody>
                                 </table>
                             ) : (
@@ -180,7 +190,8 @@ function ProductCategoryTable() {
                                 </div>
                                 <div className="right">
                                     <Pagination
-                                        count={10}
+                                        page={Number(currentPage)}
+                                        count={Math.ceil(rows.length / 5)}
                                         onChange={handleChangePage}
                                         variant="outlined"
                                         shape="rounded"

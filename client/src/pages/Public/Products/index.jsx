@@ -4,32 +4,37 @@ import "./Products.scss";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, NavLink, useLocation, useParams, useSearchParams } from "react-router-dom";
 import CircleIcon from "@mui/icons-material/Circle";
 import queryString from "query-string";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import TabPanel from "components/TabPanel";
 import { PRICE, COLOR, SORT, TAGS } from "constants/Filter";
-import TitlePage from "components/TitlePage";
-import Image from "constants/Image";
-import WarningIcon from "@mui/icons-material/Warning";
 import productServices from "services/product";
 import Skeleton from "@mui/material/Skeleton";
 import ProductCard from "components/ProductCard";
 import Preloader from "components/Preloader";
+import { useSelector } from "react-redux";
+import { COLOR_OPTIONS } from "constants/Data";
 
 //@query: /product-category/men?category=shoes&sort=newest&color=black&price=200+&tags=sports
 
 function Products() {
+    const categoryProduct = useSelector((state) => state.category.categoryProduct);
+    let [searchParams, setSearchParams] = useSearchParams();
+
     const { category: currentCategory } = useParams();
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await productServices.getProductByCategory(currentCategory);
+                const response =
+                    currentCategory === "all"
+                        ? await productServices.getAllProduct()
+                        : await productServices.getProductByCategory(currentCategory);
                 if (response.data.success) setProducts(response.data.product);
+                setFilters({});
             } catch (error) {
                 console.log(error);
             }
@@ -37,17 +42,7 @@ function Products() {
         fetchProducts();
     }, [currentCategory]);
 
-    const [category, setCategory] = useState("all");
-
-    const handleChangeTab = (event, value) => {
-        setCategory(value);
-        setFilters({
-            ...filters,
-            category: value,
-        });
-    };
-
-    const [filters, setFilters] = useState({});
+    const [filters, setFilters] = useState(Object.fromEntries([...searchParams]));
     const [showFilter, setShowFilter] = useState(false);
     const handleSToggleSFilter = () => {
         setShowFilter(!showFilter);
@@ -56,10 +51,13 @@ function Products() {
     const handleFilter = (e) => {
         const queryName = e.target.getAttribute("name");
         const queryValue = e.target.getAttribute("slug");
-        setFilters({
-            ...filters,
-            [queryName]: queryValue,
-        });
+        if (queryName !== null) {
+            setSearchParams({ ...Object.fromEntries([...searchParams]), [queryName]: queryValue });
+            const filteredRows = products.filter((row) => {
+                Object.keys(row).filter((field) => console.log(field));
+                // return Object.keys(row).some((field) => searchRegex.test(row[field].toString()));
+            });
+        }
     };
 
     const [search, setSearch] = useState("");
@@ -75,19 +73,20 @@ function Products() {
             <Header />
             <Preloader isHidden={products.length > 0} />
             <div className="main">
-                <TitlePage background={Image.BACKGROUND2} title="Men" />
                 <Container fixed>
                     <div className="category">
                         <div className="category__header">
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={12} md={8}>
-                                    <div className="tabs">
-                                        <Tabs value={category} onChange={handleChangeTab}>
-                                            <Tab label="All" value="all" />
-                                            <Tab label="Shoes" value="shoes" />
-                                            <Tab label="Clothing" value="clothing" />
-                                            <Tab label="Accessory and Equipment" value="accessory" />
-                                        </Tabs>
+                                    <div className="category__list">
+                                        <NavLink to="/product-category/all" className="category-link">
+                                            All
+                                        </NavLink>
+                                        {categoryProduct.map((item) => (
+                                            <NavLink to={`/product-category/${item.slug}`} className="category-link">
+                                                {item.name}
+                                            </NavLink>
+                                        ))}
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} sm={12} md={4}>
@@ -114,9 +113,6 @@ function Products() {
                             <button type="submit">
                                 <SearchIcon sx={{ fontSize: 24 }} />
                             </button>
-                            <span className="validation">
-                                <WarningIcon />
-                            </span>
                             <input type="text" placeholder="Search" />
                         </div>
                         <div className={`category__filter ${showFilter ? "active" : ""}`}>
@@ -127,7 +123,11 @@ function Products() {
                                         <ul className="filter-list">
                                             {SORT.map((item, index) => (
                                                 <li key={index} onClick={handleFilter}>
-                                                    <span name="sort" slug={item.slug}>
+                                                    <span
+                                                        name="sort"
+                                                        className={filters.sort === item.slug ? "active" : ""}
+                                                        slug={item.slug}
+                                                    >
                                                         {item.name}
                                                     </span>
                                                 </li>
@@ -139,32 +139,62 @@ function Products() {
                                         <ul className="filter-list">
                                             {PRICE.map((item, index) => (
                                                 <li key={index} onClick={handleFilter}>
-                                                    <span name="price" slug={item.slug}>
+                                                    <span
+                                                        name="price"
+                                                        className={filters.price === item.slug ? "active" : ""}
+                                                        slug={item.slug}
+                                                    >
                                                         {item.name}
                                                     </span>
                                                 </li>
                                             ))}
                                         </ul>
                                     </Grid>
-                                    <Grid item xs={6} sm={6} md={3}>
+                                    <Grid item xs={6} sm={6} md={2}>
                                         <h4 className="category__filter-title">Color</h4>
                                         <ul className="filter-list">
-                                            {COLOR.map((item, index) => (
+                                            {COLOR_OPTIONS.map((item, index) => (
                                                 <li key={index} onClick={handleFilter}>
-                                                    <CircleIcon fontSize="small" sx={{ color: `${item.slug}` }} />
-                                                    <span name="color" slug={item.slug}>
-                                                        {item.name}
+                                                    <CircleIcon fontSize="small" sx={{ color: `${item.value}` }} />
+                                                    <span
+                                                        name="color"
+                                                        className={filters.color === item.value ? "active" : ""}
+                                                        value={item.value}
+                                                    >
+                                                        {item.label}
                                                     </span>
                                                 </li>
                                             ))}
                                         </ul>
                                     </Grid>
-                                    <Grid item xs={6} sm={6} md={3}>
+                                    <Grid item xs={6} sm={6} md={4}>
+                                        <h4 className="category__filter-title">Gender</h4>
+                                        <ul className="tags">
+                                            <li onClick={handleFilter} className="tag">
+                                                <span name="gender" slug="men">
+                                                    Men
+                                                </span>
+                                            </li>
+                                            <li onClick={handleFilter} className="tag">
+                                                <span name="gender" slug="women">
+                                                    Women
+                                                </span>
+                                            </li>
+                                            <li onClick={handleFilter} className="tag">
+                                                <span name="gender" slug="Kids">
+                                                    Kids
+                                                </span>
+                                            </li>
+                                        </ul>
                                         <h4 className="category__filter-title">Tags</h4>
                                         <ul className="tags">
                                             {TAGS.map((item, index) => (
-                                                <li key={index} onClick={handleFilter} className="tag">
-                                                    <span name="tags" slug={item.slug}>
+                                                <li
+                                                    key={index}
+                                                    onClick={handleFilter}
+                                                    className={`tag ${filters.tag === item.slug ? "active" : ""}`}
+                                                >
+                                                    <span name="tag" slug={item.slug}>
                                                         {item.name}
                                                     </span>
                                                 </li>
