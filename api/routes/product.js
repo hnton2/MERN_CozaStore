@@ -56,10 +56,8 @@ router.put("/:id", verifyTokenAndAdmin, UploadFile.array("images", 20), async (r
             // remove old images and update
             updateProduct.oldImages.map((oldImage) => {
                 if (updateProduct.remainImages.length > 0) {
-                    updateProduct.remainImages.map((remainImage) => {
-                        if (oldImage === remainImage) updateProduct.images.push(remainImage);
-                        else RemoveFile(oldImage);
-                    });
+                    if (updateProduct.remainImages.includes(oldImage)) updateProduct.images.push(oldImage);
+                    else RemoveFile(oldImage);
                 } else RemoveFile(oldImage);
             });
             // change slug value if alternative name

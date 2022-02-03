@@ -129,7 +129,15 @@
 
         &.active {
             margin: 10px 0 26px;
-            max-height: 275px;
+            max-height: 360px;
+
+            @include tablet {
+                max-height: 600px;
+            }
+
+            @include mobile {
+                max-height: 600px;
+            }
         }
 
         &-wrapper {

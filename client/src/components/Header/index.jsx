@@ -75,7 +75,7 @@ function Header() {
                             </Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="/products/all" className="nav__item-link">
+                            <Link to="/product-category/all" className="nav__item-link">
                                 Category
                             </Link>
                             <ul className="sub-nav">

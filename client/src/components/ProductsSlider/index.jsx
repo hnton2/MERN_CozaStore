@@ -24,7 +24,7 @@ const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
         aria-disabled={currentSlide === slideCount - 1 ? true : false}
         type="button"
     >
-        <ArrowForwardIosIcon />,
+        <ArrowForwardIosIcon />
     </button>
 );
 

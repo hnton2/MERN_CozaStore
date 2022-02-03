@@ -37,7 +37,7 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
                         <div>
                             <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
                         </div>
-                        <Link to={`/product-detail/${item.slug}`}>{item.name}</Link>
+                        <Link to={`/product/${item.slug}`}>{item.name}</Link>
                     </td>
                     <td className="text-center">{item.category.name}</td>
                     <td className="text-center">

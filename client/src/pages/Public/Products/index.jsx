@@ -1,23 +1,20 @@
-import { Container, Grid, Pagination, Tab, Tabs } from "@mui/material";
+import { Container, Grid, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./Products.scss";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Link, NavLink, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { NavLink, useParams, useSearchParams } from "react-router-dom";
 import CircleIcon from "@mui/icons-material/Circle";
-import queryString from "query-string";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import { PRICE, COLOR, SORT, TAGS } from "constants/Filter";
+import { PRICE, SORT } from "constants/Filter";
 import productServices from "services/product";
 import Skeleton from "@mui/material/Skeleton";
 import ProductCard from "components/ProductCard";
 import Preloader from "components/Preloader";
 import { useSelector } from "react-redux";
-import { COLOR_OPTIONS } from "constants/Data";
-
-//@query: /product-category/men?category=shoes&sort=newest&color=black&price=200+&tags=sports
+import { COLOR_OPTIONS, SIZE_OPTIONS, TAG_OPTIONS } from "constants/Data";
 
 function Products() {
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
@@ -25,6 +22,14 @@ function Products() {
 
     const { category: currentCategory } = useParams();
     const [products, setProducts] = useState([]);
+    const [render, setRender] = useState([]);
+    const [search, setSearch] = useState("");
+    const [showSearch, setShowSearch] = useState(false);
+    const [filters, setFilters] = useState(Object.fromEntries([...searchParams]));
+    const [showFilter, setShowFilter] = useState(false);
+    const [colorOptions, setColorOptions] = useState(COLOR_OPTIONS);
+    const [sizeOptions, setSizeOptions] = useState(SIZE_OPTIONS);
+    const [tagOptions, setTagOptions] = useState(TAG_OPTIONS);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -33,35 +38,82 @@ function Products() {
                     currentCategory === "all"
                         ? await productServices.getAllProduct()
                         : await productServices.getProductByCategory(currentCategory);
-                if (response.data.success) setProducts(response.data.product);
-                setFilters({});
+                if (response.data.success) {
+                    setProducts(response.data.product);
+                    setRender(response.data.product);
+                }
+                setFilters(Object.fromEntries([...searchParams]));
             } catch (error) {
                 console.log(error);
             }
         };
         fetchProducts();
+        if (currentCategory !== "all") {
+            categoryProduct.map((item) => {
+                if (item.slug === currentCategory) {
+                    setColorOptions(item.color);
+                    setTagOptions(item.tag);
+                    setSizeOptions(item.size);
+                }
+            });
+        } else {
+            setColorOptions(COLOR_OPTIONS);
+            setTagOptions(TAG_OPTIONS);
+            setSizeOptions(SIZE_OPTIONS);
+        }
     }, [currentCategory]);
 
-    const [filters, setFilters] = useState(Object.fromEntries([...searchParams]));
-    const [showFilter, setShowFilter] = useState(false);
-    const handleSToggleSFilter = () => {
+    const handleToggleFilter = () => {
+        if (showFilter) {
+            setSearchParams({});
+            setFilters({});
+            setRender(products);
+        }
         setShowFilter(!showFilter);
         setShowSearch(false);
     };
     const handleFilter = (e) => {
         const queryName = e.target.getAttribute("name");
         const queryValue = e.target.getAttribute("slug");
-        if (queryName !== null) {
-            setSearchParams({ ...Object.fromEntries([...searchParams]), [queryName]: queryValue });
-            const filteredRows = products.filter((row) => {
-                Object.keys(row).filter((field) => console.log(field));
-                // return Object.keys(row).some((field) => searchRegex.test(row[field].toString()));
-            });
+        if (queryName || queryValue) {
+            const query = { ...Object.fromEntries([...searchParams]), [queryName]: queryValue };
+            setSearchParams(query);
+            setFilters(query);
         }
     };
 
-    const [search, setSearch] = useState("");
-    const [showSearch, setShowSearch] = useState(false);
+    useEffect(() => {
+        if (Object.keys(filters).length > 0) {
+            let filteredProducts = products.filter((product) => {
+                if (filters.price) {
+                    const prices = filters.price.split("-");
+                    if (prices.length > 1)
+                        if (Number(prices[0]) > product.price || product.price > Number(prices[1])) return false;
+                        else if (product.price < Number(prices[0])) return false;
+                }
+                if (filters.color) if (!product.color.some((item) => item.value === filters.color)) return false;
+                if (filters.tag) if (!product.tag.some((item) => item.value === filters.tag)) return false;
+
+                return true;
+            });
+            if (filters.sort) {
+                const sort = filters.sort.split("-");
+                if (sort[0] === "price") {
+                    filteredProducts =
+                        sort[1] === "asc"
+                            ? filteredProducts.sort((a, b) => a.price - b.price)
+                            : filteredProducts.sort((a, b) => b.price - a.price);
+                } else {
+                    filteredProducts =
+                        sort[1] === "asc"
+                            ? filteredProducts.sort((a, b) => a.name.localeCompare(b.name))
+                            : filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+                }
+            }
+            setRender(filteredProducts);
+        }
+    }, [filters]);
+
     const handleToggleSearch = () => {
         setShowSearch(!showSearch);
         setShowFilter(false);
@@ -83,7 +135,11 @@ function Products() {
                                             All
                                         </NavLink>
                                         {categoryProduct.map((item) => (
-                                            <NavLink to={`/product-category/${item.slug}`} className="category-link">
+                                            <NavLink
+                                                to={`/product-category/${item.slug}`}
+                                                key={item._id}
+                                                className="category-link"
+                                            >
                                                 {item.name}
                                             </NavLink>
                                         ))}
@@ -93,7 +149,7 @@ function Products() {
                                     <div className="category__options">
                                         <button
                                             className={`category__options-btn ${showFilter ? "show-filter" : ""}`}
-                                            onClick={handleSToggleSFilter}
+                                            onClick={handleToggleFilter}
                                         >
                                             {showFilter ? <ClearIcon /> : <FilterListIcon />}
                                             <span>Filter</span>
@@ -153,13 +209,13 @@ function Products() {
                                     <Grid item xs={6} sm={6} md={2}>
                                         <h4 className="category__filter-title">Color</h4>
                                         <ul className="filter-list">
-                                            {COLOR_OPTIONS.map((item, index) => (
+                                            {colorOptions.map((item, index) => (
                                                 <li key={index} onClick={handleFilter}>
                                                     <CircleIcon fontSize="small" sx={{ color: `${item.value}` }} />
                                                     <span
                                                         name="color"
                                                         className={filters.color === item.value ? "active" : ""}
-                                                        value={item.value}
+                                                        slug={item.value}
                                                     >
                                                         {item.label}
                                                     </span>
@@ -168,34 +224,36 @@ function Products() {
                                         </ul>
                                     </Grid>
                                     <Grid item xs={6} sm={6} md={4}>
-                                        <h4 className="category__filter-title">Gender</h4>
-                                        <ul className="tags">
-                                            <li onClick={handleFilter} className="tag">
-                                                <span name="gender" slug="men">
-                                                    Men
-                                                </span>
-                                            </li>
-                                            <li onClick={handleFilter} className="tag">
-                                                <span name="gender" slug="women">
-                                                    Women
-                                                </span>
-                                            </li>
-                                            <li onClick={handleFilter} className="tag">
-                                                <span name="gender" slug="Kids">
-                                                    Kids
-                                                </span>
-                                            </li>
-                                        </ul>
+                                        {currentCategory !== "all" && (
+                                            <>
+                                                <h4 className="category__filter-title">Size</h4>
+                                                <ul className="tags">
+                                                    {sizeOptions.map((item, index) => (
+                                                        <li
+                                                            key={index}
+                                                            onClick={handleFilter}
+                                                            className={`tag ${
+                                                                filters.tag === item.value ? "active" : ""
+                                                            }`}
+                                                        >
+                                                            <span name="tag" slug={item.value}>
+                                                                {item.label}
+                                                            </span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </>
+                                        )}
                                         <h4 className="category__filter-title">Tags</h4>
                                         <ul className="tags">
-                                            {TAGS.map((item, index) => (
+                                            {tagOptions.map((item, index) => (
                                                 <li
                                                     key={index}
                                                     onClick={handleFilter}
-                                                    className={`tag ${filters.tag === item.slug ? "active" : ""}`}
+                                                    className={`tag ${filters.tag === item.value ? "active" : ""}`}
                                                 >
-                                                    <span name="tag" slug={item.slug}>
-                                                        {item.name}
+                                                    <span name="tag" slug={item.value}>
+                                                        {item.label}
                                                     </span>
                                                 </li>
                                             ))}
@@ -205,10 +263,10 @@ function Products() {
                             </div>
                         </div>
                         <div className="category__content">
-                            {products.length > 0 ? (
+                            {render.length > 0 ? (
                                 <>
                                     <Grid container spacing={1}>
-                                        {products.map((product) => (
+                                        {render.map((product) => (
                                             <Grid item xs={12} sm={6} md={3} key={product._id}>
                                                 <ProductCard product={product} />
                                             </Grid>
