@@ -15,6 +15,7 @@ import ProductCard from "components/ProductCard";
 import Preloader from "components/Preloader";
 import { useSelector } from "react-redux";
 import { COLOR_OPTIONS, SIZE_OPTIONS, TAG_OPTIONS } from "constants/Data";
+import { escapeRegExp } from "helpers/string";
 
 function Products() {
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
@@ -118,7 +119,14 @@ function Products() {
         setShowSearch(!showSearch);
         setShowFilter(false);
     };
-    const handleSearch = (val) => setSearch(val);
+    const handleSearch = (val) => {
+        setSearch(val);
+        const searchRegex = new RegExp(escapeRegExp(val), "i");
+        const filteredProducts = products.filter((product) =>
+            Object.keys(product).some((field) => searchRegex.test(product[field].toString()))
+        );
+        setRender(filteredProducts);
+    };
 
     return (
         <>
@@ -169,7 +177,11 @@ function Products() {
                             <button type="submit">
                                 <SearchIcon sx={{ fontSize: 24 }} />
                             </button>
-                            <input type="text" placeholder="Search" />
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                onChange={(event) => handleSearch(event.target.value)}
+                            />
                         </div>
                         <div className={`category__filter ${showFilter ? "active" : ""}`}>
                             <div className="category__filter-wrapper">
