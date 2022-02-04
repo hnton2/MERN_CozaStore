@@ -1,31 +1,18 @@
-import React, { memo, useEffect, useState } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
+import AddIcon from "@mui/icons-material/Add";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import CloseIcon from "@mui/icons-material/Close";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import "./CustomForm.scss";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import RemoveIcon from "@mui/icons-material/Remove";
 import { IMAGE_CLOUDINARY } from "constants/Data";
+import React, { memo, useEffect, useState } from "react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
-
-const animatedComponents = makeAnimated();
-const customStyles = {
-    control: (base, state) => ({
-        ...base,
-        paddingTop: 6,
-        paddingBottom: 6,
-    }),
-    multiValueLabel: (base, state) => ({
-        ...base,
-        fontSize: "16px",
-        color: "#333",
-        lineHeight: 1.4,
-    }),
-};
+import "./CustomForm.scss";
 
 const Form = memo(function Form({ defaultValues, validation, children, onSubmit, onWatchFields }) {
     const {
@@ -34,6 +21,7 @@ const Form = memo(function Form({ defaultValues, validation, children, onSubmit,
         reset,
         watch,
         register,
+        setValue,
         formState: { errors },
     } = useForm({ defaultValues, resolver: yupResolver(validation) });
 
@@ -43,10 +31,10 @@ const Form = memo(function Form({ defaultValues, validation, children, onSubmit,
         if (defaultValues) {
             reset(defaultValues);
         }
-    }, [defaultValues]);
+    }, [defaultValues, reset]);
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+        <form onSubmit={handleSubmit(onSubmit)}>
             {Array.isArray(children)
                 ? children.map((child) => {
                       return child.props.name
@@ -56,6 +44,7 @@ const Form = memo(function Form({ defaultValues, validation, children, onSubmit,
                                     register,
                                     control,
                                     errors,
+                                    setValue,
                                     key: child.props.name,
                                 },
                             })
@@ -90,6 +79,20 @@ const InputField = memo(function InputField({ register, errors, name, ...rest })
     );
 });
 
+const animatedComponents = makeAnimated();
+const customStyles = {
+    control: (base, state) => ({
+        ...base,
+        paddingTop: 6,
+        paddingBottom: 6,
+    }),
+    multiValueLabel: (base, state) => ({
+        ...base,
+        fontSize: "16px",
+        color: "#333",
+        lineHeight: 1.4,
+    }),
+};
 const SelectField = memo(function SelectField({ control, errors, options, name, isMultiple, ...rest }) {
     return (
         <>
@@ -188,7 +191,7 @@ const ImageField = memo(function ImageField({ control, register, errors, name })
     }, [imageList]);
 
     const handleUpload = (e) => setCurrentFiles((prev) => [...prev, URL.createObjectURL(e.target.files[0])]);
-    const handleRemoveUpload = (key) => setCurrentFiles(currentFiles.filter((item, index) => index != key));
+    const handleRemoveUpload = (key) => setCurrentFiles(currentFiles.filter((item, index) => index !== key));
 
     return (
         <>
@@ -215,7 +218,7 @@ const ImageField = memo(function ImageField({ control, register, errors, name })
                                             }}
                                         />
                                         {currentFiles[index] ? (
-                                            <img src={currentFiles[index]} className="preview-box__image" />
+                                            <img src={currentFiles[index]} className="preview-box__image" alt="" />
                                         ) : (
                                             <label htmlFor={`image-${index}`}>
                                                 <FileUploadIcon />
@@ -287,4 +290,43 @@ const TextEditorField = memo(function TextEditorField({ control, register, error
     );
 });
 
-export { Form, InputField, SelectField, CreatableSelectField, RadioField, ImageField, TextEditorField };
+const QuantityField = memo(function QuantityField({ register, errors, setValue, name, ...rest }) {
+    const [quantity, setQuantity] = useState(1);
+    const handleIncrement = () => {
+        setQuantity((prev) => prev + 1);
+        setValue(name, quantity + 1);
+    };
+    const handleDecrement = () => {
+        setValue(name, quantity - 1);
+        setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    };
+
+    return (
+        <>
+            <div className="form-group">
+                <label className="form-label" htmlFor={name}>
+                    {name}
+                </label>
+                <div className="form-control">
+                    <div className="quantity-button">
+                        <button
+                            type="button"
+                            className="btn btn-light"
+                            onClick={handleDecrement}
+                            disabled={quantity === 1}
+                        >
+                            <RemoveIcon fontSize="small" />
+                        </button>
+                        <input type="text" {...register(name)} value={quantity} {...rest} />
+                        <button type="button" className="btn btn-light" onClick={handleIncrement}>
+                            <AddIcon fontSize="small" />
+                        </button>
+                    </div>
+                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
+                </div>
+            </div>
+        </>
+    );
+});
+
+export { Form, InputField, SelectField, CreatableSelectField, RadioField, ImageField, TextEditorField, QuantityField };

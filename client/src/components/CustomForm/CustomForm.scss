@@ -125,3 +125,36 @@ p.error-message {
     justify-content: flex-end;
     column-gap: 12px;
 }
+
+.quantity-button {
+    display: flex;
+    align-items: center;
+
+    & input,
+    & button {
+        width: 45px;
+        height: 45px;
+    }
+
+    & input {
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.6;
+        background-color: #f7f7f7;
+        color: #555;
+        border: none;
+        outline: none;
+        border-top: 1px solid #e6e6e6;
+        border-bottom: 1px solid #e6e6e6;
+    }
+
+    & button {
+        min-width: 45px;
+        border-radius: 0;
+        border: 1px solid #e6e6e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

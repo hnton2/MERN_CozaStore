@@ -3,15 +3,7 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
 import { Backdrop, CircularProgress, Container } from "@mui/material";
-import {
-    CATEGORY_OPTIONS,
-    COLOR_OPTIONS,
-    DEFAULT_VALUE_PRODUCT,
-    SIZE_OPTIONS,
-    STATUS_RADIO,
-    TAG_CLOTHING_OPTIONS,
-    TAG_SHOES_OPTIONS,
-} from "constants/Data";
+import { DEFAULT_VALUE_PRODUCT, STATUS_RADIO } from "constants/Data";
 import { Form, InputField, SelectField, RadioField, ImageField } from "components/CustomForm";
 import { productValidation } from "helpers/validation";
 import productServices from "services/product";
@@ -19,7 +11,6 @@ import Message from "components/Message";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TextEditorField } from "components/CustomForm";
 import { useSelector } from "react-redux";
-import { useCallback } from "react";
 
 const linkData = [
     {
@@ -74,12 +65,12 @@ function ProductForm() {
             const cateOptions = categoryProduct.map((item) => ({ value: item.slug, label: item.name }));
             setCategoryOptions(cateOptions);
         }
-    }, []);
+    }, [categoryProduct]);
 
-    const handleWatchFields = useCallback((data) => {
+    const handleWatchFields = (data) => {
         const watchCat = data.category.value;
         if (watchCat) setWatchCategory(watchCat);
-    });
+    };
 
     useEffect(() => {
         if (watchCategory || initialValue.category.value) {
@@ -88,7 +79,7 @@ function ProductForm() {
                     setOptions({ tag: item.tag, color: item.color, size: item.size });
             });
         }
-    }, [watchCategory, initialValue]);
+    }, [watchCategory, initialValue, categoryProduct]);
 
     const onSubmit = async (data) => {
         if (oldImages) data.oldImages = oldImages;

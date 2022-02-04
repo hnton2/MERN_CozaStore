@@ -48,3 +48,14 @@ export const reviewValidation = yup.object().shape({
     email: yup.string().email().required(),
     content: yup.string().max(1000).required(),
 });
+
+export const addProductValidation = yup.object().shape({
+    color: yup.object().required(),
+    size: yup.object().required(),
+    quantity: yup
+        .number()
+        .min(1)
+        .typeError("quantity must be a number")
+        .positive("quantity must be greater than zero")
+        .required(),
+});

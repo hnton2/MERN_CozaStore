@@ -1,5 +1,4 @@
 import CloseIcon from "@mui/icons-material/Close";
-import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Badge, Modal, Slide } from "@mui/material";
@@ -9,7 +8,7 @@ import styled from "styled-components";
 import Image from "constants/Image";
 import Sidebar from "../Sidebar";
 import "./Header.scss";
-import { ADMIN_SIDEBAR } from "constants/Data";
+import { ADMIN_SIDEBAR, IMAGE_CLOUDINARY } from "constants/Data";
 import Dropdown from "components/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -38,6 +37,7 @@ function Header() {
 
     const user = useSelector((state) => state.auth.currentUser);
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
+    const { products, quantity, total } = useSelector((state) => state.cart);
 
     useEffect(() => {
         dispatch(clearMessage());
@@ -117,7 +117,7 @@ function Header() {
                             <SearchIcon className="header-icon" />
                         </button>
                         <button className="header-btn border-left-right" onClick={handleOpenCart}>
-                            <Badge badgeContent={4} color="primary">
+                            <Badge badgeContent={quantity} color="primary">
                                 <ShoppingCartIcon className="header-icon" />
                             </Badge>
                         </button>
@@ -158,94 +158,28 @@ function Header() {
                     </div>
                     <div className="sidebar__content">
                         <ul className="cart__list">
-                            <li className="cart__item">
-                                <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        White Shirt Pleat
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
-                            <li className="cart__item">
-                                <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        Converse All Star
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
-                            <li className="cart__item">
-                                <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        Nixon Porter Leather
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
-                            <li className="cart__item">
-                                <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        White Shirt Pleat
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
-                            <li className="cart__item">
-                                <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        Converse All Star
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
-                            <li className="cart__item">
-                                <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        Nixon Porter Leather
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
-                            <li className="cart__item">
-                                <img src={Image.CART1} alt="White Shirt Pleat" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        White Shirt Pleat
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
-                            <li className="cart__item">
-                                <img src={Image.CART2} alt="Converse All Star" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        Converse All Star
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
-                            <li className="cart__item">
-                                <img src={Image.CART3} alt="Nixon Porter Leather" className="cart-img" />
-                                <div className="cart__desc">
-                                    <Link to="#" className="cart__desc-title">
-                                        Nixon Porter Leather
-                                    </Link>
-                                    <span className="cart__desc-subtitle">1 x $19.00</span>
-                                </div>
-                            </li>
+                            {products.map((item) => (
+                                <li className="cart__item" key={item._id}>
+                                    <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} className="cart-img" />
+                                    <div className="cart__desc">
+                                        <Link to={`product/${item.slug}`} className="cart__desc-title">
+                                            {item.name}
+                                        </Link>
+                                        <span className="cart__desc-subtitle">{`${item.quantity} x $${item.price}`}</span>
+                                    </div>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                     <div className="sidebar__footer">
-                        <div className="cart__total">Total: $75.00</div>
+                        <div className="cart__total">{`Total: $${total}`}</div>
                         <div className="cart__buttons">
-                            <button className="btn btn-dark text-uppercase">View Cart</button>
-                            <button className="btn btn-dark text-uppercase">Check Out</button>
+                            <Link to="/cart" className="btn btn-dark text-uppercase">
+                                View Cart
+                            </Link>
+                            <Link to="/checkout" className="btn btn-dark text-uppercase">
+                                Check Out
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -254,7 +188,7 @@ function Header() {
                 <Sidebar isOpen={openMenu} onClose={handleCloseMenu}>
                     <div className="sidebar__container p-0">
                         <div className="sidebar__title">
-                            <h3></h3>
+                            <div></div>
                             <button onClick={handleCloseMenu}>
                                 <CloseIcon sx={{ fontSize: 36 }} />
                             </button>

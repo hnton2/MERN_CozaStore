@@ -9,18 +9,19 @@ import QuantityButton from "components/QuantityButton";
 import "./Cart.scss";
 import InfoIcon from "@mui/icons-material/Info";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { IMAGE_CLOUDINARY } from "constants/Data";
 
 const linkData = [
     {
         name: "Home",
         path: "/home",
     },
-    {
-        name: "Men",
-        path: "/category",
-    },
 ];
 function Cart() {
+    const { products, total } = useSelector((state) => state.cart);
+
     return (
         <>
             <Header />
@@ -43,54 +44,24 @@ function Cart() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr className="table__row">
-                                                <td>
-                                                    <img src={Image.PRODUCT5} alt="" />
-                                                </td>
-                                                <td className="product-name">Fresh Strawberries</td>
-                                                <td className="text-center">$36.00</td>
-                                                <td>
-                                                    <QuantityButton />
-                                                </td>
-                                                <td className="text-center">$36.00</td>
-                                                <td>
-                                                    <button className="table-btn btn">
-                                                        <CloseIcon />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr className="table__row">
-                                                <td>
-                                                    <img src={Image.PRODUCT8} alt="" />
-                                                </td>
-                                                <td className="product-name">Lightweight Jacket</td>
-                                                <td className="text-center">$16.00</td>
-                                                <td>
-                                                    <QuantityButton />
-                                                </td>
-                                                <td className="text-center">$16.00</td>
-                                                <td>
-                                                    <button className="table-btn btn">
-                                                        <CloseIcon />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr className="table__row">
-                                                <td>
-                                                    <img src={Image.PRODUCT7} alt="" />
-                                                </td>
-                                                <td className="product-name">Lightweight Jacket</td>
-                                                <td className="text-center">$16.00</td>
-                                                <td>
-                                                    <QuantityButton />
-                                                </td>
-                                                <td className="text-center">$16.00</td>
-                                                <td>
-                                                    <button className="table-btn btn">
-                                                        <CloseIcon />
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                            {products.map((item) => (
+                                                <tr className="table__row">
+                                                    <td>
+                                                        <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
+                                                    </td>
+                                                    <td className="product-name">{item.name}</td>
+                                                    <td className="text-center">${item.price}</td>
+                                                    <td>
+                                                        <QuantityButton />
+                                                    </td>
+                                                    <td className="text-center">${item.quantity * item.price}</td>
+                                                    <td>
+                                                        <button className="table-btn btn btn-danger btn-rounded">
+                                                            <CloseIcon />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -100,7 +71,7 @@ function Cart() {
                                     <h3>Cart Total</h3>
                                     <div className="cart-prices border-bot">
                                         <h5 className="title">Subtotal</h5>
-                                        <span className="price">$79.65</span>
+                                        <span className="price">${total}</span>
                                     </div>
                                     <div className="coupon border-bot">
                                         <div className="coupon__content">
@@ -126,10 +97,12 @@ function Cart() {
                                     <div className="totals">
                                         <div className="cart-prices">
                                             <h5 className="title">Totals</h5>
-                                            <span className="price">$72.60</span>
+                                            <span className="price">${total}</span>
                                         </div>
                                     </div>
-                                    <button className="btn btn-lg btn-dark text-uppercase">Proceed to checkout</button>
+                                    <Link to="/checkout" className="btn btn-lg btn-dark text-uppercase">
+                                        Proceed to checkout
+                                    </Link>
                                 </div>
                             </Grid>
                         </Grid>

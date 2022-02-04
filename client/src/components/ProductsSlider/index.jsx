@@ -51,7 +51,6 @@ function ProductsSlider({ products }) {
             },
         ],
     };
-    console.log("slider", products);
 
     return (
         <div className="products-slider">

@@ -159,6 +159,10 @@
                     width: calc(100% - 105px);
                 }
             }
+
+            & .btn-add {
+                margin-left: 105px;
+            }
         }
 
         &-share {

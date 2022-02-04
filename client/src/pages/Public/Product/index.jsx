@@ -38,19 +38,18 @@ function Product() {
             }
         };
         fetchProductDetail();
-    }, []);
+    }, [currentSlug]);
 
     useEffect(() => {
-        const fetchProductDetail = async () => {
+        const fetchProductRelated = async () => {
             try {
                 const response = await productServices.getProductByCategory(productDetail.category.slug);
-                console.log("related: ", response);
                 if (response.data.success) setProductRelated(response.data.product);
             } catch (error) {
                 console.log(error);
             }
         };
-        fetchProductDetail();
+        fetchProductRelated();
     }, [productDetail]);
 
     const onSubmit = (data) => {

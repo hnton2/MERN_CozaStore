@@ -10,19 +10,48 @@ import { IMAGE_CLOUDINARY } from "constants/Data";
 import React, { useState } from "react";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import Select from "react-select";
 import Slider from "react-slick";
-import QuantityButton from "../QuantityButton";
 import "./ProductDetail.scss";
 import parse from "html-react-parser";
+import { Form, SelectField } from "components/CustomForm";
+import { addProductValidation } from "helpers/validation";
+import { QuantityField } from "components/CustomForm";
+import { useDispatch } from "react-redux";
+import { addProduct } from "redux/cartSlice";
+
+const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
+    <button
+        {...props}
+        className={"slick-prev slick-arrow" + (currentSlide === 0 ? " slick-disabled" : "")}
+        aria-hidden="true"
+        aria-disabled={currentSlide === 0 ? true : false}
+        type="button"
+    >
+        <KeyboardArrowLeftIcon />
+    </button>
+);
+const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
+    <button
+        {...props}
+        className={"slick-next slick-arrow" + (currentSlide === slideCount - 1 ? " slick-disabled" : "")}
+        aria-hidden="true"
+        aria-disabled={currentSlide === slideCount - 1 ? true : false}
+        type="button"
+    >
+        <KeyboardArrowRightIcon />
+    </button>
+);
 
 function ProductDetail({ product }) {
+    const dispatch = useDispatch();
     const [photoIndex, setPhotoIndex] = useState(0);
     const [isOpenModal, setIsOpenModal] = useState(false);
 
     const settings = {
         customPaging: function (i) {
-            return <img src={IMAGE_CLOUDINARY + product.images[i]} className="product__image-dots" />;
+            return (
+                <img src={IMAGE_CLOUDINARY + product.images[i]} className="product__image-dots" alt={product.name} />
+            );
         },
         dots: true,
         dotsClass: "slick-dots slick-thumb",
@@ -31,8 +60,12 @@ function ProductDetail({ product }) {
         fade: true,
         slidesToShow: 1,
         slidesToScroll: 1,
-        nextArrow: <KeyboardArrowRightIcon />,
-        prevArrow: <KeyboardArrowLeftIcon />,
+        nextArrow: <SlickArrowRight />,
+        prevArrow: <SlickArrowLeft />,
+    };
+    const onSubmit = (data) => {
+        console.log(data);
+        dispatch(addProduct({ ...product, ...data }));
     };
 
     return (
@@ -45,10 +78,10 @@ function ProductDetail({ product }) {
                                 <div key={index}>
                                     <div className="product__slide">
                                         <div className="product-image">
-                                            <img src={IMAGE_CLOUDINARY + item} />
+                                            <img src={IMAGE_CLOUDINARY + item} alt={product.name} />
                                         </div>
                                         <div className="btn-expand">
-                                            <button className="btn bg-light" onClick={() => setIsOpenModal(true)}>
+                                            <button className="btn btn-light" onClick={() => setIsOpenModal(true)}>
                                                 <ZoomOutMapIcon />
                                             </button>
                                         </div>
@@ -63,37 +96,14 @@ function ProductDetail({ product }) {
                         <h3 className="product__content-title">{product.name}</h3>
                         <span className="product__content-price">${product.price}</span>
                         <p className="product__content-summary">{parse(product.description)}</p>
-                        <form className="product__content-form">
-                            <div className="form-group">
-                                <label>Size</label>
-                                <Select
-                                    options={product.size}
-                                    className="form-control"
-                                    placeholder="Choose an option"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Color</label>
-                                <Select
-                                    options={product.color}
-                                    className="form-control"
-                                    placeholder="Choose an option"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label></label>
-                                <div className="form-control">
-                                    <Grid container spacing={2} alignItems="center">
-                                        <Grid item lg={12} md={6} sm={6}>
-                                            <QuantityButton />
-                                        </Grid>
-                                        <Grid item lg={12} md={6} sm={6}>
-                                            <button className="btn btn-primary text-uppercase">Add to cart</button>
-                                        </Grid>
-                                    </Grid>
-                                </div>
-                            </div>
-                        </form>
+                        <div className="product__content-form">
+                            <Form onSubmit={onSubmit} validation={addProductValidation}>
+                                <SelectField name="size" options={product.size} placeholder="Size..." />
+                                <SelectField name="color" options={product.color} placeholder="Color..." />
+                                <QuantityField name="quantity" />
+                                <button className="btn btn-add btn-primary text-uppercase">Add to cart</button>
+                            </Form>
+                        </div>
                         <div className="product__content-share">
                             <button className="border-right">
                                 <FavoriteIcon fontSize="small" className="icon-share" />

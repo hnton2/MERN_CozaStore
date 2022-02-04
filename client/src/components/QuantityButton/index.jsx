@@ -5,20 +5,16 @@ import "./QuantityButton.scss";
 
 function QuantityButton() {
     const [quantity, setQuantity] = useState(1);
-    const handleIncrement = () => {
-        setQuantity((prev) => prev + 1);
-    };
-    const handleDecrement = () => {
-        setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
-    };
+    const handleIncrement = () => setQuantity((prev) => prev + 1);
+    const handleDecrement = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
     return (
         <div className="quantity-button">
-            <button className="btn btn-light" onClick={handleDecrement}>
+            <button type="button" className="btn btn-light" onClick={handleDecrement} disabled={quantity === 1}>
                 <RemoveIcon fontSize="small" />
             </button>
-            <input type="text" value={quantity} />
-            <button className="btn btn-light" onClick={handleIncrement}>
+            <input type="text" value={quantity} onChange={(event) => setQuantity(event.target.value)} />
+            <button type="button" className="btn btn-light" onClick={handleIncrement}>
                 <AddIcon fontSize="small" />
             </button>
         </div>
