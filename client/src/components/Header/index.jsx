@@ -19,7 +19,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import { LogOut } from "redux/authSlice";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { removeProduct } from "redux/cartSlice";
+import { clearCart, removeProduct } from "redux/cartSlice";
 import { stringAvatar } from "helpers/stringAvatar";
 
 const Backdrop = styled.div`
@@ -54,8 +54,9 @@ function Header() {
 
     const handleLogin = () => navigate("/login");
 
-    const handleLogout = async () => {
-        await dispatch(LogOut());
+    const handleLogout = () => {
+        dispatch(LogOut());
+        dispatch(clearCart());
         navigate("/");
     };
 
