@@ -2,7 +2,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Badge, Modal, Slide } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Image from "constants/Image";
@@ -17,8 +17,9 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import HelpIcon from "@mui/icons-material/Help";
 import { LogOut } from "redux/authSlice";
-import { clearMessage } from "redux/messageSlice";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { removeProduct } from "redux/cartSlice";
 
 const Backdrop = styled.div`
     z-index: -1;
@@ -39,10 +40,6 @@ function Header() {
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
     const { products, quantity, total } = useSelector((state) => state.cart);
 
-    useEffect(() => {
-        dispatch(clearMessage());
-    }, [dispatch]);
-
     const [openSearch, setOpenSearch] = useState(false);
     const [openCart, setOpenCart] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
@@ -59,6 +56,10 @@ function Header() {
     const handleLogout = async () => {
         await dispatch(LogOut());
         navigate("/");
+    };
+
+    const handleRemoveFromCart = (product) => {
+        dispatch(removeProduct(product));
     };
 
     return (
@@ -159,14 +160,26 @@ function Header() {
                     <div className="sidebar__content">
                         <ul className="cart__list">
                             {products.map((item) => (
-                                <li className="cart__item" key={item._id}>
+                                <li className="cart__item" key={item._id + item.size + item.color}>
                                     <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} className="cart-img" />
                                     <div className="cart__desc">
-                                        <Link to={`product/${item.slug}`} className="cart__desc-title">
+                                        <Link to={`/product/${item.slug}`} className="cart__desc-title">
                                             {item.name}
                                         </Link>
-                                        <span className="cart__desc-subtitle">{`${item.quantity} x $${item.price}`}</span>
+                                        <p>
+                                            | Size: {item.size} | {item.color} |
+                                        </p>
+                                        <p className="cart__desc-subtitle">
+                                            {item.quantity} x ${item.price}
+                                        </p>
                                     </div>
+                                    <button
+                                        type="button"
+                                        className="btn-sidebar-cart"
+                                        onClick={() => handleRemoveFromCart(item)}
+                                    >
+                                        <HighlightOffIcon />
+                                    </button>
                                 </li>
                             ))}
                         </ul>

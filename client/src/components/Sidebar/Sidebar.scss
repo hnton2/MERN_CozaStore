@@ -49,7 +49,8 @@
     &__content {
         flex: 1;
         width: 100%;
-        overflow: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
 
         &.options {
             padding-right: 36px;
@@ -94,7 +95,6 @@
 
             & .cart__item {
                 display: flex;
-                align-items: flex-start;
                 margin-bottom: 12px;
 
                 & .cart-img {
@@ -112,7 +112,6 @@
                         display: block;
                         text-decoration: none;
                         color: $black-color;
-                        margin-bottom: 18px;
 
                         &:hover {
                             color: $color-hover;
@@ -121,6 +120,15 @@
 
                     &-subtitle {
                         color: $grey-color-2;
+                    }
+                }
+
+                & .btn-sidebar-cart {
+                    width: 24px;
+                    color: $danger-color;
+
+                    &:hover {
+                        opacity: 0.7;
                     }
                 }
             }

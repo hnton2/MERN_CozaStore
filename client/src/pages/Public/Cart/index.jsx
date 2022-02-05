@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Grid, IconButton, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import Image from "constants/Image";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
@@ -10,8 +9,9 @@ import "./Cart.scss";
 import InfoIcon from "@mui/icons-material/Info";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IMAGE_CLOUDINARY } from "constants/Data";
+import { removeProduct } from "redux/cartSlice";
 
 const linkData = [
     {
@@ -20,7 +20,12 @@ const linkData = [
     },
 ];
 function Cart() {
+    const dispatch = useDispatch();
+
     const { products, total } = useSelector((state) => state.cart);
+    const handleRemoveFromCart = (product) => {
+        dispatch(removeProduct(product));
+    };
 
     return (
         <>
@@ -56,7 +61,10 @@ function Cart() {
                                                     </td>
                                                     <td className="text-center">${item.quantity * item.price}</td>
                                                     <td>
-                                                        <button className="table-btn btn btn-danger btn-rounded">
+                                                        <button
+                                                            className="table-btn btn btn-danger btn-rounded"
+                                                            onClick={() => handleRemoveFromCart(item)}
+                                                        >
                                                             <CloseIcon />
                                                         </button>
                                                     </td>

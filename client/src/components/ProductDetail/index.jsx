@@ -63,10 +63,8 @@ function ProductDetail({ product }) {
         nextArrow: <SlickArrowRight />,
         prevArrow: <SlickArrowLeft />,
     };
-    const onSubmit = (data) => {
-        console.log(data);
-        dispatch(addProduct({ ...product, ...data }));
-    };
+    const onSubmit = (data) =>
+        dispatch(addProduct({ ...product, ...data, color: data.color.label, size: data.size.label }));
 
     return (
         <div className="product">
