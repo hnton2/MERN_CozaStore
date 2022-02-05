@@ -1,7 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Badge, Modal, Slide } from "@mui/material";
+import { Avatar, Badge, Modal, Slide } from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -20,6 +20,7 @@ import { LogOut } from "redux/authSlice";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { removeProduct } from "redux/cartSlice";
+import { stringAvatar } from "helpers/stringAvatar";
 
 const Backdrop = styled.div`
     z-index: -1;
@@ -124,7 +125,7 @@ function Header() {
                         </button>
                         {user ? (
                             <button className="header-btn border-left-right" onClick={handleOpenMenu}>
-                                <img src={Image.AVATAR1} alt="avatar" className="header-avatar" />
+                                <Avatar {...stringAvatar(user.username)} />
                             </button>
                         ) : (
                             <button className="header-btn border-left-right" onClick={handleLogin}>
@@ -207,7 +208,7 @@ function Header() {
                             </button>
                         </div>
                         <div className="sidebar-avatar">
-                            <img src={Image.BANNER5} alt="" />
+                            <Avatar {...stringAvatar(user.username, { width: 80, height: 80 })} />
                             <div className="description">
                                 <h5>{user.username}</h5>
                                 {user.isAdmin && <span>Admin</span>}

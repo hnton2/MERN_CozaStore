@@ -166,14 +166,6 @@
         align-items: center;
         margin-bottom: 36px;
 
-        & > img {
-            width: 80px;
-            height: 80px;
-            border: 1px solid $border-color;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
         & > .description {
             margin-left: 16px;
             height: 100%;
