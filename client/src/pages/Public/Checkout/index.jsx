@@ -13,8 +13,8 @@ const linkData = [
         path: "/home",
     },
     {
-        name: "Men",
-        path: "/category",
+        name: "Shopping Cart",
+        path: "/cart",
     },
 ];
 

@@ -3,6 +3,7 @@ import ProductCategoryForm from "pages/Admin/Form/ProductCategoryForm";
 import ProductForm from "pages/Admin/Form/ProductForm";
 import ProductCategoryTable from "pages/Admin/Table/ProductCategoryTable";
 import ProductTable from "pages/Admin/Table/ProductTable";
+import NotFound from "pages/Public/NotFound";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/blogs/:category" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogDetail />} />
+                <Route path="/not-found" element={<NotFound />} />
 
                 {/* Admin */}
                 {user && user.isAdmin ? (

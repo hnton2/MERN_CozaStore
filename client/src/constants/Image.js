@@ -46,6 +46,7 @@ import ICON_EMAIL from "../assets/images/icons/icon-email.png";
 import ITEM_CART1 from "../assets/images/item-cart-01.jpg";
 import ITEM_CART2 from "../assets/images/item-cart-02.jpg";
 import NO_DATA from "assets/images/no-data.png";
+import CLOUDS from "assets/images/clouds.png";
 
 const Image = {
     LOGO: Logo,
@@ -96,6 +97,7 @@ const Image = {
     ITEM_CART1,
     ITEM_CART2,
     NO_DATA,
+    CLOUDS,
 };
 
 export default Image;
