@@ -3,10 +3,12 @@ import ProductCategoryForm from "pages/Admin/Form/ProductCategoryForm";
 import ProductForm from "pages/Admin/Form/ProductForm";
 import ProductCategoryTable from "pages/Admin/Table/ProductCategoryTable";
 import ProductTable from "pages/Admin/Table/ProductTable";
+import CouponForm from "pages/Admin/Form/CouponForm";
+import CouponTable from "pages/Admin/Table/CouponTable";
 import NotFound from "pages/Public/NotFound";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { GetALlCategoryProduct } from "redux/categorySlice";
 import About from "./pages/Public/About";
 import Blog from "./pages/Public/Blog";
@@ -47,18 +49,24 @@ function App() {
                 {user && user.isAdmin ? (
                     <>
                         <Route exact path="/admin" element={<Dashboard />} />
-                        {/* Product */}
+                        {/*==================================== Product ====================================*/}
                         <Route path="/admin/product/form">
                             <Route path=":id" element={<ProductForm />} />
                             <Route path="" element={<ProductForm />} />
                         </Route>
                         <Route exact path="/admin/product/table" element={<ProductTable />} />
-                        {/* Product category */}
+                        {/*==================================== Product category ====================================*/}
                         <Route path="/admin/product-category/form">
                             <Route path=":id" element={<ProductCategoryForm />} />
                             <Route path="" element={<ProductCategoryForm />} />
                         </Route>
                         <Route exact path="/admin/product-category/table" element={<ProductCategoryTable />} />
+                        {/* ==================================== Coupon ==================================== */}
+                        <Route path="/admin/coupon/form">
+                            <Route path=":id" element={<CouponForm />} />
+                            <Route path="" element={<CouponForm />} />
+                        </Route>
+                        <Route exact path="/admin/coupon/table" element={<CouponTable />} />
                     </>
                 ) : (
                     <Route path="*" element={<Navigate to="/" />} />

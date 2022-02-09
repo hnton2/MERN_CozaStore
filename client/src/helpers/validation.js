@@ -59,3 +59,23 @@ export const addProductValidation = yup.object().shape({
         .positive("quantity must be greater than zero")
         .required(),
 });
+
+export const couponValidation = yup.object().shape({
+    name: yup.string().min(5).max(100).required(),
+    code: yup.string().min(5).max(100).required(),
+    status: yup.string().required(),
+    quantity: yup
+        .number()
+        .min(1)
+        .typeError("quantity must be a number")
+        .positive("quantity must be greater than zero")
+        .required(),
+    discount: yup
+        .number()
+        .min(1)
+        .typeError("price must be a number")
+        .positive("price must be greater than zero")
+        .required(),
+    expiredTime: yup.string().required(),
+    description: yup.string().max(1000).required(),
+});

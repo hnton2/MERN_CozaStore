@@ -8,10 +8,12 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { IMAGE_CLOUDINARY } from "constants/Data";
 import React, { memo, useEffect, useState } from "react";
+import ReactDatePicker from "react-datepicker";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
+import "react-datepicker/dist/react-datepicker.css";
 import "./CustomForm.scss";
 
 const Form = memo(function Form({ defaultValues, validation, children, onSubmit, onWatchFields }) {
@@ -329,4 +331,41 @@ const QuantityField = memo(function QuantityField({ register, errors, setValue, 
     );
 });
 
-export { Form, InputField, SelectField, CreatableSelectField, RadioField, ImageField, TextEditorField, QuantityField };
+const DatePickerField = memo(function DatePickerField({ control, errors, name, placeholder }) {
+    return (
+        <>
+            <div className="form-group">
+                <label className="form-label" htmlFor={name}>
+                    {name}
+                </label>
+                <div className="form-control">
+                    <Controller
+                        name={name}
+                        control={control}
+                        render={({ field }) => (
+                            <ReactDatePicker
+                                className="form-input"
+                                placeholderText={placeholder}
+                                onChange={(date) => field.onChange(date)}
+                                selected={field.value}
+                            />
+                        )}
+                    />
+                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
+                </div>
+            </div>
+        </>
+    );
+});
+
+export {
+    Form,
+    InputField,
+    SelectField,
+    CreatableSelectField,
+    RadioField,
+    ImageField,
+    TextEditorField,
+    QuantityField,
+    DatePickerField,
+};

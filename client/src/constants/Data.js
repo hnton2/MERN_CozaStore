@@ -1,19 +1,15 @@
-import Image from "./Image";
-
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import CategoryIcon from "@mui/icons-material/Category";
-import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
-import AttachEmailIcon from "@mui/icons-material/AttachEmail";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import SecurityIcon from "@mui/icons-material/Security";
-import PersonIcon from "@mui/icons-material/Person";
-import CheckroomSharpIcon from "@mui/icons-material/CheckroomSharp";
-import IceSkatingSharpIcon from "@mui/icons-material/IceSkatingSharp";
-import SportsMotorsportsSharpIcon from "@mui/icons-material/SportsMotorsportsSharp";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import LocalAtmIcon from "@mui/icons-material/LocalAtm";
+import PersonIcon from "@mui/icons-material/Person";
+import SecurityIcon from "@mui/icons-material/Security";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import Image from "./Image";
 
 export const IMAGE_CLOUDINARY = "https://res.cloudinary.com/hnt-46/image/upload/v1641628910/";
 
@@ -130,26 +126,21 @@ export const ADMIN_SIDEBAR = [
         ],
     },
     {
-        title: "Category",
+        title: "Coupon",
         path: "",
-        icon: <CategoryIcon />,
+        icon: <LocalAtmIcon />,
         iconClosed: <KeyboardArrowLeftIcon fontSize="small" />,
         iconOpened: <KeyboardArrowDownIcon fontSize="small" />,
         SubMenu: [
             {
-                title: "Shoes",
-                path: "/product/shoes",
-                icon: <IceSkatingSharpIcon fontSize="small" />,
+                title: "Coupon Table",
+                path: "/admin/Coupon/table",
+                icon: <ListAltIcon fontSize="small" />,
             },
             {
-                title: "Clothing",
-                path: "/product/clothing",
-                icon: <CheckroomSharpIcon fontSize="small" />,
-            },
-            {
-                title: "Accessory & Equipment",
-                path: "/product/accessory-equipment",
-                icon: <SportsMotorsportsSharpIcon fontSize="small" />,
+                title: "Create New Coupon",
+                path: "/admin/Coupon/form",
+                icon: <FiberNewIcon fontSize="small" />,
             },
         ],
     },
@@ -250,5 +241,15 @@ export const DEFAULT_VALUE_PRODUCT = {
 export const DEFAULT_VALUE_CATEGORY_PRODUCT = {
     name: "",
     status: "active",
+    description: "",
+};
+
+export const DEFAULT_VALUE_COUPON = {
+    name: "",
+    code: "",
+    status: "active",
+    discount: 0,
+    quantity: 0,
+    expiredTime: "",
     description: "",
 };
