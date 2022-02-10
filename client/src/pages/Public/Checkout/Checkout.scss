@@ -17,8 +17,7 @@
         width: 100%;
 
         & .form-group {
-            padding: 0 15px;
-            margin-bottom: 20px;
+            margin-bottom: 4px;
 
             & > input,
             & > textarea {
@@ -67,9 +66,15 @@
                 & > .product-link {
                     color: $grey-color;
                     font-weight: 300;
+                    width: 160px;
+
+                    &:hover {
+                        color: $primary-color;
+                    }
                 }
 
                 & > .product-quantity {
+                    width: 80px;
                     color: $black-color;
                 }
             }
@@ -83,6 +88,11 @@
                 align-items: center;
                 justify-content: space-between;
                 padding: 10px 0;
+
+                &.shipping {
+                    align-items: flex-start;
+                    flex-direction: column;
+                }
 
                 & .price-title {
                     font-size: 15px;

@@ -1,4 +1,5 @@
 import Logo from "../assets/images/icons/logo-01.png";
+import Logo3 from "../assets/images/icons/logo-03.png";
 import Favicon from "../assets/images/icons/favicon.png";
 import Cart1 from "../assets/images/item-cart-01.jpg";
 import Cart2 from "../assets/images/item-cart-02.jpg";
@@ -51,6 +52,7 @@ import COUPON_ICON from "assets/images/icons/coupon_icon.svg";
 
 const Image = {
     LOGO: Logo,
+    LOGO3: Logo3,
     FAVICON: Favicon,
     CART1: Cart1,
     CART2: Cart2,

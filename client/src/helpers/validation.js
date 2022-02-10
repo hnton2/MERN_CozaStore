@@ -79,3 +79,15 @@ export const couponValidation = yup.object().shape({
     expiredTime: yup.string().required(),
     description: yup.string().max(1000).required(),
 });
+
+export const checkoutValidation = yup.object().shape({
+    firstname: yup.string().max(100).required(),
+    lastname: yup.string().max(100).required(),
+    email: yup.string().email().required(),
+    phone: yup.number().typeError("phone must be a number").required(),
+    country: yup.object().nullable().required(),
+    province: yup.string().max(100).required(),
+    district: yup.string().max(100).required(),
+    ward: yup.string().max(100).required(),
+    address: yup.string().min(5).max(100).required(),
+});

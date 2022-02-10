@@ -22,6 +22,12 @@ import Product from "./pages/Public/Product";
 import Products from "./pages/Public/Products";
 import Register from "./pages/Public/Register";
 import "./style.scss";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(
+    "pk_test_51KCL3uD7QIM7Pt3fDuSzusNuy4dl4oNXEkPM6KzS1rpHTE4S16mz1zNgFb96kPnFAA13uSofYqhnXGIJFLhxMQcA00HrG0u4LC"
+);
 
 function App() {
     const dispatch = useDispatch();
@@ -38,7 +44,14 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
+                <Route
+                    path="/checkout"
+                    element={
+                        <Elements stripe={stripePromise}>
+                            <Checkout />
+                        </Elements>
+                    }
+                />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/blogs/:category" element={<Blog />} />

@@ -1,5 +1,4 @@
 import { publicRequest } from "helpers/requestMethod";
-import axios from "axios";
 
 const login = ({ email, password }) => {
     return publicRequest.post("auth/login", { email, password });

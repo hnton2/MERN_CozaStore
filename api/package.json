@@ -21,6 +21,6 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemon": "^2.0.15",
     "randomstring": "^1.2.1",
-    "stripe": "^8.195.0"
+    "stripe": "^8.202.0"
   }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Checkout.scss";
 import Footer from "components/Footer";
 import Header from "components/Header";
@@ -6,6 +6,16 @@ import Breadcrumbs from "components/Breadcrumbs";
 import { Container, Grid } from "@mui/material";
 import Select from "react-select";
 import { Link } from "react-router-dom";
+import { DEFAULT_VALUE_CHECKOUT } from "constants/Data";
+import { checkoutValidation } from "helpers/validation";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
+import makeAnimated from "react-select/animated";
+import countryList from "react-select-country-list";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { publicRequest } from "helpers/requestMethod";
 
 const linkData = [
     {
@@ -18,12 +28,7 @@ const linkData = [
     },
 ];
 
-const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-];
-
+const animatedComponents = makeAnimated();
 const customStyles = {
     placeholder: (defaultStyles) => {
         return {
@@ -35,6 +40,64 @@ const customStyles = {
 };
 
 function Checkout() {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const stripe = useStripe();
+    const elements = useElements();
+
+    const countryOptions = useMemo(() => countryList().getData(), []);
+    const { products, total, coupon } = useSelector((state) => state.cart);
+    const {
+        control,
+        handleSubmit,
+        register,
+        formState: { errors },
+    } = useForm({ defaultValues: DEFAULT_VALUE_CHECKOUT, resolver: yupResolver(checkoutValidation) });
+
+    const onSubmit = async (data) => {
+        if (!stripe || !elements) return;
+
+        const billingDetails = {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            address: {
+                country: data.country.value,
+                city: data.province,
+                state: `${data.district} district,  ${data.ward} ward`,
+                line1: data.address,
+            },
+        };
+
+        setIsLoading(true);
+        const { data: clientSecret } = await publicRequest.post("checkout/create-payment-intent", {
+            amount: total * 100,
+        });
+
+        const result = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: elements.getElement(CardElement),
+                billing_details: billingDetails,
+            },
+        });
+        console.log(result);
+        setIsLoading(false);
+
+        if (result.error) {
+            // Show error to your customer (for example, insufficient funds)
+            console.log(result.error.message);
+        } else {
+            // The payment has been processed!
+            if (result.paymentIntent.status === "succeeded") {
+                // Show a success message to your customer
+                // There's a risk of the customer closing the window before callback
+                // execution. Set up a webhook or plugin to listen for the
+                // payment_intent.succeeded event that handles any business critical
+                // post-payment actions.
+            }
+        }
+    };
+
     return (
         <>
             <Header />
@@ -44,76 +107,136 @@ function Checkout() {
                     <div className="checkout">
                         <Grid container spacing={2}>
                             <Grid container item xs={12} sm={12} md={8} lg={8}>
-                                <form className="checkout__form">
-                                    <h4 className="checkout__title">Billing Details</h4>
-                                    <Grid container item xs={12} sm={12} md={12} lg={12} spacing={2}>
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
-                                            <div className="form-group">
-                                                <input type="text" placeholder="First Name" />
-                                            </div>
+                                <div className="checkout__form">
+                                    <form id="hook-form" onSubmit={handleSubmit(onSubmit)}>
+                                        <h4 className="checkout__title">Billing Details</h4>
+                                        <Grid container item xs={12} sm={12} md={12} lg={12} spacing={2}>
+                                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                <div className="form-group">
+                                                    <input
+                                                        type="text"
+                                                        {...register("firstname")}
+                                                        placeholder="First Name"
+                                                    />
+                                                </div>
+                                                {errors.firstname && (
+                                                    <p className="error-message">*{errors.firstname.message}</p>
+                                                )}
+                                            </Grid>
+                                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                <div className="form-group">
+                                                    <input
+                                                        type="text"
+                                                        {...register("lastname")}
+                                                        placeholder="Last Name"
+                                                    />
+                                                </div>
+                                                {errors.lastname && (
+                                                    <p className="error-message">*{errors.lastname.message}</p>
+                                                )}
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                                        <Grid item xs={12} sm={12} md={12} lg={12}>
                                             <div className="form-group">
-                                                <input type="text" placeholder="Last Name" />
-                                            </div>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={12} lg={12}>
-                                        <div className="form-group">
-                                            <input type="text" placeholder="Apartment, suite, etc. (Optional)" />
-                                        </div>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={12} lg={12}>
-                                        <div className="form-group">
-                                            <input type="text" placeholder="Email Address" />
-                                        </div>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={12} lg={12}>
-                                        <div className="form-group">
-                                            <input type="text" placeholder="Phone" />
-                                        </div>
-                                    </Grid>
-                                    <h4 className="checkout__title">Shipping Details</h4>
-                                    <Grid container item xs={12} sm={12} md={12} lg={12} spacing={2}>
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
-                                            <div className="form-group">
-                                                <Select
-                                                    options={options}
-                                                    placeholder="Country/Region"
-                                                    styles={customStyles}
+                                                <input
+                                                    type="email"
+                                                    {...register("email")}
+                                                    placeholder="Email Address"
                                                 />
                                             </div>
+                                            {errors.email && <p className="error-message">*{errors.email.message}</p>}
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                                        <Grid item xs={12} sm={12} md={12} lg={12}>
                                             <div className="form-group">
-                                                <input type="text" placeholder="City" />
+                                                <input type="text" {...register("phone")} placeholder="Phone" />
                                             </div>
+                                            {errors.phone && <p className="error-message">*{errors.phone.message}</p>}
                                         </Grid>
-                                    </Grid>
-                                    <Grid container item xs={12} sm={12} md={12} lg={12} spacing={2}>
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                                        <h4 className="checkout__title">Shipping Details</h4>
+                                        <Grid container item xs={12} sm={12} md={12} lg={12} spacing={2}>
+                                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                <div className="form-group">
+                                                    <div style={{ width: "100%" }}>
+                                                        <Controller
+                                                            name="country"
+                                                            control={control}
+                                                            render={({ field }) => (
+                                                                <Select
+                                                                    {...field}
+                                                                    placeholder="Country..."
+                                                                    options={countryOptions}
+                                                                    components={animatedComponents}
+                                                                    styles={customStyles}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                {errors.country && (
+                                                    <p className="error-message">*{errors.country.message}</p>
+                                                )}
+                                            </Grid>
+                                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                <div className="form-group">
+                                                    <input
+                                                        type="text"
+                                                        {...register("province")}
+                                                        placeholder="Province - City"
+                                                    />
+                                                </div>
+                                                {errors.province && (
+                                                    <p className="error-message">*{errors.province.message}</p>
+                                                )}
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container item xs={12} sm={12} md={12} lg={12} spacing={2}>
+                                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                <div className="form-group">
+                                                    <input
+                                                        type="text"
+                                                        {...register("district")}
+                                                        placeholder="District"
+                                                    />
+                                                </div>
+                                                {errors.district && (
+                                                    <p className="error-message">*{errors.district.message}</p>
+                                                )}
+                                            </Grid>
+                                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                <div className="form-group">
+                                                    <input type="text" {...register("ward")} placeholder="Ward" />
+                                                </div>
+                                                {errors.ward && <p className="error-message">*{errors.ward.message}</p>}
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={12} lg={12}>
                                             <div className="form-group">
-                                                <input type="text" placeholder="Province" />
+                                                <input
+                                                    type="text"
+                                                    {...register("address")}
+                                                    placeholder="Detail Address"
+                                                />
                                             </div>
+                                            {errors.address && (
+                                                <p className="error-message">*{errors.address.message}</p>
+                                            )}
                                         </Grid>
-                                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                                        <h4 className="checkout__title">Addition Information</h4>
+                                        <Grid item xs={12} sm={12} md={12} lg={12}>
                                             <div className="form-group">
-                                                <input type="text" placeholder="District" />
+                                                <textarea
+                                                    type="text"
+                                                    {...register("message")}
+                                                    rows={10}
+                                                    placeholder="Message"
+                                                />
                                             </div>
+                                            {errors.message && (
+                                                <p className="error-message">*{errors.message.message}</p>
+                                            )}
                                         </Grid>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={12} lg={12}>
-                                        <div className="form-group">
-                                            <input type="text" placeholder="Detail Address" />
-                                        </div>
-                                    </Grid>
-                                    <h4 className="checkout__title">Addition Information</h4>
-                                    <Grid item xs={12} sm={12} md={12} lg={12}>
-                                        <div className="form-group">
-                                            <textarea type="text" placeholder="Order Notes" rows={10} />
-                                        </div>
-                                    </Grid>
-                                </form>
+                                    </form>
+                                </div>
                             </Grid>
                             <Grid container item xs={12} sm={12} md={4} lg={4}>
                                 <div className="checkout__box">
@@ -123,46 +246,42 @@ function Checkout() {
                                             <h4 className="product-list__header">Product</h4>
                                             <span className="product-list__header">Total</span>
                                         </li>
-                                        <li>
-                                            <Link className="product-link" to="#">
-                                                Fresh Strawberries
-                                            </Link>
-                                            <span className="product-quantity">x 02</span>
-                                            <span>$720.00</span>
-                                        </li>
-                                        <li>
-                                            <Link className="product-link" to="#">
-                                                Fresh Strawberries
-                                            </Link>
-                                            <span className="product-quantity">x 02</span>
-                                            <span>$720.00</span>
-                                        </li>
-                                        <li>
-                                            <Link className="product-link" to="#">
-                                                Fresh Strawberries
-                                            </Link>
-                                            <span className="product-quantity">x 02</span>
-                                            <span>$720.00</span>
-                                        </li>
+                                        {products.map((item) => (
+                                            <li key={item._id}>
+                                                <Link className="product-link" to={`/product/${item.slug}`}>
+                                                    {item.name}
+                                                </Link>
+                                                <span className="product-quantity">
+                                                    {item.quantity} x ${item.price}
+                                                </span>
+                                                <span>${item.price * item.quantity}</span>
+                                            </li>
+                                        ))}
                                     </ul>
                                     <ul className="price-list">
                                         <li>
                                             <h4 className="price-title">Subtotal</h4>
-                                            <span>$2160.00</span>
+                                            <span>${total}</span>
                                         </li>
-                                        <li>
+                                        <li className="shipping">
                                             <h4 className="price-title">Shipping</h4>
-                                            <span>$50.00</span>
+                                            <div className="payment__note">
+                                                There are no shipping methods available. Please double check your
+                                                address, or contact us if you need any help.
+                                            </div>
                                         </li>
-                                        <li>
-                                            <h4 className="price-title">Coupon</h4>
-                                            <span>$50.00</span>
-                                        </li>
+                                        {coupon && (
+                                            <li>
+                                                <h4 className="price-title">Coupon</h4>
+                                                <span>${coupon.discount}</span>
+                                            </li>
+                                        )}
                                         <li>
                                             <h4 className="price-title">Total</h4>
-                                            <span className="totals">$2110.00</span>
+                                            <span className="totals">{coupon ? total - coupon.discount : total}</span>
                                         </li>
                                     </ul>
+
                                     <div className="payment">
                                         <label className="radio">
                                             <div className="radio-label">Check Payments</div>
@@ -170,23 +289,21 @@ function Checkout() {
                                             <span className="radio-checkmark"></span>
                                         </label>
                                         <div className="payment__note">
-                                            Please send a check to Store Name, Store Street, Store Town, Store State /
-                                            County, Store Postcode.
+                                            {/* Please send a check to Store Name, Store Street, Store Town, Store State /
+                                            County, Store Postcode. */}
+                                            <CardElement />
                                         </div>
                                     </div>
-                                    <div className="payment">
-                                        <label className="radio">
-                                            <div className="radio-label">Paypal</div>
-                                            <input type="radio" name="radio" />
-                                            <span className="radio-checkmark"></span>
-                                        </label>
-                                        <div className="payment__note">
-                                            Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
-                                            account.
-                                        </div>
-                                    </div>
+
                                     <div className="checkout__button">
-                                        <button className="btn btn-lg btn-dark text-uppercase">Place Order</button>
+                                        <button
+                                            type="submit"
+                                            form="hook-form"
+                                            className="btn btn-lg btn-dark text-uppercase"
+                                            disabled={isLoading}
+                                        >
+                                            {isLoading ? "Processing..." : `Pay $${total}`}
+                                        </button>
                                     </div>
                                 </div>
                             </Grid>

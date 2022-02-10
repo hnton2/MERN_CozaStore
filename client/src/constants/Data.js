@@ -253,3 +253,16 @@ export const DEFAULT_VALUE_COUPON = {
     expiredTime: "",
     description: "",
 };
+
+export const DEFAULT_VALUE_CHECKOUT = {
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+    country: "",
+    province: "",
+    district: "",
+    ward: "",
+    address: "",
+    message: "",
+};

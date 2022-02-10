@@ -66,6 +66,7 @@ const Form = memo(function Form({ defaultValues, validation, children, onSubmit,
 });
 
 const InputField = memo(function InputField({ register, errors, name, ...rest }) {
+    console.log(register(name));
     return (
         <>
             <div className="form-group">
