@@ -49,6 +49,7 @@ import ITEM_CART2 from "../assets/images/item-cart-02.jpg";
 import NO_DATA from "assets/images/no-data.png";
 import CLOUDS from "assets/images/clouds.png";
 import COUPON_ICON from "assets/images/icons/coupon_icon.svg";
+import CART_SUCCESS from "assets/images/icons/cart-success.svg";
 
 const Image = {
     LOGO: Logo,
@@ -102,6 +103,7 @@ const Image = {
     NO_DATA,
     CLOUDS,
     COUPON_ICON,
+    CART_SUCCESS,
 };
 
 export default Image;

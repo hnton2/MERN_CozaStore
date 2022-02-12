@@ -16,6 +16,10 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { publicRequest } from "helpers/requestMethod";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+toast.configure();
 
 const linkData = [
     {
@@ -80,20 +84,30 @@ function Checkout() {
                 billing_details: billingDetails,
             },
         });
-        console.log(result);
         setIsLoading(false);
 
         if (result.error) {
-            // Show error to your customer (for example, insufficient funds)
+            toast.error(result.error.message, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             console.log(result.error.message);
         } else {
-            // The payment has been processed!
             if (result.paymentIntent.status === "succeeded") {
-                // Show a success message to your customer
-                // There's a risk of the customer closing the window before callback
-                // execution. Set up a webhook or plugin to listen for the
-                // payment_intent.succeeded event that handles any business critical
-                // post-payment actions.
+                toast.success("The payment has been processed!", {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             }
         }
     };
