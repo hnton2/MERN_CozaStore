@@ -16,7 +16,7 @@ import CreatableSelect from "react-select/creatable";
 import "react-datepicker/dist/react-datepicker.css";
 import "./CustomForm.scss";
 
-const Form = memo(function Form({ defaultValues, validation, children, onSubmit, onWatchFields }) {
+const Form = memo(function Form({ defaultValues, validation, children, onSubmit, onWatchFields, hiddenLabel }) {
     const {
         control,
         handleSubmit,
@@ -46,7 +46,8 @@ const Form = memo(function Form({ defaultValues, validation, children, onSubmit,
                                     register,
                                     control,
                                     errors,
-                                    setValue,
+                                    onSetValue: setValue,
+                                    hiddenLabel,
                                     key: child.props.name,
                                 },
                             })
@@ -65,14 +66,15 @@ const Form = memo(function Form({ defaultValues, validation, children, onSubmit,
     );
 });
 
-const InputField = memo(function InputField({ register, errors, name, ...rest }) {
-    console.log(register(name));
+const InputField = memo(function InputField({ hiddenLabel, register, errors, name, ...rest }) {
     return (
         <>
             <div className="form-group">
-                <label className="form-label" htmlFor={name}>
-                    {name}
-                </label>
+                {!hiddenLabel && (
+                    <label className="form-label" htmlFor={name}>
+                        {name}
+                    </label>
+                )}
                 <div className="form-control">
                     <input type="text" {...register(name)} {...rest} id={name} className="form-input" />
                     {errors[name] && <p className="error-message">*{errors[name].message}</p>}
@@ -96,11 +98,11 @@ const customStyles = {
         lineHeight: 1.4,
     }),
 };
-const SelectField = memo(function SelectField({ control, errors, options, name, isMultiple, ...rest }) {
+const SelectField = memo(function SelectField({ hiddenLabel, control, errors, options, name, isMultiple, ...rest }) {
     return (
         <>
             <div className="form-group">
-                <label className="form-label">{name}</label>
+                {!hiddenLabel && <label className="form-label">{name}</label>}
                 <div className="form-control">
                     <Controller
                         name={name}
@@ -125,6 +127,7 @@ const SelectField = memo(function SelectField({ control, errors, options, name, 
 });
 
 const CreatableSelectField = memo(function CreatableSelectField({
+    hiddenLabel,
     control,
     errors,
     options,
@@ -135,7 +138,7 @@ const CreatableSelectField = memo(function CreatableSelectField({
     return (
         <>
             <div className="form-group">
-                <label className="form-label">{name}</label>
+                {!hiddenLabel && <label className="form-label">{name}</label>}
                 <div className="form-control">
                     <Controller
                         name={name}
@@ -159,11 +162,11 @@ const CreatableSelectField = memo(function CreatableSelectField({
     );
 });
 
-const RadioField = memo(function RadioField({ register, errors, options, name }) {
+const RadioField = memo(function RadioField({ hiddenLabel, register, errors, options, name }) {
     return (
         <>
             <div className="form-group">
-                <label className="form-label">{name}</label>
+                {!hiddenLabel && <label className="form-label">{name}</label>}
                 <div className="form-control flex">
                     {options.map((option) => (
                         <div className="form-radio" key={option.label}>
@@ -181,7 +184,7 @@ const RadioField = memo(function RadioField({ register, errors, options, name })
     );
 });
 
-const ImageField = memo(function ImageField({ control, register, errors, name }) {
+const ImageField = memo(function ImageField({ hiddenLabel, control, register, errors, name }) {
     const { fields, append, remove } = useFieldArray({
         control,
         name: "images",
@@ -199,9 +202,11 @@ const ImageField = memo(function ImageField({ control, register, errors, name })
     return (
         <>
             <div className="form-group">
-                <label className="form-label" htmlFor={name}>
-                    {name}
-                </label>
+                {!hiddenLabel && (
+                    <label className="form-label" htmlFor={name}>
+                        {name}
+                    </label>
+                )}
                 <div className="form-control flex">
                     <div className="images-upload">
                         <div className="preview">
@@ -260,13 +265,23 @@ const ImageField = memo(function ImageField({ control, register, errors, name })
     );
 });
 
-const TextEditorField = memo(function TextEditorField({ control, register, errors, name, placeholder, ...rest }) {
+const TextEditorField = memo(function TextEditorField({
+    hiddenLabel,
+    control,
+    register,
+    errors,
+    name,
+    placeholder,
+    ...rest
+}) {
     return (
         <>
             <div className="form-group">
-                <label className="form-label" htmlFor={name}>
-                    {name}
-                </label>
+                {!hiddenLabel && (
+                    <label className="form-label" htmlFor={name}>
+                        {name}
+                    </label>
+                )}
                 <div className="form-control">
                     <Controller
                         name={name}
@@ -293,23 +308,25 @@ const TextEditorField = memo(function TextEditorField({ control, register, error
     );
 });
 
-const QuantityField = memo(function QuantityField({ register, errors, setValue, name, ...rest }) {
+const QuantityField = memo(function QuantityField({ hiddenLabel, register, errors, onSetValue, name, ...rest }) {
     const [quantity, setQuantity] = useState(1);
     const handleIncrement = () => {
         setQuantity((prev) => prev + 1);
-        setValue(name, quantity + 1);
+        onSetValue(name, quantity + 1);
     };
     const handleDecrement = () => {
-        setValue(name, quantity - 1);
+        onSetValue(name, quantity - 1);
         setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
     };
 
     return (
         <>
             <div className="form-group">
-                <label className="form-label" htmlFor={name}>
-                    {name}
-                </label>
+                {!hiddenLabel && (
+                    <label className="form-label" htmlFor={name}>
+                        {name}
+                    </label>
+                )}
                 <div className="form-control">
                     <div className="quantity-button">
                         <button
@@ -332,13 +349,15 @@ const QuantityField = memo(function QuantityField({ register, errors, setValue, 
     );
 });
 
-const DatePickerField = memo(function DatePickerField({ control, errors, name, placeholder }) {
+const DatePickerField = memo(function DatePickerField({ hiddenLabel, control, errors, name, placeholder }) {
     return (
         <>
             <div className="form-group">
-                <label className="form-label" htmlFor={name}>
-                    {name}
-                </label>
+                {!hiddenLabel && (
+                    <label className="form-label" htmlFor={name}>
+                        {name}
+                    </label>
+                )}
                 <div className="form-control">
                     <Controller
                         name={name}

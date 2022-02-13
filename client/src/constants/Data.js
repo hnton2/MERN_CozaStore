@@ -266,3 +266,8 @@ export const DEFAULT_VALUE_CHECKOUT = {
     address: "",
     message: "",
 };
+
+export const DEFAULT_VALUE_TRACKING = {
+    orderId: "",
+    email: "",
+};

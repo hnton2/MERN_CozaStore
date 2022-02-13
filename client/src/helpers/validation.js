@@ -91,3 +91,8 @@ export const checkoutValidation = yup.object().shape({
     ward: yup.string().max(100).required(),
     address: yup.string().min(5).max(100).required(),
 });
+
+export const orderTrackingValidation = yup.object().shape({
+    orderId: yup.string().max(100).required(),
+    email: yup.string().email().required(),
+});

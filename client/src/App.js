@@ -25,6 +25,7 @@ import "./style.scss";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import Confirmation from "pages/Public/Confirmation";
+import OrderTracking from "pages/Public/OrderTracking";
 
 const stripePromise = loadStripe(
     "pk_test_51KCL3uD7QIM7Pt3fDuSzusNuy4dl4oNXEkPM6KzS1rpHTE4S16mz1zNgFb96kPnFAA13uSofYqhnXGIJFLhxMQcA00HrG0u4LC"
@@ -54,6 +55,7 @@ function App() {
                     }
                 />
                 <Route path="/confirmation" element={<Confirmation />} />
+                <Route path="/order-tracking" element={<OrderTracking />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/blogs/:category" element={<Blog />} />
