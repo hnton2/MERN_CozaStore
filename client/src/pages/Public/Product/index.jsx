@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Rating } from "@mui/material";
+import { Avatar, Container, Rating } from "@mui/material";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import ProductDetail from "components/ProductDetail";
@@ -12,6 +12,7 @@ import { Form, InputField } from "components/CustomForm";
 import { reviewValidation } from "helpers/validation";
 import Preloader from "components/Preloader";
 import { Helmet } from "react-helmet";
+import { stringAvatar } from "helpers/string";
 
 const linkData = [
     {
@@ -28,6 +29,7 @@ function Product() {
     const { slug: currentSlug } = useParams();
     const [productDetail, setProductDetail] = useState();
     const [productRelated, setProductRelated] = useState([]);
+    const [rating, setRating] = useState(5);
 
     useEffect(() => {
         const fetchProductDetail = async () => {
@@ -39,22 +41,30 @@ function Product() {
             }
         };
         fetchProductDetail();
+        window.scrollTo(0, 0);
     }, [currentSlug]);
 
     useEffect(() => {
         const fetchProductRelated = async () => {
-            try {
-                const response = await productServices.getProductByCategory(productDetail.category.slug);
-                if (response.data.success) setProductRelated(response.data.product);
-            } catch (error) {
-                console.log(error);
+            if (productDetail) {
+                try {
+                    const response = await productServices.getProductByCategory(productDetail.category.slug);
+                    if (response.data.success) setProductRelated(response.data.product);
+                } catch (error) {
+                    console.log(error);
+                }
             }
         };
         fetchProductRelated();
     }, [productDetail]);
 
-    const onSubmit = (data) => {
-        console.log("review submit: ", data);
+    const onSubmit = async (data) => {
+        try {
+            const res = await productServices.addReview(productDetail.slug, { ...data, rating });
+            if (res.data.success) setProductDetail(res.data.product);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -75,9 +85,9 @@ function Product() {
                                     <div className="review-list">
                                         {productDetail.reviews.map((review, index) => (
                                             <div className="review" key={index}>
-                                                <img src={review.avatar} alt={review.name} className="review__avatar" />
-                                                <div>
-                                                    <div className="review__header">
+                                                <Avatar {...stringAvatar(review.name, { width: 60, height: 60 })} />
+                                                <div className="review__container">
+                                                    <div className="title">
                                                         <span className="review__name">{review.name}</span>
                                                         <Rating
                                                             name="half-rating"
@@ -85,7 +95,7 @@ function Product() {
                                                             precision={0.5}
                                                         />
                                                     </div>
-                                                    <p className="review__message">{review.message}</p>
+                                                    <p className="message">{review.content}</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -94,15 +104,22 @@ function Product() {
                                 <div className="review-form">
                                     <h5>Add a review</h5>
                                     <p>Your email address will not be published. Required fields are marked *</p>
-                                    <div className="form-group">
+                                    <div className="review-rating">
                                         <label>Your Rating</label>
-                                        <Rating name="half-rating" defaultValue={5} precision={0.5} />
+                                        <Rating
+                                            name="half-rating"
+                                            value={rating}
+                                            precision={0.5}
+                                            onChange={(event, newValue) => setRating(newValue)}
+                                        />
                                     </div>
                                     <Form onSubmit={onSubmit} validation={reviewValidation}>
                                         <InputField name="name" placeholder="Name" />
                                         <InputField name="email" placeholder="Email" />
                                         <InputField name="content" placeholder="Review" />
-                                        <button className="submit-btn btn btn-dark text-uppercase">Submit</button>
+                                        <button type="submit" className="submit-btn btn btn-dark text-uppercase">
+                                            Submit
+                                        </button>
                                     </Form>
                                 </div>
                             </Container>

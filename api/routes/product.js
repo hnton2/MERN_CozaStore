@@ -152,4 +152,24 @@ router.get("/:category", async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+// @DESC Update review for product
+// @ROUTE POST /api/product/review/:slug
+// @ACCESS Public
+router.post("/review/:slug", async (req, res) => {
+    try {
+        const product = await Product.findOneAndUpdate(
+            { slug: req.params.slug },
+            { $push: { reviews: req.body } },
+            {
+                new: true,
+            }
+        );
+        if (!product) return res.status(401).json({ success: false, message: "Product not found" });
+        res.json({ success: true, message: "Update review of product successfully", product });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
 module.exports = router;

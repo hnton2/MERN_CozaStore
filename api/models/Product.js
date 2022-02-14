@@ -22,7 +22,7 @@ const ProductSchema = new mongoose.Schema(
             {
                 name: { type: String, required: true },
                 email: { type: String, required: true },
-                time: { type: Date, required: true, default: Date.now() },
+                createdTime: { type: Date, default: Date.now() },
                 rating: { type: Number, default: 5 },
                 content: String,
             },

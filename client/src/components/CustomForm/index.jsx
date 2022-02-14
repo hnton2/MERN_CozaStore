@@ -66,7 +66,7 @@ const Form = memo(function Form({ defaultValues, validation, children, onSubmit,
     );
 });
 
-const InputField = memo(function InputField({ hiddenLabel, register, errors, name, ...rest }) {
+const InputField = memo(function InputField({ hiddenLabel, register, errors, name, onSetValue, ...rest }) {
     return (
         <>
             <div className="form-group">

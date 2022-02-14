@@ -31,6 +31,10 @@ const getProductDetailBySlug = (slug) => {
     return publicRequest.get(`product/find-by-slug/${slug}`);
 };
 
+const addReview = (slug, data) => {
+    return publicRequest.post(`product/review/${slug}`, data);
+};
+
 const productServices = {
     createNewProduct,
     getAllProduct,
@@ -39,6 +43,7 @@ const productServices = {
     deleteProduct,
     getProductByCategory,
     getProductDetailBySlug,
+    addReview,
 };
 
 export default productServices;
