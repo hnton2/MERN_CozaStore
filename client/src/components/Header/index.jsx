@@ -20,7 +20,8 @@ import { LogOut } from "redux/authSlice";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { clearCart, removeProduct } from "redux/cartSlice";
-import { stringAvatar } from "helpers/stringAvatar";
+import { stringAvatar } from "helpers/string";
+import userServices from "services/user";
 
 const Backdrop = styled.div`
     z-index: -1;
@@ -39,7 +40,7 @@ function Header() {
 
     const user = useSelector((state) => state.auth.currentUser);
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
-    const { products, quantity, total } = useSelector((state) => state.cart);
+    const { products, quantity, total, coupon } = useSelector((state) => state.cart);
 
     const [openSearch, setOpenSearch] = useState(false);
     const [openCart, setOpenCart] = useState(false);
@@ -54,8 +55,15 @@ function Header() {
 
     const handleLogin = () => navigate("/login");
 
-    const handleLogout = () => {
-        dispatch(LogOut());
+    const handleLogout = async () => {
+        if (products.length > 0) {
+            try {
+                await userServices.saveCart(user._id, { products, quantity, total, coupon });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        await dispatch(LogOut());
         dispatch(clearCart());
         navigate("/");
     };

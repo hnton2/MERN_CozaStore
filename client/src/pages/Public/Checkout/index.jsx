@@ -5,7 +5,7 @@ import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
 import { Container, Grid } from "@mui/material";
 import Select from "react-select";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DEFAULT_VALUE_CHECKOUT } from "constants/Data";
 import { checkoutValidation } from "helpers/validation";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,7 +17,9 @@ import { useSelector } from "react-redux";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { publicRequest } from "helpers/requestMethod";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import orderServices from "services/order";
+import { useDispatch } from "react-redux";
+import { clearCart } from "redux/cartSlice";
 
 toast.configure();
 
@@ -45,9 +47,10 @@ const customStyles = {
 
 function Checkout() {
     const [isLoading, setIsLoading] = useState(false);
-
+    const navigate = useNavigate();
     const stripe = useStripe();
     const elements = useElements();
+    const dispatch = useDispatch();
 
     const countryOptions = useMemo(() => countryList().getData(), []);
     const { products, total, coupon } = useSelector((state) => state.cart);
@@ -96,18 +99,40 @@ function Checkout() {
                 draggable: true,
                 progress: undefined,
             });
-            console.log(result.error.message);
         } else {
             if (result.paymentIntent.status === "succeeded") {
-                toast.success("The payment has been processed!", {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                try {
+                    const res = await orderServices.createOrder({
+                        user: {
+                            name: `${data.firstname} ${data.lastname}`,
+                            email: data.email,
+                            phone: data.phone,
+                            address: {
+                                country: data.country.value,
+                                province: data.province,
+                                district: data.district,
+                                ward: data.ward,
+                                street: data.street,
+                            },
+                        },
+                        message: data.message,
+                        products,
+                        total,
+                        coupon,
+                    });
+                    if (res.data.success) {
+                        toast.success("The payment has been processed!", {
+                            position: "top-center",
+                        });
+                        navigate(`/confirmation?invoice-code=${res.data.order.code}`);
+                        dispatch(clearCart());
+                    }
+                } catch (error) {
+                    toast.error(error.message, {
+                        position: "top-center",
+                        autoClose: 5000,
+                    });
+                }
             }
         }
     };
@@ -225,15 +250,9 @@ function Checkout() {
                                         </Grid>
                                         <Grid item xs={12} sm={12} md={12} lg={12}>
                                             <div className="form-group">
-                                                <input
-                                                    type="text"
-                                                    {...register("address")}
-                                                    placeholder="Detail Address"
-                                                />
+                                                <input type="text" {...register("street")} placeholder="Street" />
                                             </div>
-                                            {errors.address && (
-                                                <p className="error-message">*{errors.address.message}</p>
-                                            )}
+                                            {errors.street && <p className="error-message">*{errors.street.message}</p>}
                                         </Grid>
                                         <h4 className="checkout__title">Addition Information</h4>
                                         <Grid item xs={12} sm={12} md={12} lg={12}>

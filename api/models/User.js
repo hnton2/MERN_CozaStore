@@ -7,6 +7,12 @@ const UserSchema = new mongoose.Schema(
         password: { type: String, required: true },
         isAdmin: { type: Boolean, default: false },
         avatar: { type: String },
+        cart: {
+            products: { type: Array, default: [] },
+            quantity: { type: Number, default: 0 },
+            coupon: { type: Object, default: {} },
+            total: { type: Number, default: 0 },
+        },
     },
     { timestamps: true }
 );

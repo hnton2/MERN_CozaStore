@@ -1,16 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import authService from "../services/auth";
-import { setMessage } from "./messageSlice";
 
 export const SignIn = createAsyncThunk("auth/SignIn", async ({ email, password }, thunkAPI) => {
     try {
         const response = await authService.login({ email, password });
-        thunkAPI.dispatch(setMessage({ content: response.data.message, type: "success" }));
         return response.data;
     } catch (error) {
         const message =
             (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.dispatch(setMessage({ content: message, type: "error" }));
+        toast.error(message, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+        });
         return thunkAPI.rejectWithValue();
     }
 });
@@ -18,12 +21,15 @@ export const SignIn = createAsyncThunk("auth/SignIn", async ({ email, password }
 export const SignUp = createAsyncThunk("auth/SignUp", async ({ username, email, password }, thunkAPI) => {
     try {
         const response = await authService.register({ username, email, password });
-        thunkAPI.dispatch(setMessage({ content: response.data.message, type: "success" }));
         return response.data;
     } catch (error) {
         const message =
             (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.dispatch(setMessage({ content: message, type: "error" }));
+        toast.error(message, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+        });
         return thunkAPI.rejectWithValue();
     }
 });

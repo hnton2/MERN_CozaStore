@@ -2,22 +2,21 @@ import React, { useEffect, useState } from "react";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
-import { Backdrop, CircularProgress, Container, Grid, Pagination, Skeleton, Stack } from "@mui/material";
+import { Backdrop, CircularProgress, Container, Pagination, Skeleton } from "@mui/material";
 import { Link, useSearchParams } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import "./Table.scss";
-import CheckIcon from "@mui/icons-material/Check";
 import { escapeRegExp } from "helpers/string";
 import productServices from "services/product";
 import { CATEGORY_OPTIONS, IMAGE_CLOUDINARY } from "constants/Data";
 import AddIcon from "@mui/icons-material/Add";
 import Select from "react-select";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Message from "components/Message";
 import StatusFilter from "components/StatusFilter";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 const linkData = [
     {
@@ -46,7 +45,7 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
                                 item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
                             } btn-sm`}
                         >
-                            <CheckIcon fontSize="small" />
+                            <FontAwesomeIcon icon={faCheck} />
                         </button>
                     </td>
                     <td className="text-center">${item.price}</td>
@@ -55,10 +54,10 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
                     <td className="text-center">{item.tag[0].label}</td>
                     <td className="text-center">
                         <Link to={`/admin/product/form/${item._id}`} className="btn btn-rounded btn-primary btn-sm">
-                            <EditIcon fontSize="small" />
+                            <FontAwesomeIcon icon={faPenToSquare} />
                         </Link>
                         <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
-                            <DeleteIcon fontSize="small" />
+                            <FontAwesomeIcon icon={faTrashCan} />
                         </button>
                     </td>
                 </tr>

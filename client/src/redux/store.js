@@ -1,6 +1,5 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
-import messageReducer from "./messageSlice";
 import categoryReducer from "./categorySlice";
 import cartReducer from "./cartSlice";
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
@@ -8,7 +7,6 @@ import storage from "redux-persist/lib/storage";
 
 const reducer = combineReducers({
     auth: authReducer,
-    message: messageReducer,
     category: categoryReducer,
     cart: cartReducer,
 });

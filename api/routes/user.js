@@ -2,7 +2,7 @@ const router = require("express").Router();
 const cryptoJS = require("crypto-js");
 
 const User = require("../models/User");
-const { verifyTokenAndAdmin, verifyTokenAndAuthorization } = require("../middleware/verifyToken");
+const { verifyTokenAndAdmin, verifyTokenAndAuthorization, verifyToken } = require("../middleware/verifyToken");
 
 // UPDATE
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
@@ -19,10 +19,12 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
     }
 });
 
-// DELETE
+// @DESC Delete a user
+// @ROUTE DELETE /api/user/:id
+// @ACCESS Privates
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedUser = await User.findOneAndDelete(req.params.id);
+        const deletedUser = await User.findOneAndDelete({ _id: req.params.id });
         if (!deletedUser) return res.status(401).json({ success: false, message: "User not found" });
         res.json({ success: true, message: "User has been deleted" });
     } catch (error) {
@@ -44,13 +46,27 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// GET ALL USER
+// @DESC Get all  user
+// @ROUTE GET /api/user/
+// @ACCESS Public
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
-    const query = req.query.new;
     try {
-        const user = query ? await User.find().sort({ _id: -1 }).limit(5) : await User.find();
-        if (!user) return res.status(401).json({ success: false, message: "User not found" });
-        res.json({ success: true, message: "Get users successfully", user });
+        const users = await User.find().sort({ updatedAt: -1 });
+        if (!users) return res.status(401).json({ success: false, message: "Users not found" });
+        res.json({ success: true, message: "Get users successfully", user: users });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// @DESC Save cart before user logout
+// @ROUTE GET /api/user/save-card/:id
+// @ACCESS Public
+router.post("/save-cart/:id", verifyToken, async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.params.id, { cart: req.body });
+        res.end();
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

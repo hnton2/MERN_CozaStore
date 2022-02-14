@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import GoogleIcon from "@mui/icons-material/Google";
@@ -10,8 +10,6 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { SignIn } from "redux/authSlice";
-import Message from "components/Message";
-import { clearMessage } from "redux/messageSlice";
 
 const Container = styled.div`
     width: 100vw;
@@ -150,12 +148,7 @@ function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        dispatch(clearMessage());
-    }, [dispatch]);
-
-    const { isFetching, error, currentUser } = useSelector((state) => state.auth);
-    const { content, type } = useSelector((state) => state.message);
+    const { isFetching } = useSelector((state) => state.auth);
     const schema = yup.object({
         email: yup.string().email().required(),
         password: yup.string().required(),
@@ -167,14 +160,10 @@ function Login() {
     } = useForm({ resolver: yupResolver(schema) });
 
     const onSubmit = (data) => {
-        dispatch(SignIn({ email: data.email, password: data.password }));
+        dispatch(SignIn({ email: data.email, password: data.password })).then((res) => {
+            if (!res.error) navigate("/");
+        });
     };
-
-    useEffect(() => {
-        if (currentUser) {
-            navigate("/");
-        }
-    }, [currentUser]);
 
     return (
         <Container>
@@ -189,7 +178,6 @@ function Login() {
                 <Box>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Title black>Sign In</Title>
-                        {type && content && <Message type={type}>{content}</Message>}
                         <Socials className="socials">
                             <IconButton>
                                 <FacebookRoundedIcon sx={{ color: "#222" }} />

@@ -35,11 +35,16 @@
             padding: 24px;
             margin-bottom: 40px;
 
-            &-header {
+            & > h3 {
                 padding: 12px;
                 color: $black-color;
                 font-size: 18px;
                 font-weight: 500;
+            }
+
+            & table tbody tr:hover {
+                color: inherit;
+                background-color: inherit;
             }
         }
 

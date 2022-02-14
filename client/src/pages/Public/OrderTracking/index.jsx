@@ -1,25 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./OrderTracking.scss";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
 import { Container } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
-import Image from "constants/Image";
 import { Form } from "components/CustomForm";
 import { InputField } from "components/CustomForm";
-import { DEFAULT_VALUE_TRACKING } from "constants/Data";
+import { DEFAULT_VALUE_TRACKING, IMAGE_CLOUDINARY } from "constants/Data";
 import { orderTrackingValidation } from "helpers/validation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faBox,
-    faCheck,
-    faCoffee,
-    faFileInvoice,
-    faHouseChimney,
-    faTruckFast,
-} from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { faBox, faCheck, faFileInvoice, faHouseChimney, faTruckFast } from "@fortawesome/free-solid-svg-icons";
+import { Link, useSearchParams } from "react-router-dom";
+import orderServices from "services/order";
+import moment from "moment";
+import { orderTrackingStatus } from "helpers/string";
 
 const linkData = [
     {
@@ -29,9 +24,28 @@ const linkData = [
 ];
 
 function OrderTracking() {
+    let [searchParams, setSearchParams] = useSearchParams();
+    const [invoiceCode, setInvoiceCode] = useState(searchParams.get("invoice-code"));
+    const [invoice, setInvoice] = useState();
+    const statusNumber = invoice && orderTrackingStatus(invoice.status);
+    useEffect(() => {
+        const fetchInvoice = async () => {
+            if (invoiceCode)
+                try {
+                    const res = await orderServices.getOneOrder(invoiceCode);
+                    res.data.success && setInvoice(res.data.order);
+                } catch (error) {
+                    console.log(error);
+                }
+        };
+        fetchInvoice();
+    }, [invoiceCode]);
+
     const onSubmit = (data) => {
-        console.log(data);
+        setSearchParams({ "invoice-code": data.orderId });
+        setInvoiceCode(data.orderId);
     };
+
     return (
         <>
             <Header />
@@ -40,137 +54,116 @@ function OrderTracking() {
                     <Breadcrumbs links={linkData} current="Order Tracking" />
                     <div className="card">
                         <div className="order-tracking">
-                            <div>
-                                <p className="note">
-                                    To track your order please enter your Order ID in the box below and press the
-                                    "Track" button. This was given to you on your receipt and in the confirmation email
-                                    you should have received.
-                                </p>
-                                <Form
-                                    onSubmit={onSubmit}
-                                    defaultValues={DEFAULT_VALUE_TRACKING}
-                                    validation={orderTrackingValidation}
-                                    hiddenLabel
-                                >
-                                    <InputField name="orderId" placeholder="Order Id" />
-                                    <InputField name="email" placeholder="Billing Email Address" />
-                                    <button className="btn btn-primary">Track Order</button>
-                                </Form>
-                            </div>
-                            <div>
-                                <div className="card-header">My Orders</div>
-                                <div className="card-body">
-                                    <h4 className="tracking-title">Order ID : OD45345345435</h4>
-                                    <ul className="tracking-detail">
-                                        <li>
-                                            <h4>Estimated Delivery time:</h4>
-                                            <span>29 nov 2019</span>
-                                        </li>
-                                        <li>
-                                            <h4>Shipping BY:</h4>
-                                            <span>29 nov 2019</span>
-                                        </li>
-                                        <li>
-                                            <h4>Status:</h4>
-                                            <span>29 nov 2019</span>
-                                        </li>
-                                        <li>
-                                            <h4>Tracking #:</h4>
-                                            <span>29 nov 2019</span>
-                                        </li>
-                                    </ul>
-                                    <div className="tracking-progress">
-                                        <div class="progress">
-                                            <div
-                                                class="progress-bar"
-                                                style={{
-                                                    width: `20%`,
-                                                }}
-                                            ></div>
-                                        </div>
-                                        <ul>
+                            {invoice ? (
+                                <div>
+                                    <div className="card-header">My Orders</div>
+                                    <div className="card-body">
+                                        <h4 className="tracking-title">Order ID: {invoice.code}</h4>
+                                        <ul className="tracking-detail">
                                             <li>
-                                                <div className={`step active`}>
-                                                    <span class="step-icon">
-                                                        <FontAwesomeIcon icon={faCheck} />
-                                                    </span>
-                                                    <span class="step-title">Accepted</span>
-                                                </div>
+                                                <h4>Customer:</h4>
+                                                <span>{invoice.user.name}</span>
                                             </li>
                                             <li>
-                                                <div className={`step`}>
-                                                    <span class="step-icon">
-                                                        <FontAwesomeIcon icon={faFileInvoice} />
-                                                    </span>
-                                                    <span class="step-title">In process</span>
-                                                </div>
+                                                <h4>Shipping Address:</h4>
+                                                <span>{`${invoice.user.address.district} - ${invoice.user.address.province}`}</span>
                                             </li>
                                             <li>
-                                                <div className={`step`}>
-                                                    <span class="step-icon">
-                                                        <FontAwesomeIcon icon={faTruckFast} />
-                                                    </span>
-                                                    <span class="step-title">Shipped</span>
-                                                </div>
+                                                <h4>Toal:</h4>
+                                                <span>${invoice.total}</span>
                                             </li>
                                             <li>
-                                                <div className={`step`}>
-                                                    <span class="step-icon">
-                                                        <FontAwesomeIcon icon={faBox} />
-                                                    </span>
-                                                    <span class="step-title">Delivered</span>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className={`step`}>
-                                                    <span class="step-icon">
-                                                        <FontAwesomeIcon icon={faHouseChimney} />
-                                                    </span>
-                                                    <span class="step-title">Completed</span>
-                                                </div>
+                                                <h4>Payment Due:</h4>
+                                                <span>{moment(invoice.createdAt).format("MMM Do YY")}</span>
                                             </li>
                                         </ul>
-                                    </div>
-                                    <div className="tracking-products">
-                                        <div className="product">
-                                            <img src={Image.PRODUCT1} alt="product1" />
-                                            <div className="product__desc">
-                                                <Link to="#" className="product-title">
-                                                    Dell Laptop with 500GB HDD 8GB RAM
-                                                </Link>
-                                                <p>$950</p>
+                                        <div className="tracking-progress">
+                                            <div className="progress">
+                                                <div
+                                                    className="progress-bar"
+                                                    style={{
+                                                        width: `${statusNumber * 20}%`,
+                                                    }}
+                                                ></div>
                                             </div>
+                                            <ul>
+                                                <li>
+                                                    <div className={`step ${statusNumber >= 1 ? "active" : ""}`}>
+                                                        <span className="step-icon">
+                                                            <FontAwesomeIcon icon={faCheck} />
+                                                        </span>
+                                                        <span className="step-title">Accepted</span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div className={`step ${statusNumber >= 1 ? "active" : ""}`}>
+                                                        <span className="step-icon">
+                                                            <FontAwesomeIcon icon={faFileInvoice} />
+                                                        </span>
+                                                        <span className="step-title">In process</span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div className={`step ${statusNumber >= 1 ? "active" : ""}`}>
+                                                        <span className="step-icon">
+                                                            <FontAwesomeIcon icon={faTruckFast} />
+                                                        </span>
+                                                        <span className="step-title">Shipped</span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div className={`step ${statusNumber >= 1 ? "active" : ""}`}>
+                                                        <span className="step-icon">
+                                                            <FontAwesomeIcon icon={faBox} />
+                                                        </span>
+                                                        <span className="step-title">Delivered</span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div className={`step ${statusNumber >= 1 ? "active" : ""}`}>
+                                                        <span className="step-icon">
+                                                            <FontAwesomeIcon icon={faHouseChimney} />
+                                                        </span>
+                                                        <span className="step-title">Completed</span>
+                                                    </div>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <div className="product">
-                                            <img src={Image.PRODUCT1} alt="product1" />
-                                            <div className="product__desc">
-                                                <Link to="#" className="product-title">
-                                                    Dell Laptop with 500GB HDD 8GB RAM
-                                                </Link>
-                                                <p>$950</p>
-                                            </div>
-                                        </div>
-                                        <div className="product">
-                                            <img src={Image.PRODUCT1} alt="product1" />
-                                            <div className="product__desc">
-                                                <Link to="#" className="product-title">
-                                                    Dell Laptop with 500GB HDD 8GB RAM
-                                                </Link>
-                                                <p>$950</p>
-                                            </div>
-                                        </div>
-                                        <div className="product">
-                                            <img src={Image.PRODUCT1} alt="product1" />
-                                            <div className="product__desc">
-                                                <Link to="#" className="product-title">
-                                                    Dell Laptop with 500GB HDD 8GB RAM
-                                                </Link>
-                                                <p>$950</p>
-                                            </div>
+                                        <div className="tracking-products">
+                                            {invoice.products.map((item) => (
+                                                <div className="product" key={item._id}>
+                                                    <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
+                                                    <div className="product__desc">
+                                                        <Link to={`product/${item.slug}`} className="product-title">
+                                                            {item.name}
+                                                        </Link>
+                                                        <p>${item.price}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div>
+                                    <p className="note">
+                                        To track your order please enter your Order ID in the box below and press the
+                                        "Track" button. This was given to you on your receipt and in the confirmation
+                                        email you should have received.
+                                    </p>
+                                    <Form
+                                        onSubmit={onSubmit}
+                                        defaultValues={DEFAULT_VALUE_TRACKING}
+                                        validation={orderTrackingValidation}
+                                        hiddenLabel
+                                    >
+                                        <InputField name="orderId" placeholder="Order Id" />
+                                        <button type="submit" className="btn btn-primary">
+                                            Track Order
+                                        </button>
+                                    </Form>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </Container>

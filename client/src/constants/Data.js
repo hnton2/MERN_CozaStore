@@ -6,61 +6,9 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
-import PersonIcon from "@mui/icons-material/Person";
-import SecurityIcon from "@mui/icons-material/Security";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
-import Image from "./Image";
 
 export const IMAGE_CLOUDINARY = "https://res.cloudinary.com/hnt-46/image/upload/v1641628910/";
-
-export const OBJECTS = [
-    { id: 0, name: "Men" },
-    { id: 1, name: "Women" },
-    { id: 2, name: "Kids" },
-];
-
-export const DATA_TAB = [
-    {
-        name: "Esprit Ruffle Shirt",
-        price: 16.64,
-        image: Image.PRODUCT1,
-    },
-    {
-        name: "Herschel Supply",
-        price: 16.64,
-        image: Image.PRODUCT2,
-    },
-    {
-        name: "Only Check Trouser",
-        price: 16.64,
-        image: Image.PRODUCT3,
-    },
-    {
-        name: "Classic Trench Coat",
-        price: 16.64,
-        image: Image.PRODUCT4,
-    },
-    {
-        name: "Front Pocket Jumper",
-        price: 16.64,
-        image: Image.PRODUCT5,
-    },
-    {
-        name: "Vintage Inspired Classic",
-        price: 16.64,
-        image: Image.PRODUCT6,
-    },
-    {
-        name: "Shirt in Stretch Cotton",
-        price: 16.64,
-        image: Image.PRODUCT7,
-    },
-    {
-        name: "Pieces Metallic Printed",
-        price: 16.64,
-        image: Image.PRODUCT8,
-    },
-];
 
 export const ADMIN_SIDEBAR = [
     {
@@ -70,22 +18,8 @@ export const ADMIN_SIDEBAR = [
     },
     {
         title: "Users",
-        path: "",
+        path: "/admin/user",
         icon: <GroupAddIcon />,
-        iconClosed: <KeyboardArrowLeftIcon fontSize="small" />,
-        iconOpened: <KeyboardArrowDownIcon fontSize="small" />,
-        SubMenu: [
-            {
-                title: "Admin",
-                path: "/user/admin",
-                icon: <SecurityIcon fontSize="small" />,
-            },
-            {
-                title: "Customer",
-                path: "/user/customer",
-                icon: <PersonIcon fontSize="small" />,
-            },
-        ],
     },
     {
         title: "Product Category",
@@ -263,11 +197,10 @@ export const DEFAULT_VALUE_CHECKOUT = {
     province: "",
     district: "",
     ward: "",
-    address: "",
+    street: "",
     message: "",
 };
 
 export const DEFAULT_VALUE_TRACKING = {
     orderId: "",
-    email: "",
 };

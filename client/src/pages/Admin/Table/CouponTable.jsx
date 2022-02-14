@@ -1,8 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
-import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
 import { Backdrop, CircularProgress, Container, Pagination, Skeleton } from "@mui/material";
@@ -18,6 +15,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import "./Table.scss";
 import parse from "html-react-parser";
 import couponServices from "services/coupon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 const linkData = [
     {
@@ -41,7 +40,7 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
                                 item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
                             } btn-sm`}
                         >
-                            <CheckIcon fontSize="small" />
+                            <FontAwesomeIcon icon={faCheck} />
                         </button>
                     </td>
                     <td className="text-center">${item.discount}</td>
@@ -50,10 +49,10 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
                     <td className="text-center">{parse(item.description)}</td>
                     <td className="text-center">
                         <Link to={`/admin/coupon/form/${item._id}`} className="btn btn-rounded btn-primary btn-sm">
-                            <EditIcon fontSize="small" />
+                            <FontAwesomeIcon icon={faPenToSquare} />
                         </Link>
                         <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
-                            <DeleteIcon fontSize="small" />
+                            <FontAwesomeIcon icon={faTrashCan} />
                         </button>
                     </td>
                 </tr>

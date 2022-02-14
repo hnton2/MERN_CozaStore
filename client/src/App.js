@@ -8,7 +8,7 @@ import CouponTable from "pages/Admin/Table/CouponTable";
 import NotFound from "pages/Public/NotFound";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { GetALlCategoryProduct } from "redux/categorySlice";
 import About from "./pages/Public/About";
 import Blog from "./pages/Public/Blog";
@@ -22,10 +22,13 @@ import Product from "./pages/Public/Product";
 import Products from "./pages/Public/Products";
 import Register from "./pages/Public/Register";
 import "./style.scss";
+import "react-toastify/dist/ReactToastify.css";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import Confirmation from "pages/Public/Confirmation";
 import OrderTracking from "pages/Public/OrderTracking";
+import UserTable from "pages/Admin/Table/UserTable";
+import { updateCart } from "redux/cartSlice";
 
 const stripePromise = loadStripe(
     "pk_test_51KCL3uD7QIM7Pt3fDuSzusNuy4dl4oNXEkPM6KzS1rpHTE4S16mz1zNgFb96kPnFAA13uSofYqhnXGIJFLhxMQcA00HrG0u4LC"
@@ -34,6 +37,7 @@ const stripePromise = loadStripe(
 function App() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.currentUser);
+    if (user && user.cart.products.length > 0) dispatch(updateCart(user.cart));
     dispatch(GetALlCategoryProduct());
 
     return (
@@ -66,6 +70,7 @@ function App() {
                 {user && user.isAdmin ? (
                     <>
                         <Route exact path="/admin" element={<Dashboard />} />
+                        <Route path="/admin/user" element={<UserTable />} />
                         {/*==================================== Product ====================================*/}
                         <Route path="/admin/product/form">
                             <Route path=":id" element={<ProductForm />} />
@@ -86,7 +91,7 @@ function App() {
                         <Route exact path="/admin/coupon/table" element={<CouponTable />} />
                     </>
                 ) : (
-                    <Route path="*" element={<Navigate to="/" />} />
+                    <Route path="*" element={<NotFound />} />
                 )}
             </Routes>
         </BrowserRouter>
