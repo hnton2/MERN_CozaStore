@@ -10,6 +10,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { SignIn } from "redux/authSlice";
+import { Helmet } from "react-helmet";
 
 const Container = styled.div`
     width: 100vw;
@@ -166,50 +167,55 @@ function Login() {
     };
 
     return (
-        <Container>
-            <Wrapper>
-                <Box backgroundColor>
-                    <TextBox>
-                        <Title>Hello, Guy!</Title>
-                        <Paragraph>Enter your personal details and start journey with us</Paragraph>
-                        <ButtonLink to="/register">Sign Up</ButtonLink>
-                    </TextBox>
-                </Box>
-                <Box>
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Title black>Sign In</Title>
-                        <Socials className="socials">
-                            <IconButton>
-                                <FacebookRoundedIcon sx={{ color: "#222" }} />
-                            </IconButton>
-                            <IconButton>
-                                <GoogleIcon sx={{ color: "#222" }} />
-                            </IconButton>
-                            <IconButton>
-                                <GitHubIcon sx={{ color: "#222" }} />
-                            </IconButton>
-                        </Socials>
-                        <Noted>or use your account</Noted>
-                        <Input type="email" {...register("email")} placeholder="Email" />
-                        <p className="error-message">{errors.email?.message}</p>
-                        <Input type="password" {...register("password")} placeholder="Password" />
-                        <p className="error-message">{errors.password?.message}</p>
-                        <Link to="#" className="link">
-                            Forgot your password?
-                        </Link>
-                        <button className="btn btn-primary btn-lg text-uppercase" disabled={isFetching}>
-                            Sign in
-                        </button>
-                        <TabletOption>
-                            <Noted2>Don't have an account? </Noted2>
-                            <Link to="/register" className="link">
-                                Create an account
+        <>
+            <Helmet>
+                <title>Login</title>
+            </Helmet>
+            <Container>
+                <Wrapper>
+                    <Box backgroundColor>
+                        <TextBox>
+                            <Title>Hello, Guy!</Title>
+                            <Paragraph>Enter your personal details and start journey with us</Paragraph>
+                            <ButtonLink to="/register">Sign Up</ButtonLink>
+                        </TextBox>
+                    </Box>
+                    <Box>
+                        <Form onSubmit={handleSubmit(onSubmit)}>
+                            <Title black>Sign In</Title>
+                            <Socials className="socials">
+                                <IconButton>
+                                    <FacebookRoundedIcon sx={{ color: "#222" }} />
+                                </IconButton>
+                                <IconButton>
+                                    <GoogleIcon sx={{ color: "#222" }} />
+                                </IconButton>
+                                <IconButton>
+                                    <GitHubIcon sx={{ color: "#222" }} />
+                                </IconButton>
+                            </Socials>
+                            <Noted>or use your account</Noted>
+                            <Input type="email" {...register("email")} placeholder="Email" />
+                            <p className="error-message">{errors.email?.message}</p>
+                            <Input type="password" {...register("password")} placeholder="Password" />
+                            <p className="error-message">{errors.password?.message}</p>
+                            <Link to="#" className="link">
+                                Forgot your password?
                             </Link>
-                        </TabletOption>
-                    </Form>
-                </Box>
-            </Wrapper>
-        </Container>
+                            <button className="btn btn-primary btn-lg text-uppercase" disabled={isFetching}>
+                                Sign in
+                            </button>
+                            <TabletOption>
+                                <Noted2>Don't have an account? </Noted2>
+                                <Link to="/register" className="link">
+                                    Create an account
+                                </Link>
+                            </TabletOption>
+                        </Form>
+                    </Box>
+                </Wrapper>
+            </Container>
+        </>
     );
 }
 

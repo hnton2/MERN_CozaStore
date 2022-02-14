@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import orderServices from "services/order";
 import { useDispatch } from "react-redux";
 import { clearCart } from "redux/cartSlice";
+import { Helmet } from "react-helmet";
 
 toast.configure();
 
@@ -139,6 +140,9 @@ function Checkout() {
 
     return (
         <>
+            <Helmet>
+                <title>Checkout</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

@@ -5,10 +5,14 @@ import Header from "components/Header";
 import TitlePage from "components/TitlePage";
 import Image from "constants/Image";
 import "./About.scss";
+import { Helmet } from "react-helmet";
 
 function About() {
     return (
         <>
+            <Helmet>
+                <title>About</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <TitlePage background={Image.BACKGROUND1} title="About Us" />

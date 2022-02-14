@@ -10,6 +10,7 @@ import ProductsSlider from "components/ProductsSlider";
 import Image from "constants/Image";
 import productServices from "services/product";
 import Preloader from "components/Preloader";
+import { Helmet } from "react-helmet";
 
 const dataBlog = [
     {
@@ -73,6 +74,9 @@ function Home() {
 
     return (
         <>
+            <Helmet>
+                <title>Home</title>
+            </Helmet>
             <Header />
             <Preloader isHidden={products} />
             <div className="main">

@@ -8,10 +8,14 @@ import "./Contact.scss";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
+import { Helmet } from "react-helmet";
 
 function Contact() {
     return (
         <>
+            <Helmet>
+                <title>Contact</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <TitlePage background={Image.BACKGROUND2} title="Contact" />

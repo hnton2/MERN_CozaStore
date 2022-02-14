@@ -18,6 +18,7 @@ import "./Table.scss";
 import parse from "html-react-parser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -115,6 +116,9 @@ function ProductCategoryTable() {
 
     return (
         <>
+            <Helmet>
+                <title>Product Category Table</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

@@ -15,6 +15,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import orderServices from "services/order";
 import moment from "moment";
 import { orderTrackingStatus } from "helpers/string";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -48,6 +49,9 @@ function OrderTracking() {
 
     return (
         <>
+            <Helmet>
+                <title>Order Tracking</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

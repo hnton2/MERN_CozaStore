@@ -12,6 +12,7 @@ import { TextEditorField } from "components/CustomForm";
 import couponServices from "services/coupon";
 import { DatePickerField } from "components/CustomForm";
 import moment from "moment";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -69,6 +70,9 @@ function CouponForm() {
 
     return (
         <>
+            <Helmet>
+                <title>Coupon Form</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

@@ -14,6 +14,7 @@ import userServices from "services/user";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import { Helmet } from "react-helmet";
 
 toast.configure();
 
@@ -120,10 +121,14 @@ function UserTable() {
 
     return (
         <>
+            {" "}
+            <Helmet>
+                <title>User Table</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>
-                    <Breadcrumbs links={linkData} current="User" />
+                    <Breadcrumbs links={linkData} current="User Table" />
                     <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
                         <CircularProgress color="inherit" />
                     </Backdrop>

@@ -11,6 +11,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import productCategoryServices from "services/productCategory";
 import { GetALlCategoryProduct } from "redux/categorySlice";
 import { useDispatch } from "react-redux";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -70,6 +71,9 @@ function ProductCategoryForm() {
 
     return (
         <>
+            <Helmet>
+                <title>Product Category Form</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

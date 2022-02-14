@@ -16,8 +16,10 @@ import parse from "html-react-parser";
 import { Form, SelectField } from "components/CustomForm";
 import { addProductValidation } from "helpers/validation";
 import { QuantityField } from "components/CustomForm";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addProduct } from "redux/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
     <button
@@ -43,7 +45,10 @@ const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
 );
 
 function ProductDetail({ product }) {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.auth.currentUser);
+
     const [photoIndex, setPhotoIndex] = useState(0);
     const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -63,8 +68,14 @@ function ProductDetail({ product }) {
         nextArrow: <SlickArrowRight />,
         prevArrow: <SlickArrowLeft />,
     };
-    const onSubmit = (data) =>
-        dispatch(addProduct({ ...product, ...data, color: data.color.label, size: data.size.label }));
+    const onSubmit = (data) => {
+        if (user) {
+            dispatch(addProduct({ ...product, ...data, color: data.color.label, size: data.size.label }));
+            toast.success("Add product to cart successfully!", {
+                position: "top-center",
+            });
+        } else navigate("/login");
+    };
 
     return (
         <div className="product">

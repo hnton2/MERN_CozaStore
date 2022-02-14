@@ -12,6 +12,7 @@ import orderServices from "services/order";
 import { useState } from "react";
 import Preloader from "components/Preloader";
 import moment from "moment";
+import { Helmet } from "react-helmet";
 
 toast.configure();
 
@@ -49,6 +50,9 @@ function Confirmation() {
 
     return (
         <>
+            <Helmet>
+                <title>Confirmation</title>
+            </Helmet>
             <Header />
             <Preloader isHidden={invoice} />
             <div className="main">

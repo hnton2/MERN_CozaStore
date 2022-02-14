@@ -14,6 +14,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { Link } from "react-router-dom";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, AreaChart, Area } from "recharts";
 import "./Dashboard.scss";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -53,6 +54,9 @@ const DashboardCard = ({ name, amount, icon }) => {
 function Dashboard() {
     return (
         <>
+            <Helmet>
+                <title>Dashboard</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

@@ -11,6 +11,7 @@ import productServices from "services/product";
 import { Form, InputField } from "components/CustomForm";
 import { reviewValidation } from "helpers/validation";
 import Preloader from "components/Preloader";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -62,6 +63,9 @@ function Product() {
             <Preloader isHidden={productDetail} />
             {productDetail && (
                 <div className="main">
+                    <Helmet>
+                        <title>{productDetail.name}</title>
+                    </Helmet>
                     <Container>
                         <Breadcrumbs links={linkData} current={productDetail.name} />
                         <ProductDetail product={productDetail} />

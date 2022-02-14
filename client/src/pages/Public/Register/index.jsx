@@ -10,6 +10,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { SignUp } from "redux/authSlice";
+import { Helmet } from "react-helmet";
 
 const Container = styled.div`
     width: 100vw;
@@ -171,51 +172,56 @@ function Register() {
     };
 
     return (
-        <Container>
-            <Wrapper>
-                <Box>
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Title black>Create Account</Title>
-                        <Socials className="socials">
-                            <IconButton>
-                                <FacebookRoundedIcon sx={{ color: "#222" }} />
-                            </IconButton>
-                            <IconButton>
-                                <GoogleIcon sx={{ color: "#222" }} />
-                            </IconButton>
-                            <IconButton>
-                                <GitHubIcon sx={{ color: "#222" }} />
-                            </IconButton>
-                        </Socials>
-                        <Noted>or use your email for registration</Noted>
-                        <Input type="text" {...register("username")} placeholder="Username" />
-                        <p className="error-message">{errors.username?.message}</p>
-                        <Input type="email" {...register("email")} placeholder="Email" />
-                        <p className="error-message">{errors.email?.message}</p>
-                        <Input type="password" {...register("password")} placeholder="Password" />
-                        <p className="error-message">{errors.password?.message}</p>
-                        <Input type="password" {...register("confirmPassword")} placeholder="Confirm Password" />
-                        <p className="error-message">{errors.confirmPassword?.message}</p>
-                        <button className="btn btn-primary btn-lg text-uppercase" disabled={isFetching}>
-                            Sign up
-                        </button>
-                        <TabletOption>
-                            <Noted2>Already have an account? </Noted2>
-                            <Link to="/register" className="link">
-                                Sign In
-                            </Link>
-                        </TabletOption>
-                    </Form>
-                </Box>
-                <Box backgroundColor>
-                    <TextBox>
-                        <Title>Welcome Back!</Title>
-                        <Paragraph>To keep connected with us please login with your personal info</Paragraph>
-                        <ButtonLink to="/login">Sign in</ButtonLink>
-                    </TextBox>
-                </Box>
-            </Wrapper>
-        </Container>
+        <>
+            <Helmet>
+                <title>Register</title>
+            </Helmet>
+            <Container>
+                <Wrapper>
+                    <Box>
+                        <Form onSubmit={handleSubmit(onSubmit)}>
+                            <Title black>Create Account</Title>
+                            <Socials className="socials">
+                                <IconButton>
+                                    <FacebookRoundedIcon sx={{ color: "#222" }} />
+                                </IconButton>
+                                <IconButton>
+                                    <GoogleIcon sx={{ color: "#222" }} />
+                                </IconButton>
+                                <IconButton>
+                                    <GitHubIcon sx={{ color: "#222" }} />
+                                </IconButton>
+                            </Socials>
+                            <Noted>or use your email for registration</Noted>
+                            <Input type="text" {...register("username")} placeholder="Username" />
+                            <p className="error-message">{errors.username?.message}</p>
+                            <Input type="email" {...register("email")} placeholder="Email" />
+                            <p className="error-message">{errors.email?.message}</p>
+                            <Input type="password" {...register("password")} placeholder="Password" />
+                            <p className="error-message">{errors.password?.message}</p>
+                            <Input type="password" {...register("confirmPassword")} placeholder="Confirm Password" />
+                            <p className="error-message">{errors.confirmPassword?.message}</p>
+                            <button className="btn btn-primary btn-lg text-uppercase" disabled={isFetching}>
+                                Sign up
+                            </button>
+                            <TabletOption>
+                                <Noted2>Already have an account? </Noted2>
+                                <Link to="/register" className="link">
+                                    Sign In
+                                </Link>
+                            </TabletOption>
+                        </Form>
+                    </Box>
+                    <Box backgroundColor>
+                        <TextBox>
+                            <Title>Welcome Back!</Title>
+                            <Paragraph>To keep connected with us please login with your personal info</Paragraph>
+                            <ButtonLink to="/login">Sign in</ButtonLink>
+                        </TextBox>
+                    </Box>
+                </Wrapper>
+            </Container>
+        </>
     );
 }
 

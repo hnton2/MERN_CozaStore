@@ -17,6 +17,7 @@ import parse from "html-react-parser";
 import couponServices from "services/coupon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -114,6 +115,9 @@ function CouponTable() {
 
     return (
         <>
+            <Helmet>
+                <title>Coupon Table</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

@@ -17,6 +17,7 @@ import Message from "components/Message";
 import StatusFilter from "components/StatusFilter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -117,6 +118,9 @@ function ProductTable() {
 
     return (
         <>
+            <Helmet>
+                <title>Product Table</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

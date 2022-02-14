@@ -16,6 +16,7 @@ import CouponsModal from "components/CouponsModal";
 import Image from "constants/Image";
 import couponServices from "services/coupon";
 import { applyDiscount } from "redux/cartSlice";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -48,6 +49,9 @@ function Cart() {
 
     return (
         <>
+            <Helmet>
+                <title>Cart</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

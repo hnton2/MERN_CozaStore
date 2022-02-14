@@ -11,6 +11,7 @@ import Message from "components/Message";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TextEditorField } from "components/CustomForm";
 import { useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 
 const linkData = [
     {
@@ -74,7 +75,7 @@ function ProductForm() {
 
     useEffect(() => {
         if (watchCategory || initialValue.category.value) {
-            categoryProduct.map((item) => {
+            categoryProduct.forEach((item) => {
                 if (item.slug === watchCategory || item.slug === initialValue.category.value)
                     setOptions({ tag: item.tag, color: item.color, size: item.size });
             });
@@ -101,6 +102,9 @@ function ProductForm() {
 
     return (
         <>
+            <Helmet>
+                <title>Product Form</title>
+            </Helmet>
             <Header />
             <div className="main">
                 <Container>

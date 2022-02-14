@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Image from "constants/Image";
+import { Helmet } from "react-helmet";
 
 const BackgroundError = styled.div`
     width: 100vw;
@@ -46,16 +47,21 @@ const Paragraph = styled.p`
 
 function NotFound() {
     return (
-        <BackgroundError>
-            <Container>
-                <Heading1>404</Heading1>
-                <Heading2>This page cannot be found!</Heading2>
-                <Paragraph>But we have lots of other pages for you see.</Paragraph>
-                <Link to="/" className="btn btn-light">
-                    Go Back
-                </Link>
-            </Container>
-        </BackgroundError>
+        <>
+            <Helmet>
+                <title>Login</title>
+            </Helmet>
+            <BackgroundError>
+                <Container>
+                    <Heading1>404</Heading1>
+                    <Heading2>This page cannot be found!</Heading2>
+                    <Paragraph>But we have lots of other pages for you see.</Paragraph>
+                    <Link to="/" className="btn btn-light">
+                        Go Back
+                    </Link>
+                </Container>
+            </BackgroundError>
+        </>
     );
 }
 

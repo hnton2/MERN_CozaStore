@@ -16,6 +16,7 @@ import Preloader from "components/Preloader";
 import { useSelector } from "react-redux";
 import { COLOR_OPTIONS, SIZE_OPTIONS, TAG_OPTIONS } from "constants/Data";
 import { escapeRegExp } from "helpers/string";
+import { Helmet } from "react-helmet";
 
 function Products() {
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
@@ -130,6 +131,9 @@ function Products() {
 
     return (
         <>
+            <Helmet>
+                <title>{currentCategory[0].toUpperCase() + currentCategory.slice(1)}</title>
+            </Helmet>
             <Header />
             <Preloader isHidden={products.length > 0} />
             <div className="main">

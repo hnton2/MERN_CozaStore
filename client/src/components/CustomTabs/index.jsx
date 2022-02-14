@@ -1,12 +1,10 @@
 import { Tab, Tabs } from "@mui/material";
-import ProductsSlider from "components/ProductsSlider";
 import React from "react";
 import TabPanel from "../TabPanel";
 
 function CustomTabs({ data }) {
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => setValue(newValue);
-    console.log("tabs: ", data);
 
     return (
         <>
