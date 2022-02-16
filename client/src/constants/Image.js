@@ -50,6 +50,11 @@ import NO_DATA from "assets/images/no-data.png";
 import CLOUDS from "assets/images/clouds.png";
 import COUPON_ICON from "assets/images/icons/coupon_icon.svg";
 import CART_SUCCESS from "assets/images/icons/cart-success.svg";
+import ICON_PAYMENT1 from "assets/images/icons/icon-pay-01.png";
+import ICON_PAYMENT2 from "assets/images/icons/icon-pay-02.png";
+import ICON_PAYMENT3 from "assets/images/icons/icon-pay-03.png";
+import ICON_PAYMENT4 from "assets/images/icons/icon-pay-04.png";
+import ICON_PAYMENT5 from "assets/images/icons/icon-pay-05.png";
 
 const Image = {
     LOGO: Logo,
@@ -104,6 +109,11 @@ const Image = {
     CLOUDS,
     COUPON_ICON,
     CART_SUCCESS,
+    ICON_PAYMENT1,
+    ICON_PAYMENT2,
+    ICON_PAYMENT3,
+    ICON_PAYMENT4,
+    ICON_PAYMENT5,
 };
 
 export default Image;

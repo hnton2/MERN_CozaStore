@@ -5,7 +5,7 @@ const { randomString } = require("../helpers/string");
 const router = require("express").Router();
 
 // @DESC Create a order
-// @ROUTE CREATE /api/order/
+// @ROUTE POST /api/order/
 // @ACCESS Public
 router.post("/", verifyToken, async (req, res) => {
     const newOrder = new Order({ ...req.body, code: randomString(10) });
@@ -19,7 +19,7 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 // @DESC Get a order
-// @ROUTE GET /api/order/
+// @ROUTE GET /api/order/find/:code
 // @ACCESS Public
 router.get("/find/:invoiceCode", verifyToken, async (req, res) => {
     try {
@@ -32,50 +32,14 @@ router.get("/find/:invoiceCode", verifyToken, async (req, res) => {
     }
 });
 
-// GET ALL
-
+// @DESC Get all order
+// @ROUTE GET /api/order/
+// @ACCESS Public
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
     try {
         const orders = await Order.find();
-        res.status(200).json(orders);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
-    }
-});
-
-// GET MONTHLY INCOME
-
-router.get("/income", verifyTokenAndAdmin, async (req, res) => {
-    const productId = req.query.pid;
-    const date = new Date();
-    const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
-    const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
-
-    try {
-        const income = await Order.aggregate([
-            {
-                $match: {
-                    createdAt: { $gte: previousMonth },
-                    ...(productId && {
-                        products: { $elemMatch: { productId } },
-                    }),
-                },
-            },
-            {
-                $project: {
-                    month: { $month: "$createdAt" },
-                    sales: "$amount",
-                },
-            },
-            {
-                $group: {
-                    _id: "$month",
-                    total: { $sum: "$sales" },
-                },
-            },
-        ]);
-        res.json(income);
+        if (!orders) return res.status(401).json({ success: false, message: "Orders not found" });
+        res.status(200).json({ success: true, message: "Get orders successfully", orders });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

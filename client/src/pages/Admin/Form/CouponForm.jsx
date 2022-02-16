@@ -11,15 +11,21 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { TextEditorField } from "components/CustomForm";
 import couponServices from "services/coupon";
 import { DatePickerField } from "components/CustomForm";
-import moment from "moment";
 import { Helmet } from "react-helmet";
+import Preloader from "components/Preloader";
 
 const linkData = [
     {
         name: "Admin",
         path: "/admin",
     },
+    {
+        name: "Coupon",
+        path: "/coupon",
+    },
 ];
+
+const TITLE_PAGE = "Coupon Form";
 
 function CouponForm() {
     const navigate = useNavigate();
@@ -61,7 +67,7 @@ function CouponForm() {
                 : await couponServices.createNewCoupon(data);
             setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/coupon/table");
+            navigate("/admin/coupon");
         } catch (error) {
             setIsLoading(false);
             setMessage({ type: "error", content: error.response.data.message });
@@ -71,17 +77,18 @@ function CouponForm() {
     return (
         <>
             <Helmet>
-                <title>Coupon Form</title>
+                <title>{TITLE_PAGE}</title>
             </Helmet>
+            {currentId && <Preloader isHidden={initialValue.name !== ""} />}
             <Header />
             <div className="main">
                 <Container>
-                    <Breadcrumbs links={linkData} current="Coupon Form" />
+                    <Breadcrumbs links={linkData} current={TITLE_PAGE} />
                     <div className="card">
                         <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
                             <CircularProgress color="inherit" />
                         </Backdrop>
-                        <h3 className="card-header">Coupon Form</h3>
+                        <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
                             {message && <Message type={message.type}>{message.content}</Message>}
                             <Form onSubmit={onSubmit} defaultValues={initialValue} validation={couponValidation}>
@@ -93,7 +100,7 @@ function CouponForm() {
                                 <InputField name="discount" placeholder="Discount" />
                                 <TextEditorField name="description" />
                                 <div className="form-button">
-                                    <Link to="/admin/coupon/table" className="btn btn-danger">
+                                    <Link to="/admin/coupon" className="btn btn-danger">
                                         Cancel
                                     </Link>
                                     <button className="btn btn-primary">{currentId ? "Update" : "Submit"}</button>

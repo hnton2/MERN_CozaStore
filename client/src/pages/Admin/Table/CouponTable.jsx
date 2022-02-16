@@ -18,6 +18,7 @@ import couponServices from "services/coupon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
+import Preloader from "components/Preloader";
 
 const linkData = [
     {
@@ -25,6 +26,8 @@ const linkData = [
         path: "/admin",
     },
 ];
+
+const TITLE_PAGE = "Coupon List";
 
 const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
     const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
@@ -116,12 +119,13 @@ function CouponTable() {
     return (
         <>
             <Helmet>
-                <title>Coupon Table</title>
+                <title>{TITLE_PAGE}</title>
             </Helmet>
+            <Preloader isHidden={coupons} />
             <Header />
             <div className="main">
                 <Container>
-                    <Breadcrumbs links={linkData} current="Coupon Table" />
+                    <Breadcrumbs links={linkData} current={TITLE_PAGE} />
                     <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
                         <CircularProgress color="inherit" />
                     </Backdrop>
@@ -130,7 +134,7 @@ function CouponTable() {
                         <div className="card-body">
                             <div className="toolbar">
                                 <StatusFilter data={rows} />
-                                <div style={{ width: "240px" }}>{/* <Select options={CATEGORY_OPTIONS} /> */}</div>
+                                <div style={{ width: "240px" }}> </div>
                                 <div className="search">
                                     <SearchIcon className="search-icon" />
                                     <input
@@ -151,7 +155,7 @@ function CouponTable() {
                         </div>
                     </div>
                     <div className="card">
-                        <h3 className="card-header">Coupon Table</h3>
+                        <h3 className="card-header">{TITLE_PAGE}</h3>
                         {message && <Message type={message.type}>{message.content}</Message>}
                         <div className="card-body">
                             <div className="actions">

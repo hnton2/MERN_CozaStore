@@ -1,3 +1,5 @@
+import { faWallet } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CategoryIcon from "@mui/icons-material/Category";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
@@ -17,7 +19,7 @@ export const ADMIN_SIDEBAR = [
         icon: <DashboardIcon fontSize="small" />,
     },
     {
-        title: "Users",
+        title: "User List",
         path: "/admin/user",
         icon: <GroupAddIcon />,
     },
@@ -29,8 +31,8 @@ export const ADMIN_SIDEBAR = [
         iconOpened: <KeyboardArrowDownIcon fontSize="small" />,
         SubMenu: [
             {
-                title: "Product Category Table",
-                path: "/admin/product-category/table",
+                title: "Product Category List",
+                path: "/admin/product-category",
                 icon: <ListAltIcon fontSize="small" />,
             },
             {
@@ -48,8 +50,8 @@ export const ADMIN_SIDEBAR = [
         iconOpened: <KeyboardArrowDownIcon fontSize="small" />,
         SubMenu: [
             {
-                title: "Product Table",
-                path: "/admin/product/table",
+                title: "Product List",
+                path: "/admin/product",
                 icon: <ListAltIcon fontSize="small" />,
             },
             {
@@ -67,16 +69,21 @@ export const ADMIN_SIDEBAR = [
         iconOpened: <KeyboardArrowDownIcon fontSize="small" />,
         SubMenu: [
             {
-                title: "Coupon Table",
-                path: "/admin/Coupon/table",
+                title: "Coupon List",
+                path: "/admin/coupon",
                 icon: <ListAltIcon fontSize="small" />,
             },
             {
                 title: "Create New Coupon",
-                path: "/admin/Coupon/form",
+                path: "/admin/coupon/form",
                 icon: <FiberNewIcon fontSize="small" />,
             },
         ],
+    },
+    {
+        title: "Order List",
+        path: "/admin/order",
+        icon: <FontAwesomeIcon icon={faWallet} />,
     },
 ];
 

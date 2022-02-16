@@ -12,13 +12,20 @@ import productCategoryServices from "services/productCategory";
 import { GetALlCategoryProduct } from "redux/categorySlice";
 import { useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
+import Preloader from "components/Preloader";
 
 const linkData = [
     {
         name: "Admin",
         path: "/admin",
     },
+    {
+        name: "Product Category ",
+        path: "/product-category ",
+    },
 ];
+
+const TITLE_PAGE = "Product Category Form";
 
 function ProductCategoryForm() {
     const dispatch = useDispatch();
@@ -62,7 +69,7 @@ function ProductCategoryForm() {
                 : await productCategoryServices.createNewProductCategory(data);
             setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/product-category/table");
+            navigate("/admin/product-category");
         } catch (error) {
             setIsLoading(false);
             setMessage({ type: "error", content: error.response.data.message });
@@ -72,17 +79,18 @@ function ProductCategoryForm() {
     return (
         <>
             <Helmet>
-                <title>Product Category Form</title>
+                <title>{TITLE_PAGE}</title>
             </Helmet>
+            {currentId && <Preloader isHidden={initialValue.name !== ""} />}
             <Header />
             <div className="main">
                 <Container>
-                    <Breadcrumbs links={linkData} current="Product Category Form" />
+                    <Breadcrumbs links={linkData} current={TITLE_PAGE} />
                     <div className="card">
                         <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
                             <CircularProgress color="inherit" />
                         </Backdrop>
-                        <h3 className="card-header">Product Category Form</h3>
+                        <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
                             {message && <Message type={message.type}>{message.content}</Message>}
                             <Form
@@ -112,7 +120,7 @@ function ProductCategoryForm() {
                                 />
                                 <TextEditorField name="description" />
                                 <div className="form-button">
-                                    <Link to="/admin/product-category/table" className="btn btn-danger">
+                                    <Link to="/admin/product-category" className="btn btn-danger">
                                         Cancel
                                     </Link>
                                     <button className="btn btn-primary">{currentId ? "Update" : "Submit"}</button>

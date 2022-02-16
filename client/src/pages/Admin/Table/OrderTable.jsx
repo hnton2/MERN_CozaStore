@@ -1,25 +1,22 @@
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import SearchIcon from "@mui/icons-material/Search";
-import { Backdrop, CircularProgress, Container, Pagination, Skeleton } from "@mui/material";
-import Breadcrumbs from "components/Breadcrumbs";
+import React, { useEffect, useState } from "react";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Message from "components/Message";
-import StatusFilter from "components/StatusFilter";
-import { CATEGORY_OPTIONS } from "constants/Data";
-import { escapeRegExp } from "helpers/string";
-import React, { useEffect, useState } from "react";
+import Breadcrumbs from "components/Breadcrumbs";
+import { Container, Pagination, Skeleton } from "@mui/material";
 import { Link, useSearchParams } from "react-router-dom";
-import Select from "react-select";
-import productCategoryServices from "services/productCategory";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import "./Table.scss";
-import parse from "html-react-parser";
+import { escapeRegExp } from "helpers/string";
+import { CATEGORY_OPTIONS } from "constants/Data";
+import Select from "react-select";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import StatusFilter from "components/StatusFilter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import { Helmet } from "react-helmet";
 import Preloader from "components/Preloader";
+import orderServices from "services/order";
 
 const linkData = [
     {
@@ -28,37 +25,43 @@ const linkData = [
     },
 ];
 
-const TITLE_PAGE = "Product Category List";
+const TITLE_PAGE = "Order List";
 
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
+const RenderTable = ({ data, currentPage, totalItemPerPage = 5 }) => {
     const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
 
     return (
         <>
             {dataRender.map((item) => (
                 <tr key={item._id}>
-                    <td className="text-center">{item.name}</td>
+                    <td className="text-center">#{item.code}</td>
+                    <td>{item.user.name}</td>
+                    <td className="text-center">
+                        {item.user.address.province} - {item.user.address.country}
+                    </td>
+                    <td className="text-center">{item.status}</td>
+                    <td>
+                        {item.products.map((product) => (
+                            <p key={product.slug}>
+                                <Link to={`/product/${product.slug}`}>{product.name}</Link>
+                            </p>
+                        ))}
+                    </td>
+                    <td className="text-center">{item.coupon ? item.coupon.name : "None"}</td>
+                    <td className="text-center">${item.total}</td>
                     <td className="text-center">
                         <button
                             className={`btn btn-rounded ${
-                                item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
+                                item.checkPayment ? "btn-success" : "btn-secondary btn-disabled"
                             } btn-sm`}
                         >
                             <FontAwesomeIcon icon={faCheck} />
                         </button>
                     </td>
-                    <td className="text-center">{item.slug}</td>
-                    <td className="text-center">{parse(item.description)}</td>
                     <td className="text-center">
-                        <Link
-                            to={`/admin/product-category/form/${item._id}`}
-                            className="btn btn-rounded btn-primary btn-sm"
-                        >
-                            <FontAwesomeIcon icon={faPenToSquare} />
+                        <Link to={`/admin/order/invoice/${item.code}`} className="btn btn-rounded btn-primary btn-sm">
+                            <FontAwesomeIcon icon={faFolderOpen} />
                         </Link>
-                        <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
                     </td>
                 </tr>
             ))}
@@ -66,53 +69,31 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
     );
 };
 
-function ProductCategoryTable() {
+function OrderTable() {
     let [searchParams, setSearchParams] = useSearchParams();
     let currentPage = searchParams.get("page") || 1;
 
     const [searchText, setSearchText] = useState("");
-    const [categories, setCategories] = useState();
+    const [orders, setOrders] = useState();
     const [rows, setRows] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState();
-
-    const requestSearch = (searchValue) => {
-        setSearchText(searchValue);
-        const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = categories.filter((row) => {
-            return Object.keys(row).some((field) => {
-                return searchRegex.test(row[field].toString());
-            });
-        });
-        setRows(filteredRows);
-    };
 
     useEffect(() => {
         const fetchAllProduct = async () => {
-            const res = await productCategoryServices.getAllProductCategory();
-            setCategories(res.data.category);
-            setRows(res.data.category);
+            const res = await orderServices.getAllOrder();
+            setOrders(res.data.orders);
+            setRows(res.data.orders);
         };
         fetchAllProduct();
     }, []);
 
-    const handleDelete = async (id) => {
-        console.log(id);
-        try {
-            setIsLoading(true);
-            setMessage("");
-            const res = await productCategoryServices.deleteProductCategory(id);
-            setIsLoading(false);
-            if (res.data.success) {
-                const updateCategories = categories.filter((product) => product._id !== id);
-                setCategories(updateCategories);
-                setRows(updateCategories);
-                setMessage({ type: "error", content: res.data.message });
-            } else setMessage({ type: "success", content: res.data.message });
-        } catch (error) {
-            console.log(error);
-            setMessage({ type: "error", content: error.data.message });
-        }
+    const requestSearch = (searchValue) => {
+        setSearchText(searchValue);
+        const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
+        const filteredRows = orders.filter((row) =>
+            Object.keys(row).some((field) => searchRegex.test(row[field].toString()))
+        );
+        setRows(filteredRows);
+        setSearchParams({ page: 1 });
     };
 
     const handleChangePage = (event, value) => setSearchParams({ page: value });
@@ -122,14 +103,11 @@ function ProductCategoryTable() {
             <Helmet>
                 <title>{TITLE_PAGE}</title>
             </Helmet>
-            <Preloader isHidden={categories} />
+            <Preloader isHidden={orders} />
             <Header />
             <div className="main">
                 <Container>
                     <Breadcrumbs links={linkData} current={TITLE_PAGE} />
-                    <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
-                        <CircularProgress color="inherit" />
-                    </Backdrop>
                     <div className="card">
                         <h3 className="card-header">Filter & Search</h3>
                         <div className="card-body">
@@ -159,31 +137,30 @@ function ProductCategoryTable() {
                     </div>
                     <div className="card">
                         <h3 className="card-header">{TITLE_PAGE}</h3>
-                        {message && <Message type={message.type}>{message.content}</Message>}
                         <div className="card-body">
                             <div className="actions">
                                 <button className="btn btn-danger">
                                     <FileDownloadIcon />
                                     Export
                                 </button>
-                                <Link to="/admin/product-category/form" className="btn btn-primary">
-                                    <AddIcon />
-                                    Add New
-                                </Link>
                             </div>
                             {rows.length > 0 ? (
                                 <table className="table table-border">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
+                                            <th>Invoice Code</th>
+                                            <th>User</th>
+                                            <th>Address</th>
                                             <th>Status</th>
-                                            <th>Slug</th>
-                                            <th>Desciption</th>
+                                            <th>Products</th>
+                                            <th>Coupon</th>
+                                            <th>Total</th>
+                                            <th>Payment</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <RenderTable data={rows} currentPage={currentPage} onDelete={handleDelete} />
+                                        <RenderTable data={rows} currentPage={currentPage} />
                                     </tbody>
                                 </table>
                             ) : (
@@ -215,4 +192,4 @@ function ProductCategoryTable() {
     );
 }
 
-export default ProductCategoryTable;
+export default OrderTable;

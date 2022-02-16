@@ -1,14 +1,23 @@
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import Dashboard from "pages/Admin/Dashboard";
+import CouponForm from "pages/Admin/Form/CouponForm";
 import ProductCategoryForm from "pages/Admin/Form/ProductCategoryForm";
 import ProductForm from "pages/Admin/Form/ProductForm";
+import CouponTable from "pages/Admin/Table/CouponTable";
+import OrderTable from "pages/Admin/Table/OrderTable";
+import InvoicePage from "pages/Admin/Invoice";
 import ProductCategoryTable from "pages/Admin/Table/ProductCategoryTable";
 import ProductTable from "pages/Admin/Table/ProductTable";
-import CouponForm from "pages/Admin/Form/CouponForm";
-import CouponTable from "pages/Admin/Table/CouponTable";
+import UserTable from "pages/Admin/Table/UserTable";
+import Confirmation from "pages/Public/Confirmation";
 import NotFound from "pages/Public/NotFound";
+import OrderTracking from "pages/Public/OrderTracking";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { updateCart } from "redux/cartSlice";
 import { GetALlCategoryProduct } from "redux/categorySlice";
 import About from "./pages/Public/About";
 import Blog from "./pages/Public/Blog";
@@ -22,13 +31,6 @@ import Product from "./pages/Public/Product";
 import Products from "./pages/Public/Products";
 import Register from "./pages/Public/Register";
 import "./style.scss";
-import "react-toastify/dist/ReactToastify.css";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import Confirmation from "pages/Public/Confirmation";
-import OrderTracking from "pages/Public/OrderTracking";
-import UserTable from "pages/Admin/Table/UserTable";
-import { updateCart } from "redux/cartSlice";
 
 const stripePromise = loadStripe(
     "pk_test_51KCL3uD7QIM7Pt3fDuSzusNuy4dl4oNXEkPM6KzS1rpHTE4S16mz1zNgFb96kPnFAA13uSofYqhnXGIJFLhxMQcA00HrG0u4LC"
@@ -69,26 +71,35 @@ function App() {
                 {/* Admin */}
                 {user && user.isAdmin ? (
                     <>
-                        <Route exact path="/admin" element={<Dashboard />} />
-                        <Route path="/admin/user" element={<UserTable />} />
-                        {/*==================================== Product ====================================*/}
-                        <Route path="/admin/product/form">
-                            <Route path=":id" element={<ProductForm />} />
-                            <Route path="" element={<ProductForm />} />
+                        <Route path="/admin/">
+                            <Route exact path="" element={<Dashboard />} />
+                            <Route path="user" element={<UserTable />} />
+                            <Route path="product/">
+                                <Route exact path="" element={<ProductTable />} />
+                                <Route path="form/">
+                                    <Route path=":id" element={<ProductForm />} />
+                                    <Route path="" element={<ProductForm />} />
+                                </Route>
+                            </Route>
+                            <Route path="product-category/">
+                                <Route exact path="" element={<ProductCategoryTable />} />
+                                <Route path="form/">
+                                    <Route path=":id" element={<ProductCategoryForm />} />
+                                    <Route path="" element={<ProductCategoryForm />} />
+                                </Route>
+                            </Route>
+                            <Route path="coupon/">
+                                <Route exact path="" element={<CouponTable />} />
+                                <Route path="form/">
+                                    <Route path=":id" element={<CouponForm />} />
+                                    <Route path="" element={<CouponForm />} />
+                                </Route>
+                            </Route>
+                            <Route path="order/">
+                                <Route exact path="" element={<OrderTable />} />
+                                <Route path="invoice/:id" element={<InvoicePage />} />
+                            </Route>
                         </Route>
-                        <Route exact path="/admin/product/table" element={<ProductTable />} />
-                        {/*==================================== Product category ====================================*/}
-                        <Route path="/admin/product-category/form">
-                            <Route path=":id" element={<ProductCategoryForm />} />
-                            <Route path="" element={<ProductCategoryForm />} />
-                        </Route>
-                        <Route exact path="/admin/product-category/table" element={<ProductCategoryTable />} />
-                        {/* ==================================== Coupon ==================================== */}
-                        <Route path="/admin/coupon/form">
-                            <Route path=":id" element={<CouponForm />} />
-                            <Route path="" element={<CouponForm />} />
-                        </Route>
-                        <Route exact path="/admin/coupon/table" element={<CouponTable />} />
                     </>
                 ) : (
                     <Route path="*" element={<NotFound />} />

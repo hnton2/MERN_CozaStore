@@ -1,0 +1,72 @@
+@import "../../../variables.scss";
+
+.invoice {
+    color: $black-color;
+
+    &__header {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        & > h4 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        & > span {
+            font-size: 20px;
+        }
+    }
+
+    &__info {
+        & address {
+            margin-bottom: 8px;
+            font-style: normal;
+        }
+    }
+
+    &__table {
+        & .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-right: 16px;
+        }
+    }
+
+    &__footer {
+        & .payment {
+            &-title {
+                font-size: 20px;
+                font-weight: 400;
+                margin-bottom: 16px;
+                margin-top: 8px;
+            }
+
+            &-image {
+                width: 52px;
+                margin-right: 4px;
+            }
+
+            &-message {
+                font-size: 16px;
+                font-weight: 300;
+                color: $grey-color;
+                margin: 10px 0 16px;
+            }
+
+            &-item {
+                padding: 12px;
+                border-top: 1px solid $border-color;
+                border-bottom: 1px solid $border-color;
+
+                & > p {
+                    font-weight: 600;
+                    display: inline-block;
+                    min-width: 200px;
+                }
+            }
+        }
+    }
+}

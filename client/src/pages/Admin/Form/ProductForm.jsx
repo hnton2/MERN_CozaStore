@@ -12,13 +12,20 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { TextEditorField } from "components/CustomForm";
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
+import Preloader from "components/Preloader";
 
 const linkData = [
     {
         name: "Admin",
         path: "/admin",
     },
+    {
+        name: "Product ",
+        path: "/product ",
+    },
 ];
+
+const TITLE_PAGE = "Product Form";
 
 function ProductForm() {
     const navigate = useNavigate();
@@ -93,7 +100,7 @@ function ProductForm() {
                 : await productServices.createNewProduct(data);
             setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/product/table");
+            navigate("/admin/product");
         } catch (error) {
             setIsLoading(false);
             setMessage({ type: "error", content: error.response.data.message });
@@ -103,17 +110,18 @@ function ProductForm() {
     return (
         <>
             <Helmet>
-                <title>Product Form</title>
+                <title>{TITLE_PAGE}</title>
             </Helmet>
+            {currentId && <Preloader isHidden={initialValue.name !== ""} />}
             <Header />
             <div className="main">
                 <Container>
-                    <Breadcrumbs links={linkData} current="Product Form" />
+                    <Breadcrumbs links={linkData} current={TITLE_PAGE} />
                     <div className="card">
                         <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
                             <CircularProgress color="inherit" />
                         </Backdrop>
-                        <h3 className="card-header">Product Form</h3>
+                        <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
                             {message && <Message type={message.type}>{message.content}</Message>}
                             <Form
@@ -134,7 +142,7 @@ function ProductForm() {
                                 <InputField name="discount" placeholder="Discount" />
                                 <TextEditorField name="description" />
                                 <div className="form-button">
-                                    <Link to="/admin/product/table" className="btn btn-danger">
+                                    <Link to="/admin/product" className="btn btn-danger">
                                         Cancel
                                     </Link>
                                     <button className="btn btn-primary">{currentId ? "Update" : "Submit"}</button>
