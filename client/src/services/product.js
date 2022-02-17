@@ -35,6 +35,10 @@ const addReview = (slug, data) => {
     return publicRequest.post(`product/review/${slug}`, data);
 };
 
+const changeStatus = (id, currentStatus) => {
+    return userRequest.put(`product/change-status/${id}`, { currentStatus: currentStatus });
+};
+
 const productServices = {
     createNewProduct,
     getAllProduct,
@@ -44,6 +48,7 @@ const productServices = {
     getProductByCategory,
     getProductDetailBySlug,
     addReview,
+    changeStatus,
 };
 
 export default productServices;

@@ -30,7 +30,7 @@ const linkData = [
 
 const TITLE_PAGE = "Product Category List";
 
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
+const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete, onChangeStatus }) => {
     const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
 
     return (
@@ -43,6 +43,7 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
                             className={`btn btn-rounded ${
                                 item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
                             } btn-sm`}
+                            onClick={() => onChangeStatus(item._id, item.status)}
                         >
                             <FontAwesomeIcon icon={faCheck} />
                         </button>
@@ -94,7 +95,7 @@ function ProductCategoryTable() {
             setRows(res.data.category);
         };
         fetchAllProduct();
-    }, []);
+    }, [categories]);
 
     const handleDelete = async (id) => {
         console.log(id);
@@ -116,6 +117,19 @@ function ProductCategoryTable() {
     };
 
     const handleChangePage = (event, value) => setSearchParams({ page: value });
+
+    const handleChangeStatus = async (id, value) => {
+        try {
+            setIsLoading(true);
+            const res = await productCategoryServices.changeStatus(id, value);
+            if (res.data.success) {
+                setCategories(res.data);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <>
@@ -183,7 +197,12 @@ function ProductCategoryTable() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <RenderTable data={rows} currentPage={currentPage} onDelete={handleDelete} />
+                                        <RenderTable
+                                            data={rows}
+                                            currentPage={currentPage}
+                                            onDelete={handleDelete}
+                                            onChangeStatus={handleChangeStatus}
+                                        />
                                     </tbody>
                                 </table>
                             ) : (

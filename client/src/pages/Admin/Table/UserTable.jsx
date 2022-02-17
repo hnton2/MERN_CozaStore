@@ -28,7 +28,7 @@ const linkData = [
 
 const TITLE_PAGE = "Product List";
 
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
+const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete, onChangeRole }) => {
     const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
 
     return (
@@ -42,6 +42,7 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete }) => {
                             className={`btn btn-rounded ${
                                 item.isAdmin ? "btn-success" : "btn-secondary btn-disabled"
                             } btn-sm`}
+                            onClick={() => onChangeRole(item._id, item.isAdmin)}
                         >
                             <FontAwesomeIcon icon={faCheck} />
                         </button>
@@ -86,7 +87,7 @@ function UserTable() {
             setRows(res.data.user);
         };
         fetchAllUser();
-    }, []);
+    }, [users]);
 
     const handleDelete = async (id) => {
         try {
@@ -121,6 +122,19 @@ function UserTable() {
     };
 
     const handleChangePage = (event, value) => setSearchParams({ page: value });
+
+    const handleChangeRole = async (id, value) => {
+        try {
+            setIsLoading(true);
+            const res = await userServices.changeRole(id, value);
+            if (res.data.success) {
+                setUsers(res.data);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <>
@@ -176,7 +190,12 @@ function UserTable() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <RenderTable data={rows} currentPage={currentPage} onDelete={handleDelete} />
+                                        <RenderTable
+                                            data={rows}
+                                            currentPage={currentPage}
+                                            onDelete={handleDelete}
+                                            onChangeRole={handleChangeRole}
+                                        />
                                     </tbody>
                                 </table>
                             ) : (

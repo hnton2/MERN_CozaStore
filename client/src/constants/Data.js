@@ -165,6 +165,14 @@ export const STATUS_RADIO = [
     { label: "Inactive", value: "inactive" },
 ];
 
+export const ORDER_STATUS = [
+    { value: "accepted", label: "Accepted" },
+    { value: "processing", label: "In processing" },
+    { value: "shipped", label: "Shipped" },
+    { value: "delivered", label: "Delivered" },
+    { value: "completed", label: "Completed" },
+];
+
 export const DEFAULT_VALUE_PRODUCT = {
     name: "",
     status: "active",

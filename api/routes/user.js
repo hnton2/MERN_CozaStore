@@ -73,31 +73,27 @@ router.post("/save-cart/:id", verifyToken, async (req, res) => {
     }
 });
 
-//GET USER STATS
-
-router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
-    const date = new Date();
-    const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
-
+// @DESC Change user's role
+// @ROUTE PUT /api/product/change-role/:id
+// @ACCESS Privates
+router.put("/change-role/:id", verifyTokenAndAdmin, async (req, res) => {
+    const { currentRole } = req.body;
     try {
-        const data = await User.aggregate([
-            { $match: { createdAt: { $gte: lastYear } } },
-            {
-                $project: {
-                    month: { $month: "$createdAt" },
-                },
-            },
-            {
-                $group: {
-                    _id: "$month",
-                    total: { $sum: 1 },
-                },
-            },
-        ]);
-        res.status(200).json(data);
-    } catch (err) {
-        res.status(500).json(err);
+        const oldUser = await User.findById(req.params.id);
+        if (oldUser) {
+            await User.updateOne({ _id: req.params.id }, { isAdmin: !currentRole });
+            res.json({
+                success: true,
+                message: "Update user's role successfully",
+            });
+        } else {
+            return res.status(401).json({ success: false, message: "User is invalid" });
+        }
+    } catch (error) {
+        console.log(error);
+        let msg = "Internal server error";
+        if (error.code === 11000) msg = "Invalid data";
+        res.status(500).json({ success: false, message: msg });
     }
 });
-
 module.exports = router;

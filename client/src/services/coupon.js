@@ -20,12 +20,17 @@ const deleteCoupon = (id) => {
     return userRequest.delete(`coupon/${id}`);
 };
 
+const changeStatus = (id, currentStatus) => {
+    return userRequest.put(`coupon/change-status/${id}`, { currentStatus: currentStatus });
+};
+
 const couponServices = {
     createNewCoupon,
     getAllCoupon,
     getOneCoupon,
     updateCoupon,
     deleteCoupon,
+    changeStatus,
 };
 
 export default couponServices;

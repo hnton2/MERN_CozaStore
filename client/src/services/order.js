@@ -16,11 +16,16 @@ const getOneOrder = (currentId) => {
     return userRequest.get(`order/find/${currentId}`);
 };
 
+const changeStatus = (id, status) => {
+    return userRequest.put(`order/change-status/${id}`, { statusChange: status });
+};
+
 const orderServices = {
     createOrder,
     getAllOrder,
     deleteOrder,
     getOneOrder,
+    changeStatus,
 };
 
 export default orderServices;

@@ -20,12 +20,17 @@ const deleteProductCategory = (id) => {
     return userRequest.delete(`product-category/${id}`);
 };
 
+const changeStatus = (id, currentStatus) => {
+    return userRequest.put(`product-category/change-status/${id}`, { currentStatus: currentStatus });
+};
+
 const productCategoryServices = {
     createNewProductCategory,
     getAllProductCategory,
     getOneProductCategory,
     updateProductCategory,
     deleteProductCategory,
+    changeStatus,
 };
 
 export default productCategoryServices;

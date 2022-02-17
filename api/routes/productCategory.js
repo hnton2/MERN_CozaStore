@@ -99,4 +99,29 @@ router.get("/", async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
+// @DESC Change product-category's status
+// @ROUTE PUT /api/product-cateogry/change-status/:id
+// @ACCESS Privates
+router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
+    const { currentStatus } = req.body;
+    const statusValue = currentStatus === "active" ? "inactive" : "active";
+    try {
+        const oldCategory = await ProductCategory.findById(req.params.id);
+        if (oldCategory) {
+            await ProductCategory.updateOne({ _id: req.params.id }, { status: statusValue });
+            res.json({
+                success: true,
+                message: "Update product-category's status successfully",
+            });
+        } else {
+            return res.status(401).json({ success: false, message: "Product category is invalid" });
+        }
+    } catch (error) {
+        console.log(error);
+        let msg = "Internal server error";
+        if (error.code === 11000) msg = "Invalid data";
+        res.status(500).json({ success: false, message: msg });
+    }
+});
 module.exports = router;

@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { faCheck, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CloseIcon from "@mui/icons-material/Close";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SearchIcon from "@mui/icons-material/Search";
+import { Backdrop, CircularProgress, Container, Pagination, Skeleton } from "@mui/material";
+import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcrumbs";
-import { Container, Pagination, Skeleton } from "@mui/material";
-import { Link, useSearchParams } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
-import "./Table.scss";
-import { escapeRegExp } from "helpers/string";
-import { CATEGORY_OPTIONS } from "constants/Data";
-import Select from "react-select";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import StatusFilter from "components/StatusFilter";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
-import { Helmet } from "react-helmet";
 import Preloader from "components/Preloader";
+import StatusFilter from "components/StatusFilter";
+import { CATEGORY_OPTIONS, ORDER_STATUS } from "constants/Data";
+import { escapeRegExp } from "helpers/string";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { Link, useSearchParams } from "react-router-dom";
+import Select from "react-select";
 import orderServices from "services/order";
+import "./Table.scss";
 
 const linkData = [
     {
@@ -27,7 +27,7 @@ const linkData = [
 
 const TITLE_PAGE = "Order List";
 
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5 }) => {
+const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onChangeStatus }) => {
     const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
 
     return (
@@ -39,7 +39,13 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5 }) => {
                     <td className="text-center">
                         {item.user.address.province} - {item.user.address.country}
                     </td>
-                    <td className="text-center">{item.status}</td>
+                    <td className="text-center">
+                        <Select
+                            options={ORDER_STATUS}
+                            value={ORDER_STATUS.filter((option) => option.value === item.status)}
+                            onChange={(data) => onChangeStatus(item._id, data.value)}
+                        />
+                    </td>
                     <td>
                         {item.products.map((product) => (
                             <p key={product.slug}>
@@ -47,7 +53,6 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5 }) => {
                             </p>
                         ))}
                     </td>
-                    <td className="text-center">{item.coupon ? item.coupon.name : "None"}</td>
                     <td className="text-center">${item.total}</td>
                     <td className="text-center">
                         <button
@@ -76,6 +81,7 @@ function OrderTable() {
     const [searchText, setSearchText] = useState("");
     const [orders, setOrders] = useState();
     const [rows, setRows] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchAllProduct = async () => {
@@ -84,7 +90,7 @@ function OrderTable() {
             setRows(res.data.orders);
         };
         fetchAllProduct();
-    }, []);
+    }, [orders]);
 
     const requestSearch = (searchValue) => {
         setSearchText(searchValue);
@@ -98,6 +104,19 @@ function OrderTable() {
 
     const handleChangePage = (event, value) => setSearchParams({ page: value });
 
+    const handleChangeStatus = async (id, value) => {
+        try {
+            setIsLoading(true);
+            const res = await orderServices.changeStatus(id, value);
+            if (res.data.success) {
+                setOrders(res.data);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <>
             <Helmet>
@@ -108,6 +127,9 @@ function OrderTable() {
             <div className="main">
                 <Container>
                     <Breadcrumbs links={linkData} current={TITLE_PAGE} />
+                    <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
                     <div className="card">
                         <h3 className="card-header">Filter & Search</h3>
                         <div className="card-body">
@@ -153,14 +175,17 @@ function OrderTable() {
                                             <th>Address</th>
                                             <th>Status</th>
                                             <th>Products</th>
-                                            <th>Coupon</th>
                                             <th>Total</th>
                                             <th>Payment</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <RenderTable data={rows} currentPage={currentPage} />
+                                        <RenderTable
+                                            data={rows}
+                                            currentPage={currentPage}
+                                            onChangeStatus={handleChangeStatus}
+                                        />
                                     </tbody>
                                 </table>
                             ) : (

@@ -46,4 +46,28 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
+// @DESC Change order's status
+// @ROUTE PUT /api/order/change-status/:id
+// @ACCESS Privates
+router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
+    const { statusChange } = req.body;
+    try {
+        const oldOrder = await Order.findById(req.params.id);
+        if (oldOrder) {
+            await Order.updateOne({ _id: req.params.id }, { status: statusChange });
+            res.json({
+                success: true,
+                message: "Update order's status successfully",
+            });
+        } else {
+            return res.status(401).json({ success: false, message: "Order is invalid" });
+        }
+    } catch (error) {
+        console.log(error);
+        let msg = "Internal server error";
+        if (error.code === 11000) msg = "Invalid data";
+        res.status(500).json({ success: false, message: msg });
+    }
+});
+
 module.exports = router;
