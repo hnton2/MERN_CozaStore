@@ -67,7 +67,7 @@ const cartSlice = createSlice({
             state.products = [];
             state.quantity = 0;
             state.total = 0;
-            state.coupon = {};
+            state.coupon = null;
         },
     },
 });

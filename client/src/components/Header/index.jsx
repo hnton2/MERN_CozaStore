@@ -62,15 +62,19 @@ function Header() {
             } catch (error) {
                 console.log(error);
             }
+        } else {
+            try {
+                await userServices.cleanCart(user._id);
+            } catch (error) {
+                console.log(error);
+            }
         }
-        await dispatch(LogOut());
+        dispatch(LogOut());
         dispatch(clearCart());
         navigate("/");
     };
 
-    const handleRemoveFromCart = (product) => {
-        dispatch(removeProduct(product));
-    };
+    const handleRemoveFromCart = (product) => dispatch(removeProduct(product));
 
     return (
         <header className="header">

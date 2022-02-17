@@ -64,125 +64,130 @@ function Confirmation() {
                             <h1>Thank you for your order!</h1>
                         </div>
                         {invoice && (
-                            <div className="confirmation__body">
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={12} md={4} lg={4}>
-                                        <div className="confirmation__card">
-                                            <h3>Order Info</h3>
-                                            <table>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Order Number</td>
-                                                        <td>: #{invoice.code}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Date</td>
-                                                        <td>: {moment(invoice.createdAt).format("MMM Do YY")}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Total</td>
-                                                        <td>: ${invoice.total}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={4} lg={4}>
-                                        <div className="confirmation__card">
-                                            <h3 className="confirmation__card-header">Billing Address</h3>
-                                            <div className="confirmation__card-body">
-                                                <table className="cart-table">
+                            <>
+                                <div className="confirmation__body">
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={12} md={4} lg={4}>
+                                            <div className="confirmation__card">
+                                                <h3>Order Info</h3>
+                                                <table>
                                                     <tbody>
                                                         <tr>
-                                                            <td>Street</td>
-                                                            <td>: 622/10 Cong Hoa</td>
+                                                            <td>Order Number</td>
+                                                            <td>: #{invoice.code}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>City</td>
-                                                            <td>: Ho Chi Minh</td>
+                                                            <td>Date</td>
+                                                            <td>: {moment(invoice.createdAt).format("MMM Do YY")}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Country</td>
-                                                            <td>: Viet Nam</td>
+                                                            <td>Total</td>
+                                                            <td>: ${invoice.total}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
-                                        </div>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={4} lg={4}>
-                                        <div className="confirmation__card">
-                                            <h3 className="confirmation__card-header">Shipping Address</h3>
-                                            <div className="confirmation__card-body">
-                                                <table className="cart-table">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Street</td>
-                                                            <td>: {invoice.user.address.street}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>City</td>
-                                                            <td>: {invoice.user.address.province}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Country</td>
-                                                            <td>: {invoice.user.address.country}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={4} lg={4}>
+                                            <div className="confirmation__card">
+                                                <h3 className="confirmation__card-header">Billing Address</h3>
+                                                <div className="confirmation__card-body">
+                                                    <table className="cart-table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Street</td>
+                                                                <td>: 622/10 Cong Hoa</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>City</td>
+                                                                <td>: Ho Chi Minh</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Country</td>
+                                                                <td>: Viet Nam</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={4} lg={4}>
+                                            <div className="confirmation__card">
+                                                <h3 className="confirmation__card-header">Shipping Address</h3>
+                                                <div className="confirmation__card-body">
+                                                    <table className="cart-table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Street</td>
+                                                                <td>: {invoice.user.address.street}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>City</td>
+                                                                <td>: {invoice.user.address.province}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Country</td>
+                                                                <td>: {invoice.user.address.country}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                                <div className="confirmation-detail">
-                                    <h1>Order Details</h1>
-                                    <table className="table-detail">
-                                        <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Quantity</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {invoice.products.map((item) => (
-                                                <tr key={item._id}>
-                                                    <td>
-                                                        <Link to={`/product/${item.slug}`}>{item.name}</Link>
-                                                    </td>
-                                                    <td>X {item.quantity}</td>
-                                                    <td>${item.price}</td>
+                                    <div className="confirmation-detail">
+                                        <h1>Order Details</h1>
+                                        <table className="table-detail">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total</th>
                                                 </tr>
-                                            ))}
-                                            <tr>
-                                                <td>
-                                                    <h4>DISCOUNT</h4>
-                                                </td>
-                                                <td></td>
-                                                <td>${invoice.coupon.discount}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <h4>TOTAL</h4>
-                                                </td>
-                                                <td></td>
-                                                <td>
-                                                    <h4>${invoice.total}</h4>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {invoice.products.map((item) => (
+                                                    <tr key={item._id}>
+                                                        <td>
+                                                            <Link to={`/product/${item.slug}`}>{item.name}</Link>
+                                                        </td>
+                                                        <td>X {item.quantity}</td>
+                                                        <td>${item.price}</td>
+                                                    </tr>
+                                                ))}
+                                                <tr>
+                                                    <td>
+                                                        <h4>DISCOUNT</h4>
+                                                    </td>
+                                                    <td></td>
+                                                    <td>${invoice.coupon.discount}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <h4>TOTAL</h4>
+                                                    </td>
+                                                    <td></td>
+                                                    <td>
+                                                        <h4>${invoice.total}</h4>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                                <div className="confirmation__footer">
+                                    <Link to="/" className="btn btn-warning">
+                                        Continue Shopping
+                                    </Link>
+                                    <Link
+                                        to={`/order-tracking?invoice-code=${invoice.code}`}
+                                        className="btn btn-primary"
+                                    >
+                                        Tracking your order
+                                    </Link>
+                                </div>
+                            </>
                         )}
-                        <div className="confirmation__footer">
-                            <Link to="/" className="btn btn-warning">
-                                Continue Shopping
-                            </Link>
-                            <Link to={`/order-tracking?invoice-code=${invoice.code}`} className="btn btn-primary">
-                                Tracking your order
-                            </Link>
-                        </div>
                     </div>
                 </Container>
             </div>

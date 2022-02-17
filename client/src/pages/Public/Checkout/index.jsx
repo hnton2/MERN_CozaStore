@@ -21,6 +21,7 @@ import orderServices from "services/order";
 import { useDispatch } from "react-redux";
 import { clearCart } from "redux/cartSlice";
 import { Helmet } from "react-helmet";
+import userServices from "services/user";
 
 toast.configure();
 
@@ -54,6 +55,7 @@ function Checkout() {
     const dispatch = useDispatch();
 
     const countryOptions = useMemo(() => countryList().getData(), []);
+    const user = useSelector((state) => state.auth.currentUser);
     const { products, total, coupon } = useSelector((state) => state.cart);
     const {
         control,
@@ -122,6 +124,7 @@ function Checkout() {
                         coupon,
                     });
                     if (res.data.success) {
+                        await userServices.cleanCart(user._id);
                         toast.success("The payment has been processed!", {
                             position: "top-center",
                         });
@@ -307,7 +310,7 @@ function Checkout() {
                                                 address, or contact us if you need any help.
                                             </div>
                                         </li>
-                                        {coupon && (
+                                        {coupon && Object.keys(coupon).length !== 0 && (
                                             <li>
                                                 <h4 className="price-title">Coupon</h4>
                                                 <span>${coupon.discount}</span>
@@ -315,7 +318,12 @@ function Checkout() {
                                         )}
                                         <li>
                                             <h4 className="price-title">Total</h4>
-                                            <span className="totals">{coupon ? total - coupon.discount : total}</span>
+                                            <span className="totals">
+                                                $
+                                                {coupon && Object.keys(coupon).length !== 0
+                                                    ? total - coupon.discount
+                                                    : total}
+                                            </span>
                                         </li>
                                     </ul>
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Container, Grid, IconButton, Tooltip } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Breadcrumbs from "components/Breadcrumbs";
@@ -17,6 +16,9 @@ import Image from "constants/Image";
 import couponServices from "services/coupon";
 import { applyDiscount } from "redux/cartSlice";
 import { Helmet } from "react-helmet";
+import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const linkData = [
     {
@@ -45,7 +47,19 @@ function Cart() {
     const handleRemoveFromCart = (product) => dispatch(removeProduct(product));
     const handleChangeQuantity = (product, value) =>
         dispatch(changeQuantityProduct({ ...product, value: Number(value) }));
-    const handleChangeCoupon = (coupon) => dispatch(applyDiscount(coupon));
+    const handleChangeCoupon = (coupon) => {
+        if (products.length > 0) dispatch(applyDiscount(coupon));
+        else
+            toast.warn("Please add least one product to the cart!", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+    };
 
     return (
         <>
@@ -116,7 +130,7 @@ function Cart() {
                                                             className="table-btn btn btn-danger btn-rounded"
                                                             onClick={() => handleRemoveFromCart(item)}
                                                         >
-                                                            <CloseIcon />
+                                                            <FontAwesomeIcon icon={faTrashAlt} />
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -154,7 +168,7 @@ function Cart() {
                                             onClose={() => setShowCoupons(false)}
                                             onChangeCoupon={handleChangeCoupon}
                                         />
-                                        {coupon && (
+                                        {coupon && Object.keys(coupon).length !== 0 && (
                                             <div className="cart-prices">
                                                 <h5 className="title">Discount</h5>
                                                 <span className="price">${coupon.discount}</span>
@@ -164,7 +178,12 @@ function Cart() {
                                     <div className="totals">
                                         <div className="cart-prices">
                                             <h5 className="title">Totals</h5>
-                                            <span className="price">${coupon ? total - coupon.discount : total}</span>
+                                            <span className="price">
+                                                $
+                                                {coupon && Object.keys(coupon).length !== 0
+                                                    ? total - coupon.discount
+                                                    : total}
+                                            </span>
                                         </div>
                                     </div>
                                     <Link to="/checkout" className="btn btn-lg btn-dark text-uppercase">

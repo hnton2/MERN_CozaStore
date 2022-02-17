@@ -63,9 +63,22 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 // @DESC Save cart before user logout
 // @ROUTE GET /api/user/save-card/:id
 // @ACCESS Public
-router.post("/save-cart/:id", verifyToken, async (req, res) => {
+router.post("/save-cart/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
         await User.findByIdAndUpdate(req.params.id, { cart: req.body });
+        res.end();
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// @DESC Clean cart from db after user checkout
+// @ROUTE GET /api/user/clean-card/:id
+// @ACCESS Public
+router.post("/clean-cart/:id", verifyTokenAndAuthorization, async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.params.id, { cart: {} });
         res.end();
     } catch (error) {
         console.log(error);

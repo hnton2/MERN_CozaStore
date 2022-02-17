@@ -4,9 +4,9 @@ const OrderSchema = new mongoose.Schema(
     {
         code: { type: String, required: true, unique: true },
         user: {
-            name: { type: String, required: true, unique: true },
-            email: { type: String, required: true, unique: true },
-            phone: { type: String, required: true, unique: true },
+            name: { type: String, required: true },
+            email: { type: String, required: true },
+            phone: { type: String, required: true },
             address: {
                 country: { type: String, required: true },
                 province: { type: String, required: true },
@@ -19,12 +19,12 @@ const OrderSchema = new mongoose.Schema(
         status: { type: String, default: "accepted" },
         products: [
             {
-                name: { type: String, required: true, unique: true },
-                slug: { type: String, required: true, unique: true },
+                name: { type: String, required: true },
+                slug: { type: String, required: true },
                 images: { type: Array, required: true },
                 category: {
-                    slug: { type: String, required: true, unique: true },
-                    name: { type: String, required: true, unique: true },
+                    slug: { type: String, required: true },
+                    name: { type: String, required: true },
                 },
                 size: { type: String, required: true },
                 color: { type: String, required: true },
@@ -34,9 +34,9 @@ const OrderSchema = new mongoose.Schema(
             },
         ],
         coupon: {
-            _id: { type: String, required: true, unique: true },
-            name: { type: String, required: true, unique: true },
-            code: { type: String, required: true, unique: true },
+            _id: { type: String, required: true },
+            name: { type: String, required: true },
+            code: { type: String, required: true },
             discount: { type: Number, required: true },
         },
         total: { type: Number, required: true },
