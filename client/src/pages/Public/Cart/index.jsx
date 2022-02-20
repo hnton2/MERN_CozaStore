@@ -7,7 +7,7 @@ import "./Cart.scss";
 import InfoIcon from "@mui/icons-material/Info";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { IMAGE_CLOUDINARY } from "constants/Data";
+import { IMAGE_CLOUDINARY } from "constants/Config";
 import { changeQuantityProduct, removeProduct } from "redux/cartSlice";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";

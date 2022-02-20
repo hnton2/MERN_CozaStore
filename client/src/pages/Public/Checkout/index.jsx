@@ -1,27 +1,25 @@
-import React, { useState } from "react";
-import "./Checkout.scss";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Container, Grid } from "@mui/material";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcrumbs";
-import { Container, Grid } from "@mui/material";
-import Select from "react-select";
-import { Link, useNavigate } from "react-router-dom";
-import { DEFAULT_VALUE_CHECKOUT } from "constants/Data";
-import { checkoutValidation } from "helpers/validation";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
-import makeAnimated from "react-select/animated";
-import countryList from "react-select-country-list";
-import { useMemo } from "react";
-import { useSelector } from "react-redux";
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { DEFAULT_CHECKOUT } from "constants/Form";
 import { publicRequest } from "helpers/requestMethod";
-import { toast } from "react-toastify";
-import orderServices from "services/order";
-import { useDispatch } from "react-redux";
-import { clearCart } from "redux/cartSlice";
+import { checkoutValidation } from "helpers/validation";
+import React, { useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Select from "react-select";
+import countryList from "react-select-country-list";
+import makeAnimated from "react-select/animated";
+import { toast } from "react-toastify";
+import { clearCart } from "redux/cartSlice";
+import orderServices from "services/order";
 import userServices from "services/user";
+import "./Checkout.scss";
 
 toast.configure();
 
@@ -62,7 +60,7 @@ function Checkout() {
         handleSubmit,
         register,
         formState: { errors },
-    } = useForm({ defaultValues: DEFAULT_VALUE_CHECKOUT, resolver: yupResolver(checkoutValidation) });
+    } = useForm({ defaultValues: DEFAULT_CHECKOUT, resolver: yupResolver(checkoutValidation) });
 
     const onSubmit = async (data) => {
         if (!stripe || !elements) return;

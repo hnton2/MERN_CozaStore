@@ -40,7 +40,37 @@ export const productCategoryValidation = yup.object().shape({
         .matches(/^[aA-zZ\s]+$/, "name is not in correct format")
         .required(),
     status: yup.string().required(),
+    color: yup.array().min(1).required(),
+    tag: yup.array().min(1).required(),
+    size: yup.array().min(1).required(),
     description: yup.string().max(1000).required(),
+});
+
+export const blogCategoryValidation = yup.object().shape({
+    name: yup
+        .string()
+        .min(5)
+        .max(100)
+        .matches(/^[aA-zZ\s]+$/, "name is not in correct format")
+        .required(),
+    status: yup.string().required(),
+    description: yup.string().max(1000).required(),
+});
+
+export const blogValidation = yup.object().shape({
+    name: yup.string().min(5).max(100).required(),
+    status: yup.string().required(),
+    category: yup.object().nullable().required(),
+    images: yup
+        .array()
+        .min(1)
+        .of(
+            yup.object().shape({
+                name: yup.mixed().required(),
+            })
+        )
+        .required(),
+    description: yup.string().max(10000).required(),
 });
 
 export const reviewValidation = yup.object().shape({

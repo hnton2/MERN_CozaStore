@@ -1,27 +1,27 @@
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CloseIcon from "@mui/icons-material/Close";
+import HelpIcon from "@mui/icons-material/Help";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import HomeIcon from "@mui/icons-material/Home";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import LogoutIcon from "@mui/icons-material/Logout";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Avatar, Badge, Modal, Slide } from "@mui/material";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import Dropdown from "components/Dropdown";
+import { ADMIN_SIDEBAR, IMAGE_CLOUDINARY } from "constants/Config";
 import Image from "constants/Image";
+import { stringAvatar } from "helpers/string";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { LogOut } from "redux/authSlice";
+import { clearCart, removeProduct } from "redux/cartSlice";
+import userServices from "services/user";
+import styled from "styled-components";
 import Sidebar from "../Sidebar";
 import "./Header.scss";
-import { ADMIN_SIDEBAR, IMAGE_CLOUDINARY } from "constants/Data";
-import Dropdown from "components/Dropdown";
-import { useDispatch, useSelector } from "react-redux";
-import LogoutIcon from "@mui/icons-material/Logout";
-import HomeIcon from "@mui/icons-material/Home";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import HelpIcon from "@mui/icons-material/Help";
-import { LogOut } from "redux/authSlice";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { clearCart, removeProduct } from "redux/cartSlice";
-import { stringAvatar } from "helpers/string";
-import userServices from "services/user";
 
 const Backdrop = styled.div`
     z-index: -1;
@@ -39,7 +39,7 @@ function Header() {
     const navigate = useNavigate();
 
     const user = useSelector((state) => state.auth.currentUser);
-    const categoryProduct = useSelector((state) => state.category.categoryProduct);
+    const { categoryProduct, categoryBlog } = useSelector((state) => state.category);
     const { products, quantity, total, coupon } = useSelector((state) => state.cart);
 
     const [openSearch, setOpenSearch] = useState(false);
@@ -105,14 +105,19 @@ function Header() {
                             </ul>
                         </li>
                         <li className="nav__item">
-                            <Link to="#" className="nav__item-link">
-                                Sale
-                            </Link>
-                        </li>
-                        <li className="nav__item">
-                            <Link to="/blog" className="nav__item-link">
+                            <Link to="/blog-category/all" className="nav__item-link">
                                 Blog
                             </Link>
+                            <ul className="sub-nav">
+                                {categoryBlog &&
+                                    categoryBlog.map((item) => (
+                                        <li key={item._id}>
+                                            <Link className="sub-nav-link" to={`/blog-category/${item.slug}`}>
+                                                {item.name}
+                                            </Link>
+                                        </li>
+                                    ))}
+                            </ul>
                         </li>
                         <li className="nav__item">
                             <Link to="/about" className="nav__item-link">

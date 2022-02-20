@@ -48,3 +48,7 @@ export const orderTrackingStatus = (status) => {
             return 1;
     }
 };
+
+export const createSummary = (str, maxLength = 60) => {
+    return str.substr(0, maxLength).concat("...");
+};

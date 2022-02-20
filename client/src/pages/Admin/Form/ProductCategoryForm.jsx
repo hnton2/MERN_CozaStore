@@ -4,15 +4,16 @@ import { CreatableSelectField, Form, InputField, RadioField, TextEditorField } f
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Message from "components/Message";
-import { COLOR_OPTIONS, DEFAULT_VALUE_CATEGORY_PRODUCT, SIZE_OPTIONS, STATUS_RADIO, TAG_OPTIONS } from "constants/Data";
+import Preloader from "components/Preloader";
+import { DEFAULT_CATEGORY_PRODUCT } from "constants/Form";
+import { COLOR_OPTIONS, SIZE_OPTIONS, STATUS_RADIO, TAG_OPTIONS } from "constants/Option";
 import { productCategoryValidation } from "helpers/validation";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import productCategoryServices from "services/productCategory";
-import { GetALlCategoryProduct } from "redux/categorySlice";
-import { useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
-import Preloader from "components/Preloader";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { GetALlCategoryProduct } from "redux/categorySlice";
+import productCategoryServices from "services/productCategory";
 
 const linkData = [
     {
@@ -35,7 +36,7 @@ function ProductCategoryForm() {
     const { id: currentId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState();
-    const [initialValue, setInitialValue] = useState(DEFAULT_VALUE_CATEGORY_PRODUCT);
+    const [initialValue, setInitialValue] = useState(DEFAULT_CATEGORY_PRODUCT);
 
     useEffect(() => {
         const fetchData = async () => {

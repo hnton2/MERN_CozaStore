@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Image from "constants/Image";
 import BlogSidebar from "components/BlogSidebar";
-import { Container, Grid } from "@mui/material";
+import { Avatar, Container, Grid } from "@mui/material";
 import Breadcrumbs from "components/Breadcrumbs";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./BlogDetail.scss";
+import blogServices from "services/blog";
+import Preloader from "components/Preloader";
+import { Helmet } from "react-helmet";
+import parse from "html-react-parser";
+import { IMAGE_CLOUDINARY } from "constants/Config";
+import moment from "moment";
+import { Form, InputField } from "components/CustomForm";
+import { reviewValidation } from "helpers/validation";
+import { stringAvatar } from "helpers/string";
 
 const linkData = [
     {
@@ -14,87 +22,105 @@ const linkData = [
         path: "/home",
     },
     {
-        name: "Men",
-        path: "/category",
+        name: "Blog",
+        path: "/blog-category/all",
     },
 ];
 
 function BlogDetail() {
+    const { slug: currentSlug } = useParams();
+    const [blog, setBlog] = useState();
+
+    useEffect(() => {
+        const fetchBlog = async () => {
+            try {
+                const response = await blogServices.getBlogDetailBySlug(currentSlug);
+                if (response.data.success) setBlog(response.data.blog);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchBlog();
+        window.scrollTo(0, 0);
+    }, [currentSlug]);
+
+    const onSubmit = async (data) => {
+        try {
+            const res = await blogServices.addComment(blog.slug, data);
+            if (res.data.success) setBlog(res.data.blog);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <>
             <Header />
-            <div className="main">
-                <Container>
-                    <Breadcrumbs links={linkData} current="Lightweight Jacket" />
-                    <Grid container spacing={4}>
-                        <Grid item md={8} lg={9}>
-                            <div className="blog-detail">
-                                <div className="thumb">
-                                    <img src={Image.BLOG1} alt="" />
-                                    <div className="time">
-                                        <span className="day">18</span>
-                                        <span className="month-year">Jan 2020</span>
+            <Preloader isHidden={blog} />
+            {blog && (
+                <div className="main">
+                    <Helmet>
+                        <title>{blog.name}</title>
+                    </Helmet>
+                    <Container>
+                        <Breadcrumbs links={linkData} current={blog.name} />
+                        <Grid container spacing={4}>
+                            <Grid item md={8} lg={9}>
+                                <div className="blog-detail">
+                                    <div className="thumb">
+                                        <img src={IMAGE_CLOUDINARY + blog.images[0]} alt={blog.name} />
+                                        <div className="time">
+                                            <span className="day">{moment(blog.updateAt).get("date")}</span>
+                                            <span className="month-year">
+                                                {moment(blog.updateAt).format("MMM YYYY")}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="description">
+                                        <div className="created">
+                                            By <span className="content">Admin</span>
+                                            <span className="border">|</span>
+                                            <span className="content">
+                                                <Link to={`/blog-category/${blog.category.slug}`}>
+                                                    {blog.category.name}
+                                                </Link>
+                                            </span>
+                                            <span className="border">|</span>
+                                            <span className="content">{blog.reviews.length} comments</span>
+                                        </div>
+                                    </div>
+                                    <h1 className="title">{blog.name}</h1>
+                                    <p className="content">{parse(blog.description)}</p>
+                                    <div className="comment">
+                                        <h2>Leave a comment</h2>
+                                        <p>Your email address will not be published. Required fields are marked *</p>
+                                        <Form onSubmit={onSubmit} validation={reviewValidation} hiddenLabel>
+                                            <InputField name="name" placeholder="Name*" />
+                                            <InputField name="email" placeholder="Email*" />
+                                            <InputField name="content" placeholder="Comment..." />
+                                            <button type="submit" className="submit-btn btn btn-dark text-uppercase">
+                                                Post Comment
+                                            </button>
+                                        </Form>
+                                        {blog.comment.length > 0 &&
+                                            blog.comment.map((item) => (
+                                                <div className="comment__item">
+                                                    <Avatar {...stringAvatar(item.name, { width: 60, height: 60 })} />
+                                                    <div className="container">
+                                                        <p className="title">{item.name}</p>
+                                                        <p className="message">{parse(item.content)}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
                                     </div>
                                 </div>
-                                <div className="description">
-                                    <div className="created">
-                                        By <span className="content">Admin</span>
-                                        <span className="border">|</span>
-                                        <span className="content">StreetStyle, Fashion, Couple</span>
-                                        <span className="border">|</span>
-                                        <span className="content">8 comments</span>
-                                    </div>
-                                </div>
-                                <h1 className="title">8 Inspiring Ways to Wear Dresses in the Winter</h1>
-                                <p className="content">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sit amet est vel orci
-                                    luctus sollicitudin. Duis eleifend vestibulum justo, varius semper lacus condimentum
-                                    dictum. Donec pulvinar a magna ut malesuada. In posuere felis diam, vel sodales
-                                    metus accumsan in. Duis viverra dui eu pharetra pellentesque. Donec a eros leo.
-                                    Quisque sed ligula vitae lorem efficitur faucibus. Praesent sit amet imperdiet ante.
-                                    Nulla id tellus auctor, dictum libero a, malesuada nisi. Nulla in porta nibh, id
-                                    vestibulum ipsum. Praesent dapibus tempus erat quis aliquet. Donec ac purus id
-                                    sapien condimentum feugiat. Praesent vel mi bibendum, finibus leo ac, condimentum
-                                    arcu. Pellentesque sem ex, tristique sit amet suscipit in, mattis imperdiet enim.
-                                    Integer tempus justo nec velit fringilla, eget eleifend neque blandit. Sed tempor
-                                    magna sed congue auctor. Mauris eu turpis eget tortor ultricies elementum. Phasellus
-                                    vel placerat orci, a venenatis justo. Phasellus faucibus venenatis nisl vitae
-                                    vestibulum. Praesent id nibh arcu. Vivamus sagittis accumsan felis, quis vulputate
-                                </p>
-                                <div className="tags">
-                                    <span>Tags</span>
-                                    <Link to="#" className="tag">
-                                        Fashion
-                                    </Link>
-                                    <Link to="#" className="tag">
-                                        Lifestyle
-                                    </Link>
-                                    <Link to="#" className="tag">
-                                        Sports
-                                    </Link>
-                                    <Link to="#" className="tag">
-                                        Street style
-                                    </Link>
-                                    <Link to="#" className="tag">
-                                        Crafts
-                                    </Link>
-                                </div>
-                                <form className="comment">
-                                    <h2>Leave a comment</h2>
-                                    <p>Your email address will not be published. Required fields are marked *</p>
-                                    <input type="text" placeholder="Name*" />
-                                    <input type="text" placeholder="Email*" />
-                                    <textarea cols="30" rows="10" placeholder="Comment..."></textarea>
-                                    <button className="btn btn-dark btn-lg text-uppercase">Post Comment</button>
-                                </form>
-                            </div>
+                            </Grid>
+                            <Grid item md={4} lg={3}>
+                                <BlogSidebar />
+                            </Grid>
                         </Grid>
-                        <Grid item md={4} lg={3}>
-                            <BlogSidebar />
-                        </Grid>
-                    </Grid>
-                </Container>
-            </div>
+                    </Container>
+                </div>
+            )}
             <Footer />
         </>
     );

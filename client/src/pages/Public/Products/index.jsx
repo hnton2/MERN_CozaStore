@@ -1,22 +1,22 @@
-import { Container, Grid, Pagination } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import "./Products.scss";
+import CircleIcon from "@mui/icons-material/Circle";
+import ClearIcon from "@mui/icons-material/Clear";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import { NavLink, useParams, useSearchParams } from "react-router-dom";
-import CircleIcon from "@mui/icons-material/Circle";
+import { Container, Grid, Pagination } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import { PRICE, SORT } from "constants/Filter";
-import productServices from "services/product";
-import Skeleton from "@mui/material/Skeleton";
-import ProductCard from "components/ProductCard";
 import Preloader from "components/Preloader";
-import { useSelector } from "react-redux";
-import { COLOR_OPTIONS, SIZE_OPTIONS, TAG_OPTIONS } from "constants/Data";
+import ProductCard from "components/ProductCard";
+import { PRICE, SORT } from "constants/Filter";
+import { COLOR_OPTIONS, SIZE_OPTIONS, TAG_OPTIONS } from "constants/Option";
 import { escapeRegExp } from "helpers/string";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
+import { NavLink, useParams, useSearchParams } from "react-router-dom";
+import productServices from "services/product";
+import "./Products.scss";
 
 function Products() {
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
@@ -25,7 +25,6 @@ function Products() {
     const { category: currentCategory } = useParams();
     const [products, setProducts] = useState([]);
     const [render, setRender] = useState([]);
-    const [search, setSearch] = useState("");
     const [showSearch, setShowSearch] = useState(false);
     const [filters, setFilters] = useState(Object.fromEntries([...searchParams]));
     const [showFilter, setShowFilter] = useState(false);
@@ -121,7 +120,6 @@ function Products() {
         setShowFilter(false);
     };
     const handleSearch = (val) => {
-        setSearch(val);
         const searchRegex = new RegExp(escapeRegExp(val), "i");
         const filteredProducts = products.filter((product) =>
             Object.keys(product).some((field) => searchRegex.test(product[field].toString()))

@@ -6,20 +6,19 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 import { Grid } from "@mui/material";
-import { IMAGE_CLOUDINARY } from "constants/Data";
+import { Form, QuantityField, SelectField } from "components/CustomForm";
+import { IMAGE_CLOUDINARY } from "constants/Config";
+import { addProductValidation } from "helpers/validation";
+import parse from "html-react-parser";
 import React, { useState } from "react";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import Slider from "react-slick";
-import "./ProductDetail.scss";
-import parse from "html-react-parser";
-import { Form, SelectField } from "components/CustomForm";
-import { addProductValidation } from "helpers/validation";
-import { QuantityField } from "components/CustomForm";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct } from "redux/cartSlice";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick";
 import { toast } from "react-toastify";
+import { addProduct } from "redux/cartSlice";
+import "./ProductDetail.scss";
 
 const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
     <button

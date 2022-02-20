@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { updateCart } from "redux/cartSlice";
-import { GetALlCategoryProduct } from "redux/categorySlice";
+import { GetALlCategoryBlog, GetALlCategoryProduct } from "redux/categorySlice";
 import About from "./pages/Public/About";
 import Blog from "./pages/Public/Blog";
 import BlogDetail from "./pages/Public/BlogDetail";
@@ -31,6 +31,10 @@ import Product from "./pages/Public/Product";
 import Products from "./pages/Public/Products";
 import Register from "./pages/Public/Register";
 import "./style.scss";
+import BlogForm from "pages/Admin/Form/BlogForm";
+import BlogCategoryTable from "pages/Admin/Table/BlogCategoryTable";
+import BlogCategoryForm from "pages/Admin/Form/BlogCategoryForm";
+import BlogTable from "pages/Admin/Table/BlogTable";
 
 const stripePromise = loadStripe(
     "pk_test_51KCL3uD7QIM7Pt3fDuSzusNuy4dl4oNXEkPM6KzS1rpHTE4S16mz1zNgFb96kPnFAA13uSofYqhnXGIJFLhxMQcA00HrG0u4LC"
@@ -41,6 +45,7 @@ function App() {
     const user = useSelector((state) => state.auth.currentUser);
     if (user && user.cart.products.length > 0) dispatch(updateCart(user.cart));
     dispatch(GetALlCategoryProduct());
+    dispatch(GetALlCategoryBlog());
 
     return (
         <BrowserRouter>
@@ -64,12 +69,12 @@ function App() {
                 <Route path="/order-tracking" element={<OrderTracking />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/blogs/:category" element={<Blog />} />
+                <Route path="/blog-category/:category" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogDetail />} />
                 <Route path="/not-found" element={<NotFound />} />
 
                 {/* Admin */}
-                {user && user.isAdmin ? (
+                {user && user.isAdmin && (
                     <>
                         <Route path="/admin/">
                             <Route exact path="" element={<Dashboard />} />
@@ -88,6 +93,20 @@ function App() {
                                     <Route path="" element={<ProductCategoryForm />} />
                                 </Route>
                             </Route>
+                            <Route path="blog/">
+                                <Route exact path="" element={<BlogTable />} />
+                                <Route path="form/">
+                                    <Route path=":id" element={<BlogForm />} />
+                                    <Route path="" element={<BlogForm />} />
+                                </Route>
+                            </Route>
+                            <Route path="blog-category/">
+                                <Route exact path="" element={<BlogCategoryTable />} />
+                                <Route path="form/">
+                                    <Route path=":id" element={<BlogCategoryForm />} />
+                                    <Route path="" element={<BlogCategoryForm />} />
+                                </Route>
+                            </Route>
                             <Route path="coupon/">
                                 <Route exact path="" element={<CouponTable />} />
                                 <Route path="form/">
@@ -101,9 +120,8 @@ function App() {
                             </Route>
                         </Route>
                     </>
-                ) : (
-                    <Route path="*" element={<NotFound />} />
                 )}
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );

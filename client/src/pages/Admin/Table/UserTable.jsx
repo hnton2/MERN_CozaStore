@@ -1,6 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-import { Backdrop, CircularProgress, Container, Pagination, Skeleton } from "@mui/material";
+import { Backdrop, CircularProgress, Container, Pagination } from "@mui/material";
 import moment from "moment";
 import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
@@ -16,6 +16,7 @@ import { faCheck, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import Preloader from "components/Preloader";
+import Error404 from "components/404";
 
 toast.configure();
 
@@ -199,7 +200,7 @@ function UserTable() {
                                     </tbody>
                                 </table>
                             ) : (
-                                <Skeleton animation="wave" variant="rectangular" width={1072} height={200} />
+                                <Error404 />
                             )}
                         </div>
                         <div className="card-footer">

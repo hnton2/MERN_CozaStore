@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SearchIcon from "@mui/icons-material/Search";
+import { Backdrop, CircularProgress, Container, Pagination } from "@mui/material";
+import Error404 from "components/404";
+import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcrumbs";
-import { Backdrop, CircularProgress, Container, Pagination, Skeleton } from "@mui/material";
-import { Link, useSearchParams } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
-import "./Table.scss";
-import { escapeRegExp } from "helpers/string";
-import productServices from "services/product";
-import { CATEGORY_OPTIONS, IMAGE_CLOUDINARY } from "constants/Data";
-import AddIcon from "@mui/icons-material/Add";
-import Select from "react-select";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import Message from "components/Message";
-import StatusFilter from "components/StatusFilter";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { Helmet } from "react-helmet";
 import Preloader from "components/Preloader";
+import StatusFilter from "components/StatusFilter";
+import { IMAGE_CLOUDINARY } from "constants/Config";
+import { CATEGORY_OPTIONS } from "constants/Option";
+import { escapeRegExp } from "helpers/string";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { Link, useSearchParams } from "react-router-dom";
+import Select from "react-select";
+import productServices from "services/product";
+import "./Table.scss";
 
 const linkData = [
     {
@@ -211,7 +213,7 @@ function ProductTable() {
                                     </tbody>
                                 </table>
                             ) : (
-                                <Skeleton animation="wave" variant="rectangular" width={1072} height={200} />
+                                <Error404 />
                             )}
                         </div>
                         <div className="card-footer">

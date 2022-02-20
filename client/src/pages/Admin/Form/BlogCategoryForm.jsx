@@ -1,17 +1,19 @@
 import { Backdrop, CircularProgress, Container } from "@mui/material";
 import Breadcrumbs from "components/Breadcrumbs";
-import { DatePickerField, Form, InputField, RadioField, TextEditorField } from "components/CustomForm";
+import { Form, InputField, RadioField, TextEditorField } from "components/CustomForm";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Message from "components/Message";
 import Preloader from "components/Preloader";
-import { DEFAULT_COUPON } from "constants/Form";
+import { DEFAULT_CATEGORY_BLOG } from "constants/Form";
 import { STATUS_RADIO } from "constants/Option";
-import { couponValidation } from "helpers/validation";
+import { blogCategoryValidation } from "helpers/validation";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import couponServices from "services/coupon";
+import { GetALlCategoryBlog } from "redux/categorySlice";
+import blogCategoryServices from "services/blogCategory";
 
 const linkData = [
     {
@@ -19,34 +21,33 @@ const linkData = [
         path: "/admin",
     },
     {
-        name: "Coupon",
-        path: "/coupon",
+        name: "Blog Category ",
+        path: "/blog-category ",
     },
 ];
 
-const TITLE_PAGE = "Coupon Form";
+const TITLE_PAGE = "Blog Category Form";
 
-function CouponForm() {
+function BlogCategoryForm() {
+    const dispatch = useDispatch();
+    dispatch(GetALlCategoryBlog());
+
     const navigate = useNavigate();
     const { id: currentId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState();
-    const [initialValue, setInitialValue] = useState(DEFAULT_COUPON);
+    const [initialValue, setInitialValue] = useState(DEFAULT_CATEGORY_BLOG);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (currentId) {
-                    const res = await couponServices.getOneCoupon(currentId);
-                    const couponDetail = res.data.coupon;
+                    const res = await blogCategoryServices.getOneBlogCategory(currentId);
+                    const categoryDetail = res.data.category;
                     setInitialValue({
-                        name: couponDetail.name,
-                        code: couponDetail.code,
-                        status: couponDetail.status,
-                        quantity: couponDetail.quantity,
-                        discount: couponDetail.discount,
-                        expiredTime: Date.parse(couponDetail.expiredTime),
-                        description: couponDetail.description,
+                        name: categoryDetail.name,
+                        status: categoryDetail.status,
+                        description: categoryDetail.description,
                     });
                 }
             } catch (error) {
@@ -59,14 +60,14 @@ function CouponForm() {
 
     const onSubmit = async (data) => {
         setIsLoading(true);
-        setMessage();
+        setMessage("");
         try {
             const response = currentId
-                ? await couponServices.updateCoupon(currentId, data)
-                : await couponServices.createNewCoupon(data);
+                ? await blogCategoryServices.updateBlogCategory(currentId, data)
+                : await blogCategoryServices.createNewBlogCategory(data);
             setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/coupon");
+            navigate("/admin/blog-category");
         } catch (error) {
             setIsLoading(false);
             setMessage({ type: "error", content: error.response.data.message });
@@ -90,16 +91,12 @@ function CouponForm() {
                         <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
                             {message && <Message type={message.type}>{message.content}</Message>}
-                            <Form onSubmit={onSubmit} defaultValues={initialValue} validation={couponValidation}>
+                            <Form onSubmit={onSubmit} defaultValues={initialValue} validation={blogCategoryValidation}>
                                 <InputField name="name" placeholder="Name" />
-                                <InputField name="code" placeholder="Coupon Code" />
-                                <DatePickerField name="expiredTime" placeholder="Expired time" />
                                 <RadioField name="status" options={STATUS_RADIO} />
-                                <InputField name="quantity" placeholder="Quantity" />
-                                <InputField name="discount" placeholder="Discount" />
                                 <TextEditorField name="description" />
                                 <div className="form-button">
-                                    <Link to="/admin/coupon" className="btn btn-danger">
+                                    <Link to="/admin/blog-category" className="btn btn-danger">
                                         Cancel
                                     </Link>
                                     <button className="btn btn-primary">{currentId ? "Update" : "Submit"}</button>
@@ -114,4 +111,4 @@ function CouponForm() {
     );
 }
 
-export default CouponForm;
+export default BlogCategoryForm;

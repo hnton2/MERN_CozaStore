@@ -2,7 +2,7 @@ export const createFormData = (data) => {
     const formData = new FormData();
     let imageList = [];
     let remainImages = [];
-    data.images.map((item) => {
+    data.images.forEach((item) => {
         if (item.name[0] && item.name[0].type) imageList.push(item.name[0]);
         else remainImages.push(item.name);
     });
@@ -11,7 +11,7 @@ export const createFormData = (data) => {
         formData.append("images", file);
     });
     data.category = { slug: data.category.value, name: data.category.label };
-    Object.keys(data).map((key) => {
+    Object.keys(data).forEach((key) => {
         if (key !== "images") formData.append(key, JSON.stringify(data[key]));
     });
     return formData;

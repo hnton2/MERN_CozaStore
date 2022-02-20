@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import "./OrderTracking.scss";
+import { faBox, faCheck, faFileInvoice, faHouseChimney, faTruckFast } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Container } from "@mui/material";
+import Breadcrumbs from "components/Breadcrumbs";
+import { Form, InputField } from "components/CustomForm";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Breadcrumbs from "components/Breadcrumbs";
-import { Container } from "@mui/material";
-import "react-toastify/dist/ReactToastify.css";
-import { Form } from "components/CustomForm";
-import { InputField } from "components/CustomForm";
-import { DEFAULT_VALUE_TRACKING, IMAGE_CLOUDINARY } from "constants/Data";
-import { orderTrackingValidation } from "helpers/validation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBox, faCheck, faFileInvoice, faHouseChimney, faTruckFast } from "@fortawesome/free-solid-svg-icons";
-import { Link, useSearchParams } from "react-router-dom";
-import orderServices from "services/order";
-import moment from "moment";
+import { IMAGE_CLOUDINARY } from "constants/Config";
+import { DEFAULT_TRACKING } from "constants/Form";
 import { orderTrackingStatus } from "helpers/string";
+import { orderTrackingValidation } from "helpers/validation";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { Link, useSearchParams } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import orderServices from "services/order";
+import "./OrderTracking.scss";
 
 const linkData = [
     {
@@ -157,7 +157,7 @@ function OrderTracking() {
                                     </p>
                                     <Form
                                         onSubmit={onSubmit}
-                                        defaultValues={DEFAULT_VALUE_TRACKING}
+                                        defaultValues={DEFAULT_TRACKING}
                                         validation={orderTrackingValidation}
                                         hiddenLabel
                                     >

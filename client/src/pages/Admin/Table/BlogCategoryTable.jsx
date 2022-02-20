@@ -1,5 +1,6 @@
-import { faCheck, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
@@ -8,15 +9,17 @@ import Error404 from "components/404";
 import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
+import Message from "components/Message";
 import Preloader from "components/Preloader";
 import StatusFilter from "components/StatusFilter";
-import { CATEGORY_OPTIONS, ORDER_STATUS } from "constants/Option";
+import { CATEGORY_OPTIONS } from "constants/Option";
 import { escapeRegExp } from "helpers/string";
+import parse from "html-react-parser";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useSearchParams } from "react-router-dom";
 import Select from "react-select";
-import orderServices from "services/order";
+import blogCategoryServices from "services/blogCategory";
 import "./Table.scss";
 
 const linkData = [
@@ -26,48 +29,38 @@ const linkData = [
     },
 ];
 
-const TITLE_PAGE = "Order List";
+const TITLE_PAGE = "Blog Category List";
 
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onChangeStatus }) => {
+const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete, onChangeStatus }) => {
     const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
 
     return (
         <>
             {dataRender.map((item) => (
                 <tr key={item._id}>
-                    <td className="text-center">#{item.code}</td>
-                    <td>{item.user.name}</td>
-                    <td className="text-center">
-                        {item.user.address.province} - {item.user.address.country}
-                    </td>
-                    <td className="text-center">
-                        <Select
-                            options={ORDER_STATUS}
-                            value={ORDER_STATUS.filter((option) => option.value === item.status)}
-                            onChange={(data) => onChangeStatus(item._id, data.value)}
-                        />
-                    </td>
-                    <td>
-                        {item.products.map((product) => (
-                            <p key={product.slug}>
-                                <Link to={`/product/${product.slug}`}>{product.name}</Link>
-                            </p>
-                        ))}
-                    </td>
-                    <td className="text-center">${item.total}</td>
+                    <td className="text-center">{item.name}</td>
                     <td className="text-center">
                         <button
                             className={`btn btn-rounded ${
-                                item.checkPayment ? "btn-success" : "btn-secondary btn-disabled"
+                                item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
                             } btn-sm`}
+                            onClick={() => onChangeStatus(item._id, item.status)}
                         >
                             <FontAwesomeIcon icon={faCheck} />
                         </button>
                     </td>
+                    <td className="text-center">{item.slug}</td>
+                    <td className="text-center">{parse(item.description)}</td>
                     <td className="text-center">
-                        <Link to={`/admin/order/invoice/${item.code}`} className="btn btn-rounded btn-primary btn-sm">
-                            <FontAwesomeIcon icon={faFolderOpen} />
+                        <Link
+                            to={`/admin/blog-category/form/${item._id}`}
+                            className="btn btn-rounded btn-primary btn-sm"
+                        >
+                            <FontAwesomeIcon icon={faPenToSquare} />
                         </Link>
+                        <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
+                            <FontAwesomeIcon icon={faTrashCan} />
+                        </button>
                     </td>
                 </tr>
             ))}
@@ -75,32 +68,53 @@ const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onChangeStatus }
     );
 };
 
-function OrderTable() {
+function BlogCategoryTable() {
     let [searchParams, setSearchParams] = useSearchParams();
     let currentPage = searchParams.get("page") || 1;
 
     const [searchText, setSearchText] = useState("");
-    const [orders, setOrders] = useState();
+    const [categories, setCategories] = useState();
     const [rows, setRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        const fetchAllProduct = async () => {
-            const res = await orderServices.getAllOrder();
-            setOrders(res.data.orders);
-            setRows(res.data.orders);
-        };
-        fetchAllProduct();
-    }, [orders]);
+    const [message, setMessage] = useState();
 
     const requestSearch = (searchValue) => {
         setSearchText(searchValue);
         const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = orders.filter((row) =>
-            Object.keys(row).some((field) => searchRegex.test(row[field].toString()))
-        );
+        const filteredRows = categories.filter((row) => {
+            return Object.keys(row).some((field) => {
+                return searchRegex.test(row[field].toString());
+            });
+        });
         setRows(filteredRows);
-        setSearchParams({ page: 1 });
+    };
+
+    useEffect(() => {
+        const fetchAllBlog = async () => {
+            const res = await blogCategoryServices.getAllBlogCategory();
+            setCategories(res.data.category);
+            setRows(res.data.category);
+        };
+        fetchAllBlog();
+    }, [categories]);
+
+    const handleDelete = async (id) => {
+        console.log(id);
+        try {
+            setIsLoading(true);
+            setMessage("");
+            const res = await blogCategoryServices.deleteBlogCategory(id);
+            setIsLoading(false);
+            if (res.data.success) {
+                const updateCategories = categories.filter((category) => category._id !== id);
+                setCategories(updateCategories);
+                setRows(updateCategories);
+                setMessage({ type: "success", content: res.data.message });
+            } else setMessage({ type: "error", content: res.data.message });
+        } catch (error) {
+            console.log(error);
+            setMessage({ type: "error", content: error.data.message });
+        }
     };
 
     const handleChangePage = (event, value) => setSearchParams({ page: value });
@@ -108,9 +122,9 @@ function OrderTable() {
     const handleChangeStatus = async (id, value) => {
         try {
             setIsLoading(true);
-            const res = await orderServices.changeStatus(id, value);
+            const res = await blogCategoryServices.changeStatus(id, value);
             if (res.data.success) {
-                setOrders(res.data);
+                setCategories(res.data);
                 setIsLoading(false);
             }
         } catch (error) {
@@ -123,7 +137,7 @@ function OrderTable() {
             <Helmet>
                 <title>{TITLE_PAGE}</title>
             </Helmet>
-            <Preloader isHidden={orders} />
+            <Preloader isHidden={categories} />
             <Header />
             <div className="main">
                 <Container>
@@ -160,24 +174,26 @@ function OrderTable() {
                     </div>
                     <div className="card">
                         <h3 className="card-header">{TITLE_PAGE}</h3>
+                        {message && <Message type={message.type}>{message.content}</Message>}
                         <div className="card-body">
                             <div className="actions">
                                 <button className="btn btn-danger">
                                     <FileDownloadIcon />
                                     Export
                                 </button>
+                                <Link to="/admin/blog-category/form" className="btn btn-primary">
+                                    <AddIcon />
+                                    Add New
+                                </Link>
                             </div>
                             {rows.length > 0 ? (
                                 <table className="table table-border">
                                     <thead>
                                         <tr>
-                                            <th>Invoice Code</th>
-                                            <th>User</th>
-                                            <th>Address</th>
+                                            <th>Name</th>
                                             <th>Status</th>
-                                            <th>Products</th>
-                                            <th>Total</th>
-                                            <th>Payment</th>
+                                            <th>Slug</th>
+                                            <th>Desciption</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -185,6 +201,7 @@ function OrderTable() {
                                         <RenderTable
                                             data={rows}
                                             currentPage={currentPage}
+                                            onDelete={handleDelete}
                                             onChangeStatus={handleChangeStatus}
                                         />
                                     </tbody>
@@ -218,4 +235,4 @@ function OrderTable() {
     );
 }
 
-export default OrderTable;
+export default BlogCategoryTable;

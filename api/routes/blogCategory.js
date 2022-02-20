@@ -1,26 +1,26 @@
 const router = require("express").Router();
 const { changeAlias } = require("../helpers/string");
-const ProductCategory = require("../models/ProductCategory");
+const BlogCategory = require("../models/BlogCategory");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 
-// @DESC Create new product category
-// @ROUTE POST /api/product-category/
+// @DESC Create new blog category
+// @ROUTE POST /api/blog-category/
 // @ACCESS Private
 router.post("/", verifyTokenAndAdmin, async (req, res) => {
-    const newCategory = new ProductCategory(req.body);
+    const newCategory = new BlogCategory(req.body);
 
     if (!newCategory.name) return res.status(401).json({ success: false, message: "Missing necessary information" });
 
     try {
         newCategory.slug = changeAlias(newCategory.name);
-        const existCategory = await ProductCategory.findOne({
+        const existCategory = await BlogCategory.findOne({
             name: newCategory.name,
         });
-        if (existCategory) return res.status(400).json({ success: false, message: "Product category already exist" });
+        if (existCategory) return res.status(400).json({ success: false, message: "Blog category already exist" });
         const savedCategory = await newCategory.save();
         res.json({
             success: true,
-            message: "Product category created successfully",
+            message: "Blog category created successfully",
             category: savedCategory,
         });
     } catch (error) {
@@ -29,21 +29,21 @@ router.post("/", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// @DESC Update a product
-// @ROUTE PUT /api/product-category/:id
+// @DESC Update a blog
+// @ROUTE PUT /api/blog-category/:id
 // @ACCESS Privates
 router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
     const updateCategory = req.body;
     try {
-        const oldCategory = await ProductCategory.findById(req.params.id);
+        const oldCategory = await BlogCategory.findById(req.params.id);
         if (oldCategory) {
             updateCategory.slug = changeAlias(updateCategory.name);
-            const updatedCategory = await ProductCategory.findByIdAndUpdate({ _id: req.params.id }, updateCategory, {
+            const updatedCategory = await BlogCategory.findByIdAndUpdate({ _id: req.params.id }, updateCategory, {
                 new: true,
             });
             res.json({
                 success: true,
-                message: "Update product category successfully",
+                message: "Update blog category successfully",
                 category: updatedCategory,
             });
         } else {
@@ -57,64 +57,64 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// @DESC Delete a product
-// @ROUTE DELETE /api/product-category/:id
+// @DESC Delete a blog
+// @ROUTE DELETE /api/blog-category/:id
 // @ACCESS Privates
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedCategory = await ProductCategory.findOneAndDelete({ _id: req.params.id });
-        if (!deletedCategory) return res.status(401).json({ success: false, message: "Product category not found" });
-        res.json({ success: true, message: "Product category has been deleted" });
+        const deletedCategory = await BlogCategory.findOneAndDelete({ _id: req.params.id });
+        if (!deletedCategory) return res.status(401).json({ success: false, message: "Blog category not found" });
+        res.json({ success: true, message: "Blog category has been deleted" });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
 
-// @DESC Find a product
-// @ROUTE GET /api/product-category/find/:id
+// @DESC Find a blog
+// @ROUTE GET /api/blog-category/find/:id
 // @ACCESS Privates
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const category = await ProductCategory.findById(req.params.id);
-        if (!category) return res.status(401).json({ success: false, message: "Product category not found" });
-        res.json({ success: true, message: "Get product category successfully", category });
+        const category = await BlogCategory.findById(req.params.id);
+        if (!category) return res.status(401).json({ success: false, message: "Blog category not found" });
+        res.json({ success: true, message: "Get blog category successfully", category });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
 
-// @DESC Get all  product
-// @ROUTE GET /api/product-category/
+// @DESC Get all  blog
+// @ROUTE GET /api/blog-category/
 // @ACCESS Public
 router.get("/", async (req, res) => {
     try {
-        const category = await ProductCategory.find().select("id name status color size tag slug description");
-        if (!category) return res.status(401).json({ success: false, message: "Product categories not found" });
-        res.json({ success: true, message: "Get product categories successfully", category });
+        const category = await BlogCategory.find().select("id name status tag slug description");
+        if (!category) return res.status(401).json({ success: false, message: "Blog categories not found" });
+        res.json({ success: true, message: "Get blog categories successfully", category });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
 
-// @DESC Change product-category's status
-// @ROUTE PUT /api/product-cateogry/change-status/:id
+// @DESC Change blog-category's status
+// @ROUTE PUT /api/blog-cateogry/change-status/:id
 // @ACCESS Privates
 router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
     const { currentStatus } = req.body;
     const statusValue = currentStatus === "active" ? "inactive" : "active";
     try {
-        const oldCategory = await ProductCategory.findById(req.params.id);
+        const oldCategory = await BlogCategory.findById(req.params.id);
         if (oldCategory) {
-            await ProductCategory.updateOne({ _id: req.params.id }, { status: statusValue });
+            await BlogCategory.updateOne({ _id: req.params.id }, { status: statusValue });
             res.json({
                 success: true,
-                message: "Update product-category's status successfully",
+                message: "Update blog-category's status successfully",
             });
         } else {
-            return res.status(401).json({ success: false, message: "Product category is invalid" });
+            return res.status(401).json({ success: false, message: "Blog category is invalid" });
         }
     } catch (error) {
         console.log(error);

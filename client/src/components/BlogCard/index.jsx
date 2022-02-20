@@ -2,34 +2,40 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./BlogCard.scss";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
+import { IMAGE_CLOUDINARY } from "constants/Config";
+import { createSummary } from "helpers/string";
+import parse from "html-react-parser";
+import moment from "moment";
 
 // prop 'primary': blog card has big size
-function BlogCard({ title, image, author, created, summary, primary }) {
+function BlogCard({ blog, primary }) {
     return (
         <div className="blog-card">
             <div className="blog-card__image">
-                <Link to="#">
-                    <img src={image} alt={title} />
+                <Link to={`/blog/${blog.slug}`}>
+                    <img src={IMAGE_CLOUDINARY + blog.images[0]} alt={blog.name} />
                     <div className="time">
-                        <span className="day">18</span>
-                        <span className="month-year">Jan 2020</span>
+                        <span className="day">{moment(blog.updateAt).get("date")}</span>
+                        <span className="month-year">{moment(blog.updateAt).format("MMM YYYY")}</span>
                     </div>
                 </Link>
             </div>
             <div className={`desc ${primary && "card-lg"}`}>
-                <Link to="#" className="desc__title">
-                    {title}
+                <Link to={`/blog/${blog.slug}`} className="desc__title">
+                    {blog.name}
                 </Link>
-                <p className="desc__summary">{summary}</p>
+                <p className="desc__summary">{parse(createSummary(blog.description, 240))}</p>
                 <div className="desc__footer">
                     <div className="created">
-                        By <span className="content">{author}</span>
+                        By <span className="content">Admin</span>
                         <span className="border">|</span>
-                        <span className="content">StreetStyle, Fashion, Couple</span>
+                        <span className="content">
+                            <Link to={`/blog-category/${blog.category.slug}`}>{blog.category.name}</Link>
+                        </span>
                         <span className="border">|</span>
-                        <span className="content">8 comments</span>
+                        <span className="content">{blog.reviews.length} comments</span>
                     </div>
-                    <Link to="#" className="link-detail">
+                    <Link to={`/blog/${blog.slug}`} className="link-detail">
                         <span>Continue Reading</span>
                         <ArrowRightAltIcon />
                     </Link>

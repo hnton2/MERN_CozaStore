@@ -5,7 +5,7 @@ import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Preloader from "components/Preloader";
-import { IMAGE_CLOUDINARY } from "constants/Data";
+import { IMAGE_CLOUDINARY } from "constants/Config";
 import Image from "constants/Image";
 import moment from "moment";
 import React, { useEffect, useState } from "react";

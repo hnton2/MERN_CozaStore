@@ -5,14 +5,14 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import Message from "components/Message";
 import Preloader from "components/Preloader";
-import { DEFAULT_PRODUCT } from "constants/Form";
+import { DEFAULT_BLOG } from "constants/Form";
 import { STATUS_RADIO } from "constants/Option";
-import { productValidation } from "helpers/validation";
+import { blogValidation } from "helpers/validation";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import productServices from "services/product";
+import blogServices from "services/blog";
 
 const linkData = [
     {
@@ -20,44 +20,36 @@ const linkData = [
         path: "/admin",
     },
     {
-        name: "Product ",
-        path: "/product ",
+        name: "Blog ",
+        path: "/blog ",
     },
 ];
 
-const TITLE_PAGE = "Product Form";
+const TITLE_PAGE = "Blog Form";
 
-function ProductForm() {
+function BlogForm() {
     const navigate = useNavigate();
     const { id: currentId } = useParams();
-    const categoryProduct = useSelector((state) => state.category.categoryProduct);
+    const categoryBlog = useSelector((state) => state.category.categoryBlog);
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState();
-    const [initialValue, setInitialValue] = useState(DEFAULT_PRODUCT);
+    const [initialValue, setInitialValue] = useState(DEFAULT_BLOG);
     const [oldImages, setOldImages] = useState();
-    const [categoryOptions, setCategoryOptions] = useState([]);
-    const [options, setOptions] = useState({ tag: [], color: [], size: [] });
-    const [watchCategory, setWatchCategory] = useState();
+    const [categoryOptions, setCategoryOptions] = useState();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (currentId) {
-                    const res = await productServices.getOneProduct(currentId);
-                    const productDetail = res.data.product;
-                    setOldImages(productDetail.images);
+                    const res = await blogServices.getOneBlog(currentId);
+                    const blogDetail = res.data.blog;
+                    setOldImages(blogDetail.images);
                     setInitialValue({
-                        name: productDetail.name,
-                        status: productDetail.status,
-                        images: productDetail.images.map((item) => ({ name: item })),
-                        category: { value: productDetail.category.slug, label: productDetail.category.name },
-                        color: productDetail.color,
-                        tag: productDetail.tag,
-                        size: productDetail.size,
-                        quantity: productDetail.quantity,
-                        price: productDetail.price,
-                        discount: productDetail.discount,
-                        description: productDetail.description,
+                        name: blogDetail.name,
+                        status: blogDetail.status,
+                        images: blogDetail.images.map((item) => ({ name: item })),
+                        category: { value: blogDetail.category.slug, label: blogDetail.category.name },
+                        description: blogDetail.description,
                     });
                 }
             } catch (error) {
@@ -69,38 +61,23 @@ function ProductForm() {
     }, [currentId]);
 
     useEffect(() => {
-        if (categoryProduct) {
-            const cateOptions = categoryProduct.map((item) => ({ value: item.slug, label: item.name }));
+        if (categoryBlog) {
+            const cateOptions = categoryBlog.map((item) => ({ value: item.slug, label: item.name }));
             setCategoryOptions(cateOptions);
         }
-    }, [categoryProduct]);
-
-    const handleWatchFields = (data) => {
-        const watchCat = data.category.value;
-        if (watchCat) setWatchCategory(watchCat);
-    };
-
-    useEffect(() => {
-        if (watchCategory || initialValue.category.value) {
-            categoryProduct.forEach((item) => {
-                if (item.slug === watchCategory || item.slug === initialValue.category.value)
-                    setOptions({ tag: item.tag, color: item.color, size: item.size });
-            });
-        }
-    }, [watchCategory, initialValue, categoryProduct]);
+    }, [categoryBlog]);
 
     const onSubmit = async (data) => {
         if (oldImages) data.oldImages = oldImages;
         setIsLoading(true);
         setMessage();
-        console.log(data);
         try {
             const response = currentId
-                ? await productServices.updateProduct(currentId, data)
-                : await productServices.createNewProduct(data);
+                ? await blogServices.updateBlog(currentId, data)
+                : await blogServices.createNewBlog(data);
             setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/product");
+            navigate("/admin/blog");
         } catch (error) {
             setIsLoading(false);
             setMessage({ type: "error", content: error.response.data.message });
@@ -124,25 +101,14 @@ function ProductForm() {
                         <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
                             {message && <Message type={message.type}>{message.content}</Message>}
-                            <Form
-                                onSubmit={onSubmit}
-                                defaultValues={initialValue}
-                                validation={productValidation}
-                                onWatchFields={handleWatchFields}
-                            >
+                            <Form onSubmit={onSubmit} defaultValues={initialValue} validation={blogValidation}>
                                 <InputField name="name" placeholder="Name" />
                                 <RadioField name="status" options={STATUS_RADIO} />
                                 <ImageField name="images" />
                                 <SelectField name="category" options={categoryOptions} placeholder="Category..." />
-                                <SelectField name="tag" options={options.tag} isMultiple placeholder="Tags..." />
-                                <SelectField name="size" options={options.size} isMultiple placeholder="Size..." />
-                                <SelectField name="color" options={options.color} isMultiple placeholder="Color..." />
-                                <InputField name="quantity" placeholder="Quantity" />
-                                <InputField name="price" placeholder="Price" />
-                                <InputField name="discount" placeholder="Discount" />
                                 <TextEditorField name="description" />
                                 <div className="form-button">
-                                    <Link to="/admin/product" className="btn btn-danger">
+                                    <Link to="/admin/blog" className="btn btn-danger">
                                         Cancel
                                     </Link>
                                     <button className="btn btn-primary">{currentId ? "Update" : "Submit"}</button>
@@ -157,4 +123,4 @@ function ProductForm() {
     );
 }
 
-export default ProductForm;
+export default BlogForm;

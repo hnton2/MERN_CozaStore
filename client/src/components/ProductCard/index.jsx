@@ -6,7 +6,7 @@ import "./ProductCard.scss";
 import { Checkbox, Container, Modal } from "@mui/material";
 import ProductDetail from "components/ProductDetail";
 import styled from "styled-components";
-import { IMAGE_CLOUDINARY } from "constants/Data";
+import { IMAGE_CLOUDINARY } from "constants/Config";
 
 const Backdrop = styled.div`
     z-index: -1;

@@ -4,6 +4,7 @@ import Image from "constants/Image";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const dataProduct = [
     {
@@ -83,6 +84,8 @@ const SidebarCard = ({ path, image, name, price }) => (
 );
 
 function BlogSidebar() {
+    const categoryBlog = useSelector((state) => state.category.categoryBlog);
+
     return (
         <div className="blog__menu">
             <form className="search">
@@ -93,31 +96,13 @@ function BlogSidebar() {
             </form>
             <h3 className="title">Categories</h3>
             <ul className="blog-category">
-                <li>
-                    <Link to="#" className="category__link">
-                        Fashion
-                    </Link>
-                </li>
-                <li>
-                    <Link to="#" className="category__link">
-                        Beauty
-                    </Link>
-                </li>
-                <li>
-                    <Link to="#" className="category__link">
-                        Street Style
-                    </Link>
-                </li>
-                <li>
-                    <Link to="#" className="category__link">
-                        Life Style
-                    </Link>
-                </li>
-                <li>
-                    <Link to="#" className="category__link">
-                        DIY & Crafts
-                    </Link>
-                </li>
+                {categoryBlog.map((item) => (
+                    <li key={item._id}>
+                        <Link to={`/blog-category/${item.slug}`} className="category__link">
+                            {item.name}
+                        </Link>
+                    </li>
+                ))}
             </ul>
             <h3 className="title">Featured Products</h3>
             {dataProduct.map((item, index) => (

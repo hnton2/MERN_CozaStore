@@ -6,7 +6,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import CloseIcon from "@mui/icons-material/Close";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { IMAGE_CLOUDINARY } from "constants/Data";
+import { IMAGE_CLOUDINARY } from "constants/Config";
 import React, { memo, useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { Controller, useFieldArray, useForm } from "react-hook-form";

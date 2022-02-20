@@ -1,5 +1,5 @@
 import { Container, Grid, Pagination } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import BlogCard from "components/BlogCard";
 import Footer from "components/Footer";
 import Header from "components/Header";
@@ -7,62 +7,79 @@ import TitlePage from "components/TitlePage";
 import Image from "constants/Image";
 import BlogSidebar from "components/BlogSidebar";
 import styled from "styled-components";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+import blogServices from "services/blog";
+import Preloader from "components/Preloader";
+import { Helmet } from "react-helmet";
+import Error404 from "components/404";
 
 const BlogContainer = styled.div`
     padding: 62px 0 60px;
 `;
 
-const dataBlog = [
-    {
-        title: "8 Inspiring Ways to Wear Dresses in the Winter",
-        image: Image.BLOG1,
-        author: "Nancy Ward",
-        created: "July 22, 2017",
-        summary:
-            "Duis ut velit gravida nibh bibendum commodo. Suspendisse pellentesque mattis augue id euismod. Interdum et male-suada fames",
-    },
-    {
-        title: "The Great Big List of Men’s Gifts for the Holidays",
-        image: Image.BLOG2,
-        author: "Nancy Ward",
-        created: "July 18, 2017",
-        summary:
-            "Nullam scelerisque, lacus sed consequat laoreet, dui enim iaculis leo, eu viverra ex nulla in tellus. Nullam nec ornare tellus, ac fringilla lacus. Ut sit ame",
-    },
-    {
-        title: "5 Winter-to-Spring Fashion Trends to Try Now",
-        image: Image.BLOG3,
-        author: "Nancy Ward",
-        created: "July 2, 2017",
-        summary:
-            "Proin nec vehicula lorem, a efficitur ex. Nam vehicula nulla vel erat tincidunt, sed hendrerit ligula porttitor. Fusce sit amet maximus nunc",
-    },
-];
-
 function Blog() {
+    let [searchParams, setSearchParams] = useSearchParams();
+    const { category: currentCategory } = useParams();
+    const [blogs, setBlogs] = useState();
+    const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    useEffect(() => {
+        const fetchBlogs = async () => {
+            try {
+                const response = await blogServices.getBlogList(currentCategory, currentPage);
+                if (response.data.success) {
+                    setBlogs(response.data.blogs);
+                    setTotalPages(response.data.pages);
+                    setCurrentPage(response.data.current);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchBlogs();
+    }, [currentCategory, currentPage]);
+
+    const handleChangePage = (event, value) => {
+        setCurrentPage(value);
+        setSearchParams({ page: value });
+    };
+
     return (
         <>
+            <Helmet>
+                <title>{currentCategory[0].toUpperCase() + currentCategory.slice(1)}</title>
+            </Helmet>
             <Header />
+            <Preloader isHidden={blogs} />
             <div className="main">
                 <TitlePage background={Image.BACKGROUND2} title="Blog" />
                 <BlogContainer>
                     <Container>
                         <Grid container spacing={4}>
                             <Grid item md={8} lg={9}>
-                                {dataBlog.map((item, index) => (
-                                    <BlogCard
-                                        key={index}
-                                        title={item.title}
-                                        image={item.image}
-                                        author={item.author}
-                                        created={item.created}
-                                        summary={item.summary}
-                                        primary
-                                    />
-                                ))}
-                                <div>
-                                    <Pagination count={10} variant="outlined" size="large" color="secondary" />
-                                </div>
+                                {blogs && blogs.length > 0 ? (
+                                    <>
+                                        {blogs.map((item) => (
+                                            <BlogCard key={item._id} primary blog={item} />
+                                        ))}
+                                        <div>
+                                            {totalPages > 1 && (
+                                                <Pagination
+                                                    page={Number(currentPage)}
+                                                    count={totalPages}
+                                                    onChange={handleChangePage}
+                                                    variant="outlined"
+                                                    shape="rounded"
+                                                    color="primary"
+                                                />
+                                            )}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <Error404 />
+                                )}
                             </Grid>
                             <Grid item md={4} lg={3}>
                                 <BlogSidebar />

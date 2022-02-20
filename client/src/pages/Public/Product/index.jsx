@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
 import { Avatar, Container, Rating } from "@mui/material";
+import Breadcrumbs from "components/Breadcrumbs";
+import { Form, InputField } from "components/CustomForm";
 import Footer from "components/Footer";
 import Header from "components/Header";
+import Preloader from "components/Preloader";
 import ProductDetail from "components/ProductDetail";
 import ProductsSlider from "components/ProductsSlider";
-import "./Product.scss";
-import Breadcrumbs from "components/Breadcrumbs";
+import { stringAvatar } from "helpers/string";
+import { reviewValidation } from "helpers/validation";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 import productServices from "services/product";
-import { Form, InputField } from "components/CustomForm";
-import { reviewValidation } from "helpers/validation";
-import Preloader from "components/Preloader";
-import { Helmet } from "react-helmet";
-import { stringAvatar } from "helpers/string";
+import "./Product.scss";
 
 const linkData = [
     {
@@ -20,8 +20,8 @@ const linkData = [
         path: "/home",
     },
     {
-        name: "Men",
-        path: "/category",
+        name: "Category",
+        path: "/product-category",
     },
 ];
 
