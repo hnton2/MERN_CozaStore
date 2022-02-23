@@ -4,20 +4,21 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
-import { Backdrop, CircularProgress, Container, Pagination } from "@mui/material";
+import { Backdrop, CircularProgress, Container, Grid, Pagination } from "@mui/material";
 import Error404 from "components/404";
 import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Message from "components/Message";
 import Preloader from "components/Preloader";
 import StatusFilter from "components/StatusFilter";
 import { IMAGE_CLOUDINARY } from "constants/Config";
-import { CATEGORY_OPTIONS } from "constants/Option";
-import { createSummary, escapeRegExp } from "helpers/string";
+import { FILTER_STATUS } from "constants/Option";
+import { createSummary } from "helpers/string";
+import { toastMessage } from "helpers/toastMessage";
 import parse from "html-react-parser";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import blogServices from "services/blog";
@@ -32,104 +33,102 @@ const linkData = [
 
 const TITLE_PAGE = "Blog List";
 
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete, onChangeStatus }) => {
-    const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
-
-    return (
-        <>
-            {dataRender.map((item) => (
-                <tr key={item._id}>
-                    <td className="text-center">
-                        <div>
-                            <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
-                        </div>
-                        <Link to={`/blog/${item.slug}`}>{item.name}</Link>
-                    </td>
-                    <td className="text-center">{item.category.name}</td>
-                    <td className="text-center">
-                        <button
-                            className={`btn btn-rounded ${
-                                item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
-                            } btn-sm`}
-                            onClick={() => onChangeStatus(item._id, item.status)}
-                        >
-                            <FontAwesomeIcon icon={faCheck} />
-                        </button>
-                    </td>
-                    <td>{parse(createSummary(item.description, 120))}</td>
-                    <td className="text-center">
-                        <Link to={`/admin/blog/form/${item._id}`} className="btn btn-rounded btn-primary btn-sm">
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                        </Link>
-                        <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
-                    </td>
-                </tr>
-            ))}
-        </>
-    );
-};
-
 function BlogTable() {
     let [searchParams, setSearchParams] = useSearchParams();
-    let currentPage = searchParams.get("page") || 1;
+    const { categoryBlog } = useSelector((state) => state.category);
 
-    const [searchText, setSearchText] = useState("");
-    const [blogs, setBlogs] = useState([]);
-    const [rows, setRows] = useState([]);
+    const [search, setSearch] = useState(searchParams.get("search") || "");
+    const [blogs, setBlogs] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState();
+    const [totalPages, setTotalPages] = useState(1);
+    const [categoryOptions, setCategoryOptions] = useState([{ value: "all", label: "All" }]);
 
     useEffect(() => {
-        const fetchAllBlog = async () => {
-            const res = await blogServices.getAllBlog();
-            setBlogs(res.data.blog);
-            setRows(res.data.blog);
-        };
-        fetchAllBlog();
-    }, [blogs]);
+        if (categoryBlog) {
+            let cateOptions = [{ value: "all", label: "All" }];
+            categoryBlog.forEach((item) => {
+                cateOptions.push({ value: item.slug, label: item.name });
+            });
+            setCategoryOptions(cateOptions);
+        }
+    }, [categoryBlog]);
 
-    const requestSearch = (searchValue) => {
-        setSearchText(searchValue);
-        const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = blogs.filter((row) =>
-            Object.keys(row).some((field) => searchRegex.test(row[field].toString()))
-        );
-        setRows(filteredRows);
-        setSearchParams({ page: 1 });
+    useEffect(() => {
+        const fetchBlogs = async () => {
+            try {
+                setIsLoading(true);
+                const res = await blogServices.getBlogs(Object.fromEntries([...searchParams]));
+                if (res.data.success) {
+                    setBlogs(res.data.blogs);
+                    setTotalPages(res.data.pages);
+                }
+                setIsLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchBlogs();
+    }, [searchParams]);
+
+    const requestSearch = (value) => {
+        setSearch(value);
+        if (value !== "") {
+            searchParams.delete("page");
+            setSearchParams({ ...Object.fromEntries([...searchParams]), search: value });
+        } else {
+            searchParams.delete("search");
+            setSearchParams(searchParams);
+        }
+    };
+
+    const handleChangePage = (event, value) => {
+        if (value !== 1) setSearchParams({ ...Object.fromEntries([...searchParams]), page: value });
+        else {
+            searchParams.delete("page");
+            setSearchParams(searchParams);
+        }
+    };
+
+    const handleSelect = (data) => {
+        if (data.value !== "all") {
+            searchParams.delete("page");
+            setSearchParams({ ...Object.fromEntries([...searchParams]), category: data.value });
+        } else {
+            searchParams.delete("category");
+            setSearchParams(searchParams);
+        }
     };
 
     const handleDelete = async (id) => {
         try {
             setIsLoading(true);
-            setMessage("");
             const res = await blogServices.deleteblog(id);
-            setIsLoading(false);
             if (res.data.success) {
-                const updateBlog = blogs.filter((blog) => blog._id !== id);
-                setBlogs(updateBlog);
-                setRows(updateBlog);
-                setMessage({ type: "success", content: res.data.message });
-            } else setMessage({ type: "error", content: res.data.message });
+                const updateBlogs = blogs.filter((blog) => blog._id !== id);
+                setBlogs(updateBlogs);
+                toastMessage({ type: "success", message: res.data.message });
+            } else toastMessage({ type: "error", message: res.data.message });
+            setIsLoading(false);
         } catch (error) {
-            console.log(error);
-            setMessage({ type: "error", content: error.data.message });
+            toastMessage({ type: "error", message: error.data.message });
         }
     };
-
-    const handleChangePage = (event, value) => setSearchParams({ page: value });
 
     const handleChangeStatus = async (id, value) => {
         try {
             setIsLoading(true);
             const res = await blogServices.changeStatus(id, value);
             if (res.data.success) {
-                setBlogs(res.data);
+                const updateBlogs = blogs.map((blog) => {
+                    if (blog._id === id) blog.status = value === "active" ? "inactive" : "active";
+                    return blog;
+                });
+                setBlogs(updateBlogs);
                 setIsLoading(false);
-            }
+                toastMessage({ type: "success", message: res.data.message });
+            } else toastMessage({ type: "error", message: res.data.message });
         } catch (error) {
-            console.log(error);
+            toastMessage({ type: "error", message: error.data.message });
         }
     };
 
@@ -150,32 +149,41 @@ function BlogTable() {
                         <h3 className="card-header">Filter & Search</h3>
                         <div className="card-body">
                             <div className="toolbar">
-                                <StatusFilter data={rows} />
-                                <div style={{ width: "240px" }}>
-                                    <Select options={CATEGORY_OPTIONS} />
-                                </div>
-                                <div className="search">
-                                    <SearchIcon className="search-icon" />
-                                    <input
-                                        placeholder="Search"
-                                        value={searchText}
-                                        onChange={(event) => requestSearch(event.target.value)}
-                                        className="search-input"
-                                    />
-                                    <CloseIcon
-                                        className="search-icon delete"
-                                        onClick={() => requestSearch("")}
-                                        style={{
-                                            visibility: searchText ? "visible" : "hidden",
-                                        }}
-                                    />
-                                </div>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={4} md={4} lg={4}>
+                                        {blogs && (
+                                            <StatusFilter keyword="status" options={FILTER_STATUS} data={blogs} />
+                                        )}
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4} lg={4}>
+                                        <div className="select">
+                                            <Select options={categoryOptions} onChange={handleSelect} />
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} sm={12} md={4} lg={4}>
+                                        <div className="search">
+                                            <SearchIcon className="search-icon" />
+                                            <input
+                                                placeholder="Search"
+                                                value={search}
+                                                onChange={(event) => requestSearch(event.target.value)}
+                                                className="search-input"
+                                            />
+                                            <CloseIcon
+                                                className="search-icon delete"
+                                                onClick={() => requestSearch("")}
+                                                style={{
+                                                    visibility: search ? "visible" : "hidden",
+                                                }}
+                                            />
+                                        </div>
+                                    </Grid>
+                                </Grid>
                             </div>
                         </div>
                     </div>
                     <div className="card">
                         <h3 className="card-header">{TITLE_PAGE}</h3>
-                        {message && <Message type={message.type}>{message.content}</Message>}
                         <div className="card-body">
                             <div className="actions">
                                 <button className="btn btn-danger">
@@ -187,47 +195,83 @@ function BlogTable() {
                                     Add New
                                 </Link>
                             </div>
-                            {rows.length > 0 ? (
+                            {blogs && blogs.length > 0 ? (
                                 <table className="table table-border">
                                     <thead>
                                         <tr>
+                                            <th>No.</th>
                                             <th>Blog</th>
                                             <th>Category</th>
                                             <th>Status</th>
                                             <th>Summary</th>
-                                            <th>Action</th>
+                                            <th style={{ width: "100px" }}>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <RenderTable
-                                            data={rows}
-                                            currentPage={currentPage}
-                                            onDelete={handleDelete}
-                                            onChangeStatus={handleChangeStatus}
-                                        />
+                                        {blogs.map((item, index) => (
+                                            <tr key={item._id}>
+                                                <td className="text-center">{index + 1}</td>
+                                                <td className="text-center">
+                                                    <div>
+                                                        <img src={IMAGE_CLOUDINARY + item.images[0]} alt={item.name} />
+                                                    </div>
+                                                    <Link to={`/blog/${item.slug}`}>{item.name}</Link>
+                                                </td>
+                                                <td className="text-center">{item.category.name}</td>
+                                                <td className="text-center">
+                                                    <button
+                                                        className={`btn btn-rounded ${
+                                                            item.status === "active"
+                                                                ? "btn-success"
+                                                                : "btn-secondary btn-disabled"
+                                                        } btn-sm`}
+                                                        onClick={() => handleChangeStatus(item._id, item.status)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faCheck} />
+                                                    </button>
+                                                </td>
+                                                <td>{parse(createSummary(item.description, 100))}</td>
+                                                <td className="text-center">
+                                                    <Link
+                                                        to={`/admin/blog/form/${item._id}`}
+                                                        className="btn btn-rounded btn-primary btn-sm"
+                                                    >
+                                                        <FontAwesomeIcon icon={faPenToSquare} />
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="btn btn-rounded btn-danger btn-sm"
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrashCan} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             ) : (
                                 <Error404 />
                             )}
                         </div>
-                        <div className="card-footer">
-                            <div className="pagination">
-                                <div className="left">
-                                    <h4>Pagination</h4>
-                                </div>
-                                <div className="right">
-                                    <Pagination
-                                        page={Number(currentPage)}
-                                        count={Math.ceil(rows.length / 5)}
-                                        onChange={handleChangePage}
-                                        variant="outlined"
-                                        shape="rounded"
-                                        color="primary"
-                                    />
+                        {totalPages > 1 && (
+                            <div className="card-footer">
+                                <div className="pagination">
+                                    <div className="left">
+                                        <h4>Pagination</h4>
+                                    </div>
+                                    <div className="right">
+                                        <Pagination
+                                            page={Number(searchParams.get("page") || 1)}
+                                            count={totalPages}
+                                            onChange={handleChangePage}
+                                            variant="outlined"
+                                            shape="rounded"
+                                            color="primary"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </Container>
             </div>

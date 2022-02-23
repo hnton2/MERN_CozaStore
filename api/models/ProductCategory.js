@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ProductCategorySchema = new mongoose.Schema(
+var ProductCategorySchema = new mongoose.Schema(
     {
         name: { type: String, required: true, unique: true },
         slug: { type: String, required: true, unique: true },
@@ -12,5 +12,6 @@ const ProductCategorySchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+ProductCategorySchema.index({ name: "text" });
 
 module.exports = mongoose.model("ProductCategory", ProductCategorySchema);

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const OrderSchema = new mongoose.Schema(
+var OrderSchema = new mongoose.Schema(
     {
         code: { type: String, required: true, unique: true },
         user: {
@@ -44,5 +44,6 @@ const OrderSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+OrderSchema.index({ code: "text", "user.name": "text", "products.name": "text", "coupon.name": "text" });
 
 module.exports = mongoose.model("Order", OrderSchema);

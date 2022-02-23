@@ -1,7 +1,12 @@
 import { userRequest } from "helpers/requestMethod";
+import queryString from "query-string";
 
-const getAllUser = () => {
-    return userRequest.get("user");
+const getUsers = ({ page = 1, search = "", status = null }) => {
+    let query = {};
+    if (page !== 1) query.page = page;
+    if (search !== "") query.search = search;
+    if (status) query.isAdmin = status;
+    return userRequest.get(`user?${queryString.stringify(query)}`);
 };
 
 const deleteUser = (id) => {
@@ -21,7 +26,7 @@ const changeRole = (id, currentRole) => {
 };
 
 const userServices = {
-    getAllUser,
+    getUsers,
     deleteUser,
     saveCart,
     changeRole,

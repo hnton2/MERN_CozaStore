@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ProductSchema = new mongoose.Schema(
+var ProductSchema = new mongoose.Schema(
     {
         name: { type: String, required: true, unique: true },
         slug: { type: String, required: true, unique: true },
@@ -31,5 +31,6 @@ const ProductSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+ProductSchema.index({ name: "text", "category.name": "text", "tag.label": "text", price: "text" });
 
 module.exports = mongoose.model("Product", ProductSchema);

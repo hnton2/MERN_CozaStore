@@ -1,25 +1,41 @@
 import React from "react";
+import { useSearchParams } from "react-router-dom";
 import "./StatusFilter.scss";
 
-function StatusFilter({ data }) {
-    let statusCount = { active: 0, inactive: 0 };
-    data.map((item) => {
-        if (item.status === "active") statusCount["active"]++;
-        if (item.status === "inactive") statusCount["inactive"]++;
+function StatusFilter({ keyword, options, data }) {
+    let [searchParams, setSearchParams] = useSearchParams();
+
+    let statusCount = options.map((option) => Object.assign({}, option));
+
+    data.forEach((item) => {
+        statusCount.forEach((option) => {
+            if (item[keyword] === option.value) option.count++;
+        });
     });
+
+    const handleFilter = (value) => {
+        if (value !== "all") {
+            searchParams.delete("page");
+            setSearchParams({ ...Object.fromEntries([...searchParams]), [keyword]: value });
+        } else {
+            searchParams.delete([keyword]);
+            setSearchParams(searchParams);
+        }
+    };
+
     return (
         <div className="filter">
-            <button className="btn btn-success btn-sm">
+            <button onClick={() => handleFilter("all")} className="btn btn-success">
                 All <span>{data.length}</span>
             </button>
-            <button className="btn btn-primary btn-sm">
-                Active<span>{statusCount.active}</span>
-            </button>
-            <button className="btn btn-danger btn-sm">
-                Inactive<span>{statusCount.inactive}</span>
-            </button>
+            {statusCount.map((option) => (
+                <button key={option.value} onClick={() => handleFilter(option.value)} className="btn btn-primary">
+                    {option.label}
+                    <span>{option.count}</span>
+                </button>
+            ))}
         </div>
     );
 }
 
-export default StatusFilter;
+export default React.memo(StatusFilter);

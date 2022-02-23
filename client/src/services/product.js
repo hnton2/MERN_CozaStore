@@ -1,13 +1,19 @@
 import { createFormData } from "helpers/form";
 import { publicRequest, userRequest } from "helpers/requestMethod";
+import queryString from "query-string";
 
 const createNewProduct = (product) => {
     const formData = createFormData(product);
     return userRequest.post("product", formData, { headers: { "Content-Type": "multipart/form-data" } });
 };
 
-const getAllProduct = () => {
-    return publicRequest.get("product");
+const getProducts = ({ category = "all", page = 1, search = "", status = null }) => {
+    let query = {};
+    if (category !== "all") query.category = category;
+    if (page !== 1) query.page = page;
+    if (search !== "") query.search = search;
+    if (status) query.status = status;
+    return userRequest.get(`product?${queryString.stringify(query)}`);
 };
 
 const getOneProduct = (currentId) => {
@@ -41,7 +47,7 @@ const changeStatus = (id, currentStatus) => {
 
 const productServices = {
     createNewProduct,
-    getAllProduct,
+    getProducts,
     getOneProduct,
     updateProduct,
     deleteProduct,

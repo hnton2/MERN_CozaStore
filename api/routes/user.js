@@ -3,6 +3,7 @@ const cryptoJS = require("crypto-js");
 
 const User = require("../models/User");
 const { verifyTokenAndAdmin, verifyTokenAndAuthorization, verifyToken } = require("../middleware/verifyToken");
+const { getParam } = require("../helpers/params");
 
 // UPDATE
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
@@ -46,14 +47,36 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// @DESC Get all  user
+// @DESC Get users
 // @ROUTE GET /api/user/
-// @ACCESS Public
+// @ACCESS Private
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    let condition = {};
+    const perPage = 5;
+    let page = getParam(req.query, "page", 1);
+    const isAdmin = getParam(req.query, "isAdmin", null);
+    const search = getParam(req.query, "search", "");
+
+    if (isAdmin || search !== "") page = 1;
+    if (search !== "") condition.$text = { $search: search };
+    if (isAdmin) condition.isAdmin = isAdmin;
+
     try {
-        const users = await User.find().sort({ updatedAt: -1 });
-        if (!users) return res.status(401).json({ success: false, message: "Users not found" });
-        res.json({ success: true, message: "Get users successfully", user: users });
+        await User.find(condition)
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .exec((err, users) => {
+                User.countDocuments((err, count) => {
+                    if (err) return console.log(err);
+                    res.json({
+                        success: true,
+                        message: "Get users successfully",
+                        users,
+                        current: page,
+                        pages: Math.ceil(count / perPage),
+                    });
+                });
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });
@@ -61,7 +84,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 });
 
 // @DESC Save cart before user logout
-// @ROUTE GET /api/user/save-card/:id
+// @ROUTE POST /api/user/save-card/:id
 // @ACCESS Public
 router.post("/save-cart/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
@@ -74,7 +97,7 @@ router.post("/save-cart/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 // @DESC Clean cart from db after user checkout
-// @ROUTE GET /api/user/clean-card/:id
+// @ROUTE POST /api/user/clean-card/:id
 // @ACCESS Public
 router.post("/clean-cart/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {

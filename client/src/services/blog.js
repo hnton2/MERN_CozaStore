@@ -1,13 +1,19 @@
 import { createFormData } from "helpers/form";
 import { publicRequest, userRequest } from "helpers/requestMethod";
+import queryString from "query-string";
 
 const createNewBlog = (blog) => {
     const formData = createFormData(blog);
     return userRequest.post("blog", formData, { headers: { "Content-Type": "multipart/form-data" } });
 };
 
-const getAllBlog = () => {
-    return publicRequest.get("blog");
+const getBlogs = ({ category = "all", page = 1, search = "", status = null }) => {
+    let query = {};
+    if (category !== "all") query.category = category;
+    if (page !== 1) query.page = page;
+    if (search !== "") query.search = search;
+    if (status) query.status = status;
+    return userRequest.get(`blog?${queryString.stringify(query)}`);
 };
 
 const getOneBlog = (currentId) => {
@@ -42,7 +48,7 @@ const changeStatus = (id, currentStatus) => {
 
 const blogServices = {
     createNewBlog,
-    getAllBlog,
+    getBlogs,
     getOneBlog,
     updateBlog,
     deleteBlog,

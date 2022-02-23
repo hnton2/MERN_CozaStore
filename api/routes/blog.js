@@ -122,14 +122,38 @@ router.get("/find-by-slug/:slug", async (req, res) => {
     }
 });
 
-// @DESC Get all  blog
+// @DESC Get blogs
 // @ROUTE GET /api/blog/
-// @ACCESS Public
-router.get("/", async (req, res) => {
+// @ACCESS Private
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    let condition = {};
+    const perPage = 5;
+    let page = getParam(req.query, "page", 1);
+    const category = getParam(req.query, "category", "all");
+    const status = getParam(req.query, "status", null);
+    const search = getParam(req.query, "search", "");
+
+    if (category !== "all" || status || search !== "") page = 1;
+    if (category !== "all") condition["category.slug"] = category;
+    if (search !== "") condition.$text = { $search: search };
+    if (status) condition.status = status;
+
     try {
-        const blog = await Blog.find().select("id name slug images status category tag description reviews");
-        if (!blog) return res.status(401).json({ success: false, message: "Blogs not found" });
-        res.json({ success: true, message: "Get blogs successfully", blog });
+        await Blog.find(condition)
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .exec((err, blogs) => {
+                Blog.countDocuments((err, count) => {
+                    if (err) return console.log(err);
+                    res.json({
+                        success: true,
+                        message: "Get blogs successfully",
+                        blogs,
+                        current: page,
+                        pages: Math.ceil(count / perPage),
+                    });
+                });
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });
@@ -137,7 +161,7 @@ router.get("/", async (req, res) => {
 });
 
 // @DESC Get blog list
-// @ROUTE GET /api/blog/:slugCategory
+// @ROUTE GET /api/blog/(:slugCategory)?
 // @ACCESS Public
 router.get("(/:category)?", async (req, res) => {
     let condition = {};

@@ -280,6 +280,10 @@ table {
     & th,
     & td {
         padding: 12px;
+
+        @include mobile {
+            padding: 4px;
+        }
     }
 
     &.table-border {
@@ -305,11 +309,18 @@ table {
         color: #555;
         line-height: 1.6;
         text-transform: uppercase;
+
+        @include mobile {
+            font-size: 14px;
+        }
     }
 
     & tr {
         border-top: 1px solid $border-color;
         border-bottom: 1px solid $border-color;
+        @include mobile {
+            font-size: 12px;
+        }
 
         &:hover {
             color: #212529;
@@ -319,6 +330,10 @@ table {
         & img {
             width: 100px;
             object-fit: contain;
+
+            @include mobile {
+                width: 64px;
+            }
         }
     }
 }

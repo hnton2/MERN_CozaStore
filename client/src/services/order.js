@@ -1,11 +1,16 @@
 import { userRequest } from "helpers/requestMethod";
+import queryString from "query-string";
 
 const createOrder = (data) => {
     return userRequest.post("order", data);
 };
 
-const getAllOrder = () => {
-    return userRequest.get("order");
+const getOrders = ({ page = 1, search = "", status = null }) => {
+    let query = {};
+    if (page !== 1) query.page = page;
+    if (search !== "") query.search = search;
+    if (status) query.status = status;
+    return userRequest.get(`order?${queryString.stringify(query)}`);
 };
 
 const deleteOrder = (id) => {
@@ -22,7 +27,7 @@ const changeStatus = (id, status) => {
 
 const orderServices = {
     createOrder,
-    getAllOrder,
+    getOrders,
     deleteOrder,
     getOneOrder,
     changeStatus,

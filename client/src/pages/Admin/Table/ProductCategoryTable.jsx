@@ -4,21 +4,19 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
-import { Backdrop, CircularProgress, Container, Pagination } from "@mui/material";
+import { Backdrop, CircularProgress, Container, Grid, Pagination } from "@mui/material";
 import Error404 from "components/404";
 import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Message from "components/Message";
 import Preloader from "components/Preloader";
 import StatusFilter from "components/StatusFilter";
-import { CATEGORY_OPTIONS } from "constants/Option";
-import { escapeRegExp } from "helpers/string";
+import { FILTER_STATUS } from "constants/Option";
+import { toastMessage } from "helpers/toastMessage";
 import parse from "html-react-parser";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useSearchParams } from "react-router-dom";
-import Select from "react-select";
 import productCategoryServices from "services/productCategory";
 import "./Table.scss";
 
@@ -31,104 +29,80 @@ const linkData = [
 
 const TITLE_PAGE = "Product Category List";
 
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete, onChangeStatus }) => {
-    const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
-
-    return (
-        <>
-            {dataRender.map((item) => (
-                <tr key={item._id}>
-                    <td className="text-center">{item.name}</td>
-                    <td className="text-center">
-                        <button
-                            className={`btn btn-rounded ${
-                                item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
-                            } btn-sm`}
-                            onClick={() => onChangeStatus(item._id, item.status)}
-                        >
-                            <FontAwesomeIcon icon={faCheck} />
-                        </button>
-                    </td>
-                    <td className="text-center">{item.slug}</td>
-                    <td className="text-center">{parse(item.description)}</td>
-                    <td className="text-center">
-                        <Link
-                            to={`/admin/product-category/form/${item._id}`}
-                            className="btn btn-rounded btn-primary btn-sm"
-                        >
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                        </Link>
-                        <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
-                    </td>
-                </tr>
-            ))}
-        </>
-    );
-};
-
 function ProductCategoryTable() {
     let [searchParams, setSearchParams] = useSearchParams();
-    let currentPage = searchParams.get("page") || 1;
 
-    const [searchText, setSearchText] = useState("");
+    const [search, setSearch] = useState(searchParams.get("search") || "");
     const [categories, setCategories] = useState();
-    const [rows, setRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState();
-
-    const requestSearch = (searchValue) => {
-        setSearchText(searchValue);
-        const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = categories.filter((row) => {
-            return Object.keys(row).some((field) => {
-                return searchRegex.test(row[field].toString());
-            });
-        });
-        setRows(filteredRows);
-    };
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        const fetchAllProduct = async () => {
-            const res = await productCategoryServices.getAllProductCategory();
-            setCategories(res.data.category);
-            setRows(res.data.category);
+        const fetchCategories = async () => {
+            try {
+                setIsLoading(true);
+                const res = await productCategoryServices.getProductCategories(Object.fromEntries([...searchParams]));
+                if (res.data.success) {
+                    setCategories(res.data.categories);
+                    setTotalPages(res.data.pages);
+                }
+                setIsLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
         };
-        fetchAllProduct();
-    }, [categories]);
+        fetchCategories();
+    }, [searchParams]);
 
-    const handleDelete = async (id) => {
-        console.log(id);
-        try {
-            setIsLoading(true);
-            setMessage("");
-            const res = await productCategoryServices.deleteProductCategory(id);
-            setIsLoading(false);
-            if (res.data.success) {
-                const updateCategories = categories.filter((product) => product._id !== id);
-                setCategories(updateCategories);
-                setRows(updateCategories);
-                setMessage({ type: "error", content: res.data.message });
-            } else setMessage({ type: "success", content: res.data.message });
-        } catch (error) {
-            console.log(error);
-            setMessage({ type: "error", content: error.data.message });
+    const requestSearch = (value) => {
+        setSearch(value);
+        if (value !== "") {
+            searchParams.delete("page");
+            setSearchParams({ ...Object.fromEntries([...searchParams]), search: value });
+        } else {
+            searchParams.delete("search");
+            setSearchParams(searchParams);
         }
     };
 
-    const handleChangePage = (event, value) => setSearchParams({ page: value });
+    const handleChangePage = (event, value) => {
+        if (value !== 1) setSearchParams({ ...Object.fromEntries([...searchParams]), page: value });
+        else {
+            searchParams.delete("page");
+            setSearchParams(searchParams);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            setIsLoading(true);
+            const res = await productCategoryServices.deleteProductCategory(id);
+            if (res.data.success) {
+                const updateCategories = categories.filter((user) => user._id !== id);
+                setCategories(updateCategories);
+                toastMessage({ type: "success", message: res.data.message });
+            } else toastMessage({ type: "error", message: res.data.message });
+            setIsLoading(false);
+        } catch (error) {
+            toastMessage({ type: "error", message: error.data.message });
+        }
+    };
 
     const handleChangeStatus = async (id, value) => {
         try {
             setIsLoading(true);
             const res = await productCategoryServices.changeStatus(id, value);
             if (res.data.success) {
-                setCategories(res.data);
+                const updateCategories = categories.map((category) => {
+                    if (category._id === id) category.status = value === "active" ? "inactive" : "active";
+                    return category;
+                });
+                setCategories(updateCategories);
                 setIsLoading(false);
-            }
+                toastMessage({ type: "success", message: res.data.message });
+            } else toastMessage({ type: "error", message: res.data.message });
         } catch (error) {
-            console.log(error);
+            toastMessage({ type: "error", message: error.data.message });
         }
     };
 
@@ -149,32 +123,36 @@ function ProductCategoryTable() {
                         <h3 className="card-header">Filter & Search</h3>
                         <div className="card-body">
                             <div className="toolbar">
-                                <StatusFilter data={rows} />
-                                <div style={{ width: "240px" }}>
-                                    <Select options={CATEGORY_OPTIONS} />
-                                </div>
-                                <div className="search">
-                                    <SearchIcon className="search-icon" />
-                                    <input
-                                        placeholder="Search"
-                                        value={searchText}
-                                        onChange={(event) => requestSearch(event.target.value)}
-                                        className="search-input"
-                                    />
-                                    <CloseIcon
-                                        className="search-icon delete"
-                                        onClick={() => requestSearch("")}
-                                        style={{
-                                            visibility: searchText ? "visible" : "hidden",
-                                        }}
-                                    />
-                                </div>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={4} md={8} lg={8}>
+                                        {categories && (
+                                            <StatusFilter keyword="status" options={FILTER_STATUS} data={categories} />
+                                        )}
+                                    </Grid>
+                                    <Grid item xs={12} sm={4} md={4} lg={4}>
+                                        <div className="search">
+                                            <SearchIcon className="search-icon" />
+                                            <input
+                                                placeholder="Search"
+                                                value={search}
+                                                onChange={(event) => requestSearch(event.target.value)}
+                                                className="search-input"
+                                            />
+                                            <CloseIcon
+                                                className="search-icon delete"
+                                                onClick={() => requestSearch("")}
+                                                style={{
+                                                    visibility: search ? "visible" : "hidden",
+                                                }}
+                                            />
+                                        </div>
+                                    </Grid>
+                                </Grid>
                             </div>
                         </div>
                     </div>
                     <div className="card">
                         <h3 className="card-header">{TITLE_PAGE}</h3>
-                        {message && <Message type={message.type}>{message.content}</Message>}
                         <div className="card-body">
                             <div className="actions">
                                 <button className="btn btn-danger">
@@ -186,47 +164,94 @@ function ProductCategoryTable() {
                                     Add New
                                 </Link>
                             </div>
-                            {rows.length > 0 ? (
-                                <table className="table table-border">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Status</th>
-                                            <th>Slug</th>
-                                            <th>Desciption</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <RenderTable
-                                            data={rows}
-                                            currentPage={currentPage}
-                                            onDelete={handleDelete}
-                                            onChangeStatus={handleChangeStatus}
-                                        />
-                                    </tbody>
-                                </table>
+                            {categories && categories.length > 0 ? (
+                                <div className="table">
+                                    <table className="table-border">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Name</th>
+                                                <th>Status</th>
+                                                <th>Tag</th>
+                                                <th>Size</th>
+                                                <th>Description</th>
+                                                <th style={{ width: "100px" }}>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {categories.map((item, index) => (
+                                                <tr key={item._id}>
+                                                    <td className="text-center">{index + 1}</td>
+                                                    <td className="text-center">{item.name}</td>
+                                                    <td className="text-center">
+                                                        <button
+                                                            className={`btn btn-rounded ${
+                                                                item.status === "active"
+                                                                    ? "btn-success"
+                                                                    : "btn-secondary btn-disabled"
+                                                            } btn-sm`}
+                                                            onClick={() => handleChangeStatus(item._id, item.status)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faCheck} />
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <div className="tags">
+                                                            {item.tag.map((item) => (
+                                                                <span className="tag">{item.label}</span>
+                                                            ))}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="tags">
+                                                            {item.size.map((item) => (
+                                                                <span className="tag">{item.label}</span>
+                                                            ))}
+                                                        </div>
+                                                    </td>
+                                                    <td className="text-center">{parse(item.description)}</td>
+                                                    <td className="text-center">
+                                                        <Link
+                                                            to={`/admin/product-category/form/${item._id}`}
+                                                            className="btn btn-rounded btn-primary btn-sm"
+                                                        >
+                                                            <FontAwesomeIcon icon={faPenToSquare} />
+                                                        </Link>
+                                                        <button
+                                                            onClick={() => handleDelete(item._id)}
+                                                            className="btn btn-rounded btn-danger btn-sm"
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrashCan} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             ) : (
                                 <Error404 />
                             )}
                         </div>
-                        <div className="card-footer">
-                            <div className="pagination">
-                                <div className="left">
-                                    <h4>Pagination</h4>
-                                </div>
-                                <div className="right">
-                                    <Pagination
-                                        page={Number(currentPage)}
-                                        count={Math.ceil(rows.length / 5)}
-                                        onChange={handleChangePage}
-                                        variant="outlined"
-                                        shape="rounded"
-                                        color="primary"
-                                    />
+                        {totalPages > 1 && (
+                            <div className="card-footer">
+                                <div className="pagination">
+                                    <div className="left">
+                                        <h4>Pagination</h4>
+                                    </div>
+                                    <div className="right">
+                                        <Pagination
+                                            page={Number(searchParams.get("page") || 1)}
+                                            count={totalPages}
+                                            onChange={handleChangePage}
+                                            variant="outlined"
+                                            shape="rounded"
+                                            color="primary"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </Container>
             </div>

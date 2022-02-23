@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { changeAlias } = require("../helpers/string");
 const Coupon = require("../models/Coupon");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
+const { getParam } = require("../helpers/params");
 
 // @DESC Create new coupon
 // @ROUTE POST /api/coupon/
@@ -82,15 +83,36 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// GET ALL PRODUCT
-// @DESC Get all  coupon
+// @DESC Get coupons
 // @ROUTE GET /api/coupon/
-// @ACCESS Public
-router.get("/", async (req, res) => {
+// @ACCESS Private
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    let condition = {};
+    const perPage = 5;
+    let page = getParam(req.query, "page", 1);
+    const status = getParam(req.query, "status", null);
+    const search = getParam(req.query, "search", "");
+
+    if (status || search !== "") page = 1;
+    if (search !== "") condition.$text = { $search: search };
+    if (status) condition.status = status;
+
     try {
-        const coupon = await Coupon.find().select("id name code status discount quantity expiredTime description");
-        if (!coupon) return res.status(401).json({ success: false, message: "Coupons not found" });
-        res.json({ success: true, message: "Get product categories successfully", coupon });
+        await Coupon.find(condition)
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .exec((err, coupons) => {
+                Coupon.countDocuments((err, count) => {
+                    if (err) return console.log(err);
+                    res.json({
+                        success: true,
+                        message: "Get coupons successfully",
+                        coupons,
+                        current: page,
+                        pages: Math.ceil(count / perPage),
+                    });
+                });
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

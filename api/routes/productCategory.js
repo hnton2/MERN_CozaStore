@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { changeAlias } = require("../helpers/string");
 const ProductCategory = require("../models/ProductCategory");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
+const { getParam } = require("../helpers/params");
 
 // @DESC Create new product category
 // @ROUTE POST /api/product-category/
@@ -71,7 +72,7 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// @DESC Find a product
+// @DESC Find a product category
 // @ROUTE GET /api/product-category/find/:id
 // @ACCESS Privates
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
@@ -85,14 +86,36 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// @DESC Get all  product
+// @DESC Get product category
 // @ROUTE GET /api/product-category/
-// @ACCESS Public
-router.get("/", async (req, res) => {
+// @ACCESS Private
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    let condition = {};
+    const perPage = 5;
+    let page = getParam(req.query, "page", 1);
+    const status = getParam(req.query, "status", null);
+    const search = getParam(req.query, "search", "");
+
+    if (status || search !== "") page = 1;
+    if (search !== "") condition.$text = { $search: search };
+    if (status) condition.status = status;
+
     try {
-        const category = await ProductCategory.find().select("id name status color size tag slug description");
-        if (!category) return res.status(401).json({ success: false, message: "Product categories not found" });
-        res.json({ success: true, message: "Get product categories successfully", category });
+        await ProductCategory.find(condition)
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .exec((err, categories) => {
+                ProductCategory.countDocuments((err, count) => {
+                    if (err) return console.log(err);
+                    res.json({
+                        success: true,
+                        message: "Get categories successfully",
+                        categories,
+                        current: page,
+                        pages: Math.ceil(count / perPage),
+                    });
+                });
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

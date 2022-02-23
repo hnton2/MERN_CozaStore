@@ -1,11 +1,16 @@
-import { publicRequest, userRequest } from "helpers/requestMethod";
+import { userRequest } from "helpers/requestMethod";
+import queryString from "query-string";
 
 const createNewBlogCategory = (cate) => {
     return userRequest.post("blog-category", cate);
 };
 
-const getAllBlogCategory = () => {
-    return publicRequest.get("blog-category");
+const getBlogCategories = ({ page = 1, search = "", status = null }) => {
+    let query = {};
+    if (page !== 1) query.page = page;
+    if (search !== "") query.search = search;
+    if (status) query.status = status;
+    return userRequest.get(`blog-category?${queryString.stringify(query)}`);
 };
 
 const getOneBlogCategory = (currentId) => {
@@ -26,7 +31,7 @@ const changeStatus = (id, currentStatus) => {
 
 const blogCategoryServices = {
     createNewBlogCategory,
-    getAllBlogCategory,
+    getBlogCategories,
     getOneBlogCategory,
     updateBlogCategory,
     deleteBlogCategory,

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const BlogCategorySchema = new mongoose.Schema(
+var BlogCategorySchema = new mongoose.Schema(
     {
         name: { type: String, required: true, unique: true },
         slug: { type: String, required: true, unique: true },
@@ -9,5 +9,6 @@ const BlogCategorySchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+BlogCategorySchema.index({ name: "text", slug: "text" });
 
 module.exports = mongoose.model("BlogCategory", BlogCategorySchema);

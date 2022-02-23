@@ -3,6 +3,7 @@ const { changeAlias, changeToJson } = require("../helpers/string");
 const Product = require("../models/Product");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
+const { getParam } = require("../helpers/params");
 
 // @DESC Create new product
 // @ROUTE POST /api/product/
@@ -121,16 +122,38 @@ router.get("/find-by-slug/:slug", async (req, res) => {
     }
 });
 
-// @DESC Get all  product
+// @DESC Get products
 // @ROUTE GET /api/product/
-// @ACCESS Public
-router.get("/", async (req, res) => {
+// @ACCESS Private
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    let condition = {};
+    const perPage = 5;
+    let page = getParam(req.query, "page", 1);
+    const category = getParam(req.query, "category", "all");
+    const status = getParam(req.query, "status", null);
+    const search = getParam(req.query, "search", "");
+
+    if (category !== "all" || status || search !== "") page = 1;
+    if (category !== "all") condition["category.slug"] = category;
+    if (status) condition.status = status;
+    if (search !== "") condition.$text = { $search: search };
+
     try {
-        const product = await Product.find().select(
-            "id name slug images status category tag color size quantity price description"
-        );
-        if (!product) return res.status(401).json({ success: false, message: "Products not found" });
-        res.json({ success: true, message: "Get products successfully", product });
+        await Product.find(condition)
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .exec((err, products) => {
+                Product.countDocuments((err, count) => {
+                    if (err) return console.log(err);
+                    res.json({
+                        success: true,
+                        message: "Get products successfully",
+                        products,
+                        current: page,
+                        pages: Math.ceil(count / perPage),
+                    });
+                });
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

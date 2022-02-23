@@ -1,25 +1,25 @@
+import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import SearchIcon from "@mui/icons-material/Search";
-import { Backdrop, CircularProgress, Container, Pagination } from "@mui/material";
-import moment from "moment";
+import { Backdrop, CircularProgress, Container, Grid, Pagination } from "@mui/material";
+import Error404 from "components/404";
 import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Message from "components/Message";
-import StatusFilter from "components/StatusFilter";
-import { escapeRegExp } from "helpers/string";
-import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import "./Table.scss";
-import parse from "html-react-parser";
-import couponServices from "services/coupon";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { Helmet } from "react-helmet";
 import Preloader from "components/Preloader";
-import Error404 from "components/404";
+import StatusFilter from "components/StatusFilter";
+import { FILTER_STATUS } from "constants/Option";
+import { toastMessage } from "helpers/toastMessage";
+import parse from "html-react-parser";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { Link, useSearchParams } from "react-router-dom";
+import couponServices from "services/coupon";
+import "./Table.scss";
 
 const linkData = [
     {
@@ -30,104 +30,80 @@ const linkData = [
 
 const TITLE_PAGE = "Coupon List";
 
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete, onChangeStatus }) => {
-    const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
-
-    return (
-        <>
-            {dataRender.map((item) => (
-                <tr key={item._id}>
-                    <td className="text-center">{item.name}</td>
-                    <td className="text-center">{item.code}</td>
-                    <td className="text-center">
-                        <button
-                            className={`btn btn-rounded ${
-                                item.status === "active" ? "btn-success" : "btn-secondary btn-disabled"
-                            } btn-sm`}
-                            onClick={() => onChangeStatus(item._id, item.status)}
-                        >
-                            <FontAwesomeIcon icon={faCheck} />
-                        </button>
-                    </td>
-                    <td className="text-center">${item.discount}</td>
-                    <td className="text-center">{item.quantity}</td>
-                    <td className="text-center">{moment(item.expiredTime).format("MMM Do YY")}</td>
-                    <td className="text-center">{parse(item.description)}</td>
-                    <td className="text-center">
-                        <Link to={`/admin/coupon/form/${item._id}`} className="btn btn-rounded btn-primary btn-sm">
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                        </Link>
-                        <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
-                    </td>
-                </tr>
-            ))}
-        </>
-    );
-};
-
 function CouponTable() {
     let [searchParams, setSearchParams] = useSearchParams();
-    let currentPage = searchParams.get("page") || 1;
 
-    const [searchText, setSearchText] = useState("");
+    const [search, setSearch] = useState(searchParams.get("search") || "");
     const [coupons, setCoupons] = useState();
-    const [rows, setRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState();
-
-    const requestSearch = (searchValue) => {
-        setSearchText(searchValue);
-        const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = coupons.filter((row) => {
-            return Object.keys(row).some((field) => {
-                return searchRegex.test(row[field].toString());
-            });
-        });
-        setRows(filteredRows);
-    };
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        const fetchAllCoupon = async () => {
-            const res = await couponServices.getAllCoupon();
-            setCoupons(res.data.coupon);
-            setRows(res.data.coupon);
+        const fetchCoupons = async () => {
+            try {
+                setIsLoading(true);
+                const res = await couponServices.getCoupons(Object.fromEntries([...searchParams]));
+                if (res.data.success) {
+                    setCoupons(res.data.coupons);
+                    setTotalPages(res.data.pages);
+                }
+                setIsLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
         };
-        fetchAllCoupon();
-    }, [coupons]);
+        fetchCoupons();
+    }, [searchParams]);
 
-    const handleDelete = async (id) => {
-        console.log(id);
-        try {
-            setIsLoading(true);
-            setMessage("");
-            const res = await couponServices.deleteCoupon(id);
-            setIsLoading(false);
-            if (res.data.success) {
-                const updateCoupons = coupons.filter((coupon) => coupon._id !== id);
-                setCoupons(updateCoupons);
-                setRows(updateCoupons);
-                setMessage({ type: "error", content: res.data.message });
-            } else setMessage({ type: "success", content: res.data.message });
-        } catch (error) {
-            console.log(error);
-            setMessage({ type: "error", content: error.data.message });
+    const requestSearch = (value) => {
+        setSearch(value);
+        if (value !== "") {
+            searchParams.delete("page");
+            setSearchParams({ ...Object.fromEntries([...searchParams]), search: value });
+        } else {
+            searchParams.delete("search");
+            setSearchParams(searchParams);
         }
     };
 
-    const handleChangePage = (event, value) => setSearchParams({ page: value });
+    const handleChangePage = (event, value) => {
+        if (value !== 1) setSearchParams({ ...Object.fromEntries([...searchParams]), page: value });
+        else {
+            searchParams.delete("page");
+            setSearchParams(searchParams);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            setIsLoading(true);
+            const res = await couponServices.deleteCoupon(id);
+            if (res.data.success) {
+                const updateCoupons = coupons.filter((coupon) => coupon._id !== id);
+                setCoupons(updateCoupons);
+                toastMessage({ type: "success", message: res.data.message });
+            } else toastMessage({ type: "error", message: res.data.message });
+            setIsLoading(false);
+        } catch (error) {
+            toastMessage({ type: "error", message: error.data.message });
+        }
+    };
 
     const handleChangeStatus = async (id, value) => {
         try {
             setIsLoading(true);
             const res = await couponServices.changeStatus(id, value);
             if (res.data.success) {
-                setCoupons(res.data);
+                const updateCoupons = coupons.map((coupon) => {
+                    if (coupon._id === id) coupon.status = value === "active" ? "inactive" : "active";
+                    return coupon;
+                });
+                setCoupons(updateCoupons);
                 setIsLoading(false);
-            }
+                toastMessage({ type: "success", message: res.data.message });
+            } else toastMessage({ type: "error", message: res.data.message });
         } catch (error) {
-            console.log(error);
+            toastMessage({ type: "error", message: error.data.message });
         }
     };
 
@@ -148,30 +124,36 @@ function CouponTable() {
                         <h3 className="card-header">Filter & Search</h3>
                         <div className="card-body">
                             <div className="toolbar">
-                                <StatusFilter data={rows} />
-                                <div style={{ width: "240px" }}> </div>
-                                <div className="search">
-                                    <SearchIcon className="search-icon" />
-                                    <input
-                                        placeholder="Search"
-                                        value={searchText}
-                                        onChange={(event) => requestSearch(event.target.value)}
-                                        className="search-input"
-                                    />
-                                    <CloseIcon
-                                        className="search-icon delete"
-                                        onClick={() => requestSearch("")}
-                                        style={{
-                                            visibility: searchText ? "visible" : "hidden",
-                                        }}
-                                    />
-                                </div>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={4} md={8} lg={8}>
+                                        {coupons && (
+                                            <StatusFilter keyword="status" options={FILTER_STATUS} data={coupons} />
+                                        )}
+                                    </Grid>
+                                    <Grid item xs={12} sm={4} md={4} lg={4}>
+                                        <div className="search">
+                                            <SearchIcon className="search-icon" />
+                                            <input
+                                                placeholder="Search"
+                                                value={search}
+                                                onChange={(event) => requestSearch(event.target.value)}
+                                                className="search-input"
+                                            />
+                                            <CloseIcon
+                                                className="search-icon delete"
+                                                onClick={() => requestSearch("")}
+                                                style={{
+                                                    visibility: search ? "visible" : "hidden",
+                                                }}
+                                            />
+                                        </div>
+                                    </Grid>
+                                </Grid>
                             </div>
                         </div>
                     </div>
                     <div className="card">
                         <h3 className="card-header">{TITLE_PAGE}</h3>
-                        {message && <Message type={message.type}>{message.content}</Message>}
                         <div className="card-body">
                             <div className="actions">
                                 <button className="btn btn-danger">
@@ -183,10 +165,11 @@ function CouponTable() {
                                     Add New
                                 </Link>
                             </div>
-                            {rows.length > 0 ? (
+                            {coupons && coupons.length > 0 ? (
                                 <table className="table table-border">
                                     <thead>
                                         <tr>
+                                            <th>No.</th>
                                             <th>Name</th>
                                             <th>Code</th>
                                             <th>Status</th>
@@ -198,35 +181,70 @@ function CouponTable() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <RenderTable
-                                            data={rows}
-                                            currentPage={currentPage}
-                                            onDelete={handleDelete}
-                                            onChangeStatus={handleChangeStatus}
-                                        />
+                                        {coupons.map((item, index) => (
+                                            <tr key={item._id}>
+                                                <td className="text-center">{index + 1}</td>
+                                                <td className="text-center">{item.name}</td>
+                                                <td className="text-center">{item.code}</td>
+                                                <td className="text-center">
+                                                    <button
+                                                        className={`btn btn-rounded ${
+                                                            item.status === "active"
+                                                                ? "btn-success"
+                                                                : "btn-secondary btn-disabled"
+                                                        } btn-sm`}
+                                                        onClick={() => handleChangeStatus(item._id, item.status)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faCheck} />
+                                                    </button>
+                                                </td>
+                                                <td className="text-center">${item.discount}</td>
+                                                <td className="text-center">{item.quantity}</td>
+                                                <td className="text-center">
+                                                    {moment(item.expiredTime).format("MMM Do YY")}
+                                                </td>
+                                                <td className="text-center">{parse(item.description)}</td>
+                                                <td className="text-center">
+                                                    <Link
+                                                        to={`/admin/coupon/form/${item._id}`}
+                                                        className="btn btn-rounded btn-primary btn-sm"
+                                                    >
+                                                        <FontAwesomeIcon icon={faPenToSquare} />
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="btn btn-rounded btn-danger btn-sm"
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrashCan} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             ) : (
                                 <Error404 />
                             )}
                         </div>
-                        <div className="card-footer">
-                            <div className="pagination">
-                                <div className="left">
-                                    <h4>Pagination</h4>
-                                </div>
-                                <div className="right">
-                                    <Pagination
-                                        page={Number(currentPage)}
-                                        count={Math.ceil(rows.length / 5)}
-                                        onChange={handleChangePage}
-                                        variant="outlined"
-                                        shape="rounded"
-                                        color="primary"
-                                    />
+                        {totalPages > 1 && (
+                            <div className="card-footer">
+                                <div className="pagination">
+                                    <div className="left">
+                                        <h4>Pagination</h4>
+                                    </div>
+                                    <div className="right">
+                                        <Pagination
+                                            page={Number(searchParams.get("page") || 1)}
+                                            count={totalPages}
+                                            onChange={handleChangePage}
+                                            variant="outlined"
+                                            shape="rounded"
+                                            color="primary"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </Container>
             </div>

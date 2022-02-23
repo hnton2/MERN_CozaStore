@@ -90,3 +90,13 @@ export const ORDER_STATUS = [
     { value: "delivered", label: "Delivered" },
     { value: "completed", label: "Completed" },
 ];
+
+export const FILTER_USER_STATUS = [
+    { value: true, label: "Admin", count: 0 },
+    { value: false, label: "User", count: 0 },
+];
+
+export const FILTER_STATUS = [
+    { value: "active", label: "Active", count: 0 },
+    { value: "inactive", label: "Inactive", count: 0 },
+];

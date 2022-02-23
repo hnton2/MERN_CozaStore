@@ -1,15 +1,41 @@
 @import "../../../variables.scss";
 .toolbar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
 
+    & .select {
+        margin-left: 40px;
+        width: 240px;
+
+        @include tablet {
+            margin: 0;
+            width: 100%;
+        }
+
+        @include mobile {
+            margin: 0;
+            width: 100%;
+        }
+    }
+
     & .search {
+        margin-left: 80px;
         display: flex;
         justify-content: space-between;
-        border: 2px solid $border-color;
+        border: 1px solid #ccc;
         border-radius: 4px;
-        padding: 10px 16px;
+        padding: 6px 16px;
+
+        @include tablet {
+            margin: 0;
+        }
+
+        @include mobile {
+            margin: 0;
+            padding: 4px 6px;
+        }
 
         & > input {
             margin-left: 8px;
@@ -36,4 +62,8 @@
         min-width: 64px;
         padding: 6px 8px;
     }
+}
+
+.table {
+    overflow-x: auto;
 }

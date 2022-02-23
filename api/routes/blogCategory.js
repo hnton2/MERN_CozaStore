@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { changeAlias } = require("../helpers/string");
 const BlogCategory = require("../models/BlogCategory");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
+const { getParam } = require("../helpers/params");
 
 // @DESC Create new blog category
 // @ROUTE POST /api/blog-category/
@@ -85,14 +86,36 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// @DESC Get all  blog
+// @DESC Get blog category
 // @ROUTE GET /api/blog-category/
-// @ACCESS Public
-router.get("/", async (req, res) => {
+// @ACCESS Private
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    let condition = {};
+    const perPage = 5;
+    let page = getParam(req.query, "page", 1);
+    const status = getParam(req.query, "status", null);
+    const search = getParam(req.query, "search", "");
+
+    if (status || search !== "") page = 1;
+    if (search !== "") condition.$text = { $search: search };
+    if (status) condition.status = status;
+
     try {
-        const category = await BlogCategory.find().select("id name status tag slug description");
-        if (!category) return res.status(401).json({ success: false, message: "Blog categories not found" });
-        res.json({ success: true, message: "Get blog categories successfully", category });
+        await BlogCategory.find(condition)
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .exec((err, categories) => {
+                BlogCategory.countDocuments((err, count) => {
+                    if (err) return console.log(err);
+                    res.json({
+                        success: true,
+                        message: "Get categories successfully",
+                        categories,
+                        current: page,
+                        pages: Math.ceil(count / perPage),
+                    });
+                });
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

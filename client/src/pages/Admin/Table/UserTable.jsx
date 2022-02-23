@@ -1,24 +1,22 @@
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-import { Backdrop, CircularProgress, Container, Pagination } from "@mui/material";
+import { Backdrop, CircularProgress, Container, Grid, Pagination } from "@mui/material";
 import moment from "moment";
 import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import StatusFilter from "components/StatusFilter";
-import { escapeRegExp } from "helpers/string";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./Table.scss";
 import userServices from "services/user";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import Preloader from "components/Preloader";
 import Error404 from "components/404";
-
-toast.configure();
+import { toastMessage } from "helpers/toastMessage";
+import { FILTER_USER_STATUS } from "constants/Option";
 
 const linkData = [
     {
@@ -27,113 +25,82 @@ const linkData = [
     },
 ];
 
-const TITLE_PAGE = "Product List";
-
-const RenderTable = ({ data, currentPage, totalItemPerPage = 5, onDelete, onChangeRole }) => {
-    const dataRender = data.slice((currentPage - 1) * totalItemPerPage, currentPage * totalItemPerPage);
-
-    return (
-        <>
-            {dataRender.map((item) => (
-                <tr key={item._id}>
-                    <td className="text-center">{item.username}</td>
-                    <td className="text-center">{item.email}</td>
-                    <td className="text-center">
-                        <button
-                            className={`btn btn-rounded ${
-                                item.isAdmin ? "btn-success" : "btn-secondary btn-disabled"
-                            } btn-sm`}
-                            onClick={() => onChangeRole(item._id, item.isAdmin)}
-                        >
-                            <FontAwesomeIcon icon={faCheck} />
-                        </button>
-                    </td>
-                    <td className="text-center">{moment(item.createdAt).format("MMM Do YY")}</td>
-                    <td className="text-center">{moment(item.updatedAt).format("MMM Do YY")}</td>
-                    <td className="text-center">
-                        <button onClick={() => onDelete(item._id)} className="btn btn-rounded btn-danger btn-sm">
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
-                    </td>
-                </tr>
-            ))}
-        </>
-    );
-};
+const TITLE_PAGE = "User List";
 
 function UserTable() {
     let [searchParams, setSearchParams] = useSearchParams();
-    let currentPage = searchParams.get("page") || 1;
 
-    const [searchText, setSearchText] = useState("");
+    const [search, setSearch] = useState(searchParams.get("search") || "");
     const [users, setUsers] = useState();
-    const [rows, setRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
-    const requestSearch = (searchValue) => {
-        setSearchText(searchValue);
-        const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-        const filteredRows = users.filter((row) => {
-            return Object.keys(row).some((field) => {
-                return searchRegex.test(row[field].toString());
-            });
-        });
-        setRows(filteredRows);
-    };
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        const fetchAllUser = async () => {
-            const res = await userServices.getAllUser();
-            setUsers(res.data.user);
-            setRows(res.data.user);
+        const fetchUsers = async () => {
+            try {
+                setIsLoading(true);
+                const res = await userServices.getUsers(Object.fromEntries([...searchParams]));
+                if (res.data.success) {
+                    setUsers(res.data.users);
+                    setTotalPages(res.data.pages);
+                }
+                setIsLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
         };
-        fetchAllUser();
-    }, [users]);
+        fetchUsers();
+    }, [searchParams]);
+
+    const requestSearch = (value) => {
+        setSearch(value);
+        if (value !== "") {
+            searchParams.delete("page");
+            setSearchParams({ ...Object.fromEntries([...searchParams]), search: value });
+        } else {
+            searchParams.delete("search");
+            setSearchParams(searchParams);
+        }
+    };
+
+    const handleChangePage = (event, value) => {
+        if (value !== 1) setSearchParams({ ...Object.fromEntries([...searchParams]), page: value });
+        else {
+            searchParams.delete("page");
+            setSearchParams(searchParams);
+        }
+    };
 
     const handleDelete = async (id) => {
         try {
             setIsLoading(true);
             const res = await userServices.deleteUser(id);
-            setIsLoading(false);
             if (res.data.success) {
                 const updateUsers = users.filter((user) => user._id !== id);
                 setUsers(updateUsers);
-                setRows(updateUsers);
-                toast.success(res.data.message, {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    progress: undefined,
-                });
-            } else
-                toast.error(res.data.message, {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    progress: undefined,
-                });
+                toastMessage({ type: "success", message: res.data.message });
+            } else toastMessage({ type: "error", message: res.data.message });
+            setIsLoading(false);
         } catch (error) {
-            toast.error(error.data.message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                progress: undefined,
-            });
+            toastMessage({ type: "error", message: error.data.message });
         }
     };
-
-    const handleChangePage = (event, value) => setSearchParams({ page: value });
 
     const handleChangeRole = async (id, value) => {
         try {
             setIsLoading(true);
             const res = await userServices.changeRole(id, value);
             if (res.data.success) {
-                setUsers(res.data);
+                const updateUsers = users.map((user) => {
+                    if (user._id === id) user.isAdmin = !value;
+                    return user;
+                });
+                setUsers(updateUsers);
                 setIsLoading(false);
-            }
+                toastMessage({ type: "success", message: res.data.message });
+            } else toastMessage({ type: "error", message: res.data.message });
         } catch (error) {
-            console.log(error);
+            toastMessage({ type: "error", message: error.data.message });
         }
     };
 
@@ -154,72 +121,111 @@ function UserTable() {
                         <h3 className="card-header">Filter & Search</h3>
                         <div className="card-body">
                             <div className="toolbar">
-                                <StatusFilter data={rows} />
-                                <div style={{ width: "240px" }}> </div>
-                                <div className="search">
-                                    <SearchIcon className="search-icon" />
-                                    <input
-                                        placeholder="Search"
-                                        value={searchText}
-                                        onChange={(event) => requestSearch(event.target.value)}
-                                        className="search-input"
-                                    />
-                                    <CloseIcon
-                                        className="search-icon delete"
-                                        onClick={() => requestSearch("")}
-                                        style={{
-                                            visibility: searchText ? "visible" : "hidden",
-                                        }}
-                                    />
-                                </div>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={8} lg={8}>
+                                        {users && (
+                                            <StatusFilter keyword="isAdmin" options={FILTER_USER_STATUS} data={users} />
+                                        )}
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4} lg={4}>
+                                        <div className="search">
+                                            <SearchIcon className="search-icon" />
+                                            <input
+                                                placeholder="Search"
+                                                value={search}
+                                                onChange={(event) => requestSearch(event.target.value)}
+                                                className="search-input"
+                                            />
+                                            <CloseIcon
+                                                className="search-icon delete"
+                                                onClick={() => requestSearch("")}
+                                                style={{
+                                                    visibility: search ? "visible" : "hidden",
+                                                }}
+                                            />
+                                        </div>
+                                    </Grid>
+                                </Grid>
                             </div>
                         </div>
                     </div>
                     <div className="card">
                         <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
-                            {rows.length > 0 ? (
-                                <table className="table table-border">
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Email</th>
-                                            <th>isAdmin</th>
-                                            <th>Created</th>
-                                            <th>Updated</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <RenderTable
-                                            data={rows}
-                                            currentPage={currentPage}
-                                            onDelete={handleDelete}
-                                            onChangeRole={handleChangeRole}
-                                        />
-                                    </tbody>
-                                </table>
+                            {users && users.length > 0 ? (
+                                <div className="table">
+                                    <table className="table-border">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Username</th>
+                                                <th>Email</th>
+                                                <th>Admin</th>
+                                                <th>Created</th>
+                                                <th>Updated</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {users.map((item, index) => (
+                                                <tr key={item._id}>
+                                                    <td className="text-center">{index + 1}</td>
+                                                    <td className="text-center">{item.username}</td>
+                                                    <td className="text-center">{item.email}</td>
+                                                    <td className="text-center">
+                                                        <button
+                                                            className={`btn btn-rounded ${
+                                                                item.isAdmin
+                                                                    ? "btn-success"
+                                                                    : "btn-secondary btn-disabled"
+                                                            } btn-sm`}
+                                                            onClick={() => handleChangeRole(item._id, item.isAdmin)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faCheck} />
+                                                        </button>
+                                                    </td>
+                                                    <td className="text-center">
+                                                        {moment(item.createdAt).format("MMM Do YY")}
+                                                    </td>
+                                                    <td className="text-center">
+                                                        {moment(item.updatedAt).format("MMM Do YY")}
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <button
+                                                            onClick={() => handleDelete(item._id)}
+                                                            className="btn btn-rounded btn-danger btn-sm"
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrashCan} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             ) : (
                                 <Error404 />
                             )}
                         </div>
-                        <div className="card-footer">
-                            <div className="pagination">
-                                <div className="left">
-                                    <h4>Pagination</h4>
-                                </div>
-                                <div className="right">
-                                    <Pagination
-                                        page={Number(currentPage)}
-                                        count={Math.ceil(rows.length / 5)}
-                                        onChange={handleChangePage}
-                                        variant="outlined"
-                                        shape="rounded"
-                                        color="primary"
-                                    />
+                        {totalPages > 1 && (
+                            <div className="card-footer">
+                                <div className="pagination">
+                                    <div className="left">
+                                        <h4>Pagination</h4>
+                                    </div>
+                                    <div className="right">
+                                        <Pagination
+                                            page={Number(searchParams.get("page") || 1)}
+                                            count={totalPages}
+                                            onChange={handleChangePage}
+                                            variant="outlined"
+                                            shape="rounded"
+                                            color="primary"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </Container>
             </div>
