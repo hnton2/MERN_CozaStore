@@ -44,7 +44,6 @@ function Products() {
                     ...Object.fromEntries([...searchParams]),
                 });
                 if (response.data.success) {
-                    console.log(response.data.products);
                     setProducts(response.data.products);
                     setTotalPages(response.data.pages);
                 }

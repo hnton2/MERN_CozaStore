@@ -146,7 +146,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             .skip(perPage * page - perPage)
             .limit(perPage)
             .exec((err, blogs) => {
-                Blog.countDocuments((err, count) => {
+                Blog.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
@@ -190,6 +190,25 @@ router.get("(/:category)?", async (req, res) => {
                     });
                 });
             });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// @DESC Get public new blogs
+// @ROUTE GET /api/blog/find/newest
+// @ACCESS Public
+router.get("/get/newest", async (req, res) => {
+    try {
+        const blogs = await Blog.find().limit(3).sort({ updatedAt: -1 });
+        if (blogs)
+            res.json({
+                success: true,
+                message: "Get new blogs successfully",
+                blogs,
+            });
+        else res.status(404).json({ success: false, message: "Blogs not found" });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

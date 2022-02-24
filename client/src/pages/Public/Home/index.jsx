@@ -8,21 +8,18 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import ProductsSlider from "components/ProductsSlider";
 import Image from "constants/Image";
-import productServices from "services/product";
 import Preloader from "components/Preloader";
 import { Helmet } from "react-helmet";
 import blogServices from "services/blog";
 
 function Home() {
-    const [products, setProducts] = useState([]);
-    const [blogs, setBlogs] = useState([]);
+    const [blogs, setBlogs] = useState();
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await productServices.getAllProduct();
-                setProducts(response.data.product);
-                const response2 = await blogServices.getAllBlog();
-                setBlogs(response2.data.blog);
+                const res = await blogServices.getNewBlogs();
+                console.log(res);
+                if (res.data.success) setBlogs(res.data.blogs);
             } catch (error) {
                 console.log(error);
             }
@@ -32,20 +29,20 @@ function Home() {
 
     const overviewData = [
         {
-            label: "Best Seller",
-            content: <ProductsSlider products={products} />,
+            label: "Shoes",
+            content: <ProductsSlider task="newest" params={{ category: "shoes" }} />,
         },
         {
-            label: "Featured",
-            content: <ProductsSlider products={products} />,
+            label: "Clothing",
+            content: <ProductsSlider task="newest" params={{ category: "clothing" }} />,
         },
         {
-            label: "New Product",
-            content: <ProductsSlider products={products} />,
+            label: "Caps",
+            content: <ProductsSlider task="newest" params={{ category: "caps" }} />,
         },
         {
-            label: "Top Rate",
-            content: <ProductsSlider products={products} />,
+            label: "Socks",
+            content: <ProductsSlider task="newest" params={{ category: "socks" }} />,
         },
     ];
 
@@ -55,7 +52,7 @@ function Home() {
                 <title>Home</title>
             </Helmet>
             <Header />
-            <Preloader isHidden={products} />
+            <Preloader isHidden={blogs} />
             <div className="main">
                 <Carousel />
                 <div className="home-banner">
@@ -72,13 +69,15 @@ function Home() {
                 <section className="blogs">
                     <Container>
                         <h3 className="section__title">Our Blogs</h3>
-                        <Grid container spacing={1}>
-                            {blogs.map((item) => (
-                                <Grid item sm={6} md={4} key={item._id}>
-                                    <BlogCard blog={item} />
-                                </Grid>
-                            ))}
-                        </Grid>
+                        {blogs && blogs.length > 0 && (
+                            <Grid container spacing={1}>
+                                {blogs.map((item) => (
+                                    <Grid item sm={6} md={4} key={item._id}>
+                                        <BlogCard blog={item} />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        )}
                     </Container>
                 </section>
             </div>

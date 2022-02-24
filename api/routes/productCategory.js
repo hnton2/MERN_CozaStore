@@ -101,14 +101,14 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     if (search !== "") condition.$text = { $search: search };
     if (status) condition.status = status;
 
-    const statistics = await countStatus({ $search }, FILTER_STATUS, ProductCategory, "status");
+    const statistics = await countStatus({ search }, FILTER_STATUS, ProductCategory, "status");
 
     try {
         await ProductCategory.find(condition)
             .skip(perPage * page - perPage)
             .limit(perPage)
             .exec((err, categories) => {
-                ProductCategory.countDocuments((err, count) => {
+                ProductCategory.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,

@@ -21,20 +21,19 @@ const linkData = [
     },
     {
         name: "Category",
-        path: "/product-category",
+        path: "/product-category/all",
     },
 ];
 
 function Product() {
     const { slug: currentSlug } = useParams();
     const [productDetail, setProductDetail] = useState();
-    const [productRelated, setProductRelated] = useState([]);
     const [rating, setRating] = useState(5);
 
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
-                const response = await productServices.getProductDetailBySlug(currentSlug);
+                const response = await productServices.getDetailProduct(currentSlug);
                 if (response.data.success) setProductDetail(response.data.product);
             } catch (error) {
                 console.log(error);
@@ -43,20 +42,6 @@ function Product() {
         fetchProductDetail();
         window.scrollTo(0, 0);
     }, [currentSlug]);
-
-    useEffect(() => {
-        const fetchProductRelated = async () => {
-            if (productDetail) {
-                try {
-                    const response = await productServices.getProductByCategory(productDetail.category.slug);
-                    if (response.data.success) setProductRelated(response.data.product);
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-        };
-        fetchProductRelated();
-    }, [productDetail]);
 
     const onSubmit = async (data) => {
         try {
@@ -128,12 +113,17 @@ function Product() {
                     <div className="product-tags">
                         <span>Categories: {productDetail.category.name}</span>
                     </div>
-                    <Container>
-                        <div className="product-related">
-                            <h3>Related Products</h3>
-                            <ProductsSlider products={productRelated} />
-                        </div>
-                    </Container>
+                    {productDetail && (
+                        <Container>
+                            <div className="product-related">
+                                <h3>Related Products</h3>
+                                <ProductsSlider
+                                    task="related"
+                                    params={{ category: productDetail.category.slug, id: productDetail._id }}
+                                />
+                            </div>
+                        </Container>
+                    )}
                 </div>
             )}
             <Footer />

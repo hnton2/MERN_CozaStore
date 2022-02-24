@@ -51,7 +51,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             .skip(perPage * page - perPage)
             .limit(perPage)
             .exec((err, orders) => {
-                Order.countDocuments((err, count) => {
+                Order.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,

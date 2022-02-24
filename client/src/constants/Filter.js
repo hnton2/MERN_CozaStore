@@ -1,5 +1,4 @@
 export const SORT = [
-    { name: "Newest", slug: "newest" },
     { name: "Name (a → z)", slug: "name-asc" },
     { name: "Name (z → a)", slug: "name-desc" },
     { name: "Price: Low to High", slug: "price-asc" },

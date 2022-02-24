@@ -29,9 +29,13 @@ const deleteBlog = (id) => {
     return userRequest.delete(`blog/${id}`);
 };
 
-const getBlogList = (slugCategory, page = 1) => {
+const getBlogsInCategory = (slugCategory, page = 1) => {
     const query = page !== 1 ? `?page=${page}` : "";
     return publicRequest.get(`blog/${slugCategory}${query}`);
+};
+
+const getNewBlogs = () => {
+    return publicRequest.get("blog/get/newest");
 };
 
 const getBlogDetailBySlug = (slug) => {
@@ -52,10 +56,11 @@ const blogServices = {
     getOneBlog,
     updateBlog,
     deleteBlog,
-    getBlogList,
+    getBlogsInCategory,
     getBlogDetailBySlug,
     addComment,
     changeStatus,
+    getNewBlogs,
 };
 
 export default blogServices;

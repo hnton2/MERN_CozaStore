@@ -146,7 +146,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             .skip(perPage * page - perPage)
             .limit(perPage)
             .exec((err, products) => {
-                Product.countDocuments((err, count) => {
+                Product.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
@@ -186,9 +186,9 @@ router.get("/:category", async (req, res) => {
     }
     if (category !== "all") condition["category.slug"] = category;
     if (search !== "") condition.$text = { $search: search };
-    if (size !== "all") condition.size = { $in: [size] };
-    if (color !== "all") condition.color = { $in: [color.toLowerCase()] };
-    if (tag !== "all") condition.color = { $in: [tag.toLowerCase()] };
+    if (size !== "all") condition["size.value"] = { $in: [size] };
+    if (color !== "all") condition["color.value"] = { $in: [color.toLowerCase()] };
+    if (tag !== "all") condition["tag.value"] = { $in: [tag.toLowerCase()] };
     if (sort !== "all") {
         const sortObject = sort.split("-");
         sortObj = { [sortObject[0]]: sortObject[1] };
@@ -200,7 +200,7 @@ router.get("/:category", async (req, res) => {
             .limit(perPage)
             .sort(sortObj)
             .exec((err, products) => {
-                Product.countDocuments((err, count) => {
+                Product.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
@@ -211,6 +211,58 @@ router.get("/:category", async (req, res) => {
                     });
                 });
             });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// @DESC Get public new products
+// @ROUTE GET /api/product/newest/:category
+// @ACCESS Public
+router.get("/newest/:category", async (req, res) => {
+    let condition = { status: "active" };
+    const category = getParam(req.params, "category", "all");
+    if (category !== "all") condition["category.slug"] = category;
+
+    try {
+        const products = await Product.find(condition).limit(8).sort({ updatedAt: -1 });
+        if (products)
+            res.json({
+                success: true,
+                message: "Get new products successfully",
+                products,
+            });
+        else res.status(404).json({ success: false, message: "Products not found" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// @DESC Get related products
+// @ROUTE POST /api/product/related/:category
+// @ACCESS Public
+router.post("/related/:category", async (req, res) => {
+    let condition = { status: "active" };
+    const category = getParam(req.params, "category", "all");
+    const id = getParam(req.body, "id", "all");
+    if (category !== "all") condition["category.slug"] = category;
+
+    try {
+        const products = await Product.find({
+            status: "active",
+            "category.slug": category,
+            _id: { $ne: id },
+        }).limit(8);
+
+        if (products)
+            res.json({
+                success: true,
+                message: "Get related products successfully",
+                products,
+            });
+        else res.status(404).json({ success: false, message: "Products not found" });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

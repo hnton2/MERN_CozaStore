@@ -1,12 +1,12 @@
 import FacebookIcon from "@mui/icons-material/Facebook";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import GoogleIcon from "@mui/icons-material/Google";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 import { Grid } from "@mui/material";
 import { Form, QuantityField, SelectField } from "components/CustomForm";
+import { SlickArrowLeft } from "components/SlickArrow";
+import { SlickArrowRight } from "components/SlickArrow";
 import { IMAGE_CLOUDINARY } from "constants/Config";
 import { addProductValidation } from "helpers/validation";
 import parse from "html-react-parser";
@@ -19,29 +19,6 @@ import Slider from "react-slick";
 import { toast } from "react-toastify";
 import { addProduct } from "redux/cartSlice";
 import "./ProductDetail.scss";
-
-const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-    <button
-        {...props}
-        className={"slick-prev slick-arrow" + (currentSlide === 0 ? " slick-disabled" : "")}
-        aria-hidden="true"
-        aria-disabled={currentSlide === 0 ? true : false}
-        type="button"
-    >
-        <KeyboardArrowLeftIcon />
-    </button>
-);
-const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-    <button
-        {...props}
-        className={"slick-next slick-arrow" + (currentSlide === slideCount - 1 ? " slick-disabled" : "")}
-        aria-hidden="true"
-        aria-disabled={currentSlide === slideCount - 1 ? true : false}
-        type="button"
-    >
-        <KeyboardArrowRightIcon />
-    </button>
-);
 
 function ProductDetail({ product }) {
     const navigate = useNavigate();

@@ -105,7 +105,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             .skip(perPage * page - perPage)
             .limit(perPage)
             .exec((err, coupons) => {
-                Coupon.countDocuments((err, count) => {
+                Coupon.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,

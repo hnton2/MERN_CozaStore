@@ -108,7 +108,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             .skip(perPage * page - perPage)
             .limit(perPage)
             .exec((err, categories) => {
-                BlogCategory.countDocuments((err, count) => {
+                BlogCategory.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,

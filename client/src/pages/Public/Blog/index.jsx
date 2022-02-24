@@ -28,7 +28,7 @@ function Blog() {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const response = await blogServices.getBlogList(currentCategory, currentPage);
+                const response = await blogServices.getBlogsInCategory(currentCategory, currentPage);
                 if (response.data.success) {
                     setBlogs(response.data.blogs);
                     setTotalPages(response.data.pages);

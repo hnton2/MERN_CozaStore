@@ -3,33 +3,10 @@ import Slider from "react-slick";
 import "./Carousel.scss";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CustomSlide from "./CustomSlide";
 import Image from "constants/Image";
-
-const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-    <button
-        {...props}
-        className={"slick-prev slick-arrow" + (currentSlide === 0 ? " slick-disabled" : "")}
-        aria-hidden="true"
-        aria-disabled={currentSlide === 0 ? true : false}
-        type="button"
-    >
-        <ArrowLeftIcon sx={{ fontSize: 80 }} />
-    </button>
-);
-const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-    <button
-        {...props}
-        className={"slick-next slick-arrow" + (currentSlide === slideCount - 1 ? " slick-disabled" : "")}
-        aria-hidden="true"
-        aria-disabled={currentSlide === slideCount - 1 ? true : false}
-        type="button"
-    >
-        <ArrowRightIcon sx={{ fontSize: 80 }} />,
-    </button>
-);
+import { SlickArrowRight } from "components/SlickArrow";
+import { SlickArrowLeft } from "components/SlickArrow";
 
 const carouselData = [
     {

@@ -93,7 +93,6 @@ function ProductForm() {
         if (oldImages) data.oldImages = oldImages;
         setIsLoading(true);
         setMessage();
-        console.log(data);
         try {
             const response = currentId
                 ? await productServices.updateProduct(currentId, data)

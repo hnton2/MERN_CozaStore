@@ -39,10 +39,15 @@ const getProducstInCategory = ({ category = "all", page = 1, search = "", sort, 
     if (size) query.size = size;
     if (tag) query.tag = tag;
 
-    return publicRequest.get(`product/${category}${queryString.stringify(query)}`);
+    return publicRequest.get(`product/${category}?${queryString.stringify(query)}`);
 };
 
-const getProductDetailBySlug = (slug) => {
+const getProductsByTask = (task, params) => {
+    if (task === "newest") return publicRequest.get(`product/newest/${params.category}`);
+    if (task === "related") return publicRequest.post(`product/related/${params.category}`, { id: params.id });
+};
+
+const getDetailProduct = (slug) => {
     return publicRequest.get(`product/find-by-slug/${slug}`);
 };
 
@@ -61,9 +66,10 @@ const productServices = {
     updateProduct,
     deleteProduct,
     getProducstInCategory,
-    getProductDetailBySlug,
+    getDetailProduct,
     addReview,
     changeStatus,
+    getProductsByTask,
 };
 
 export default productServices;
