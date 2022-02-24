@@ -4,6 +4,8 @@ const cryptoJS = require("crypto-js");
 const User = require("../models/User");
 const { verifyTokenAndAdmin, verifyTokenAndAuthorization, verifyToken } = require("../middleware/verifyToken");
 const { getParam } = require("../helpers/params");
+const { countStatus } = require("../helpers/utils");
+const { USER_STATUS } = require("../config/system");
 
 // UPDATE
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
@@ -57,9 +59,10 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     const isAdmin = getParam(req.query, "isAdmin", null);
     const search = getParam(req.query, "search", "");
 
-    if (isAdmin || search !== "") page = 1;
     if (search !== "") condition.$text = { $search: search };
     if (isAdmin) condition.isAdmin = isAdmin;
+
+    const statistics = await countStatus({ search }, USER_STATUS, User, "isAdmin");
 
     try {
         await User.find(condition)
@@ -74,6 +77,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
                         users,
                         current: page,
                         pages: Math.ceil(count / perPage),
+                        statistics,
                     });
                 });
             });

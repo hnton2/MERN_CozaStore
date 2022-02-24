@@ -12,7 +12,6 @@ import Header from "components/Header";
 import Preloader from "components/Preloader";
 import StatusFilter from "components/StatusFilter";
 import { IMAGE_CLOUDINARY } from "constants/Config";
-import { FILTER_STATUS } from "constants/Option";
 import { toastMessage } from "helpers/toastMessage";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -39,6 +38,7 @@ function ProductTable() {
     const [products, setProducts] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
+    const [statistics, setStatistics] = useState();
     const [categoryOptions, setCategoryOptions] = useState([{ value: "all", label: "All" }]);
 
     useEffect(() => {
@@ -58,6 +58,7 @@ function ProductTable() {
                 const res = await productServices.getProducts(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
                     setProducts(res.data.products);
+                    setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
                 setIsLoading(false);
@@ -149,13 +150,17 @@ function ProductTable() {
                             <div className="toolbar">
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4} lg={4}>
-                                        {products && (
-                                            <StatusFilter keyword="status" options={FILTER_STATUS} data={products} />
-                                        )}
+                                        {statistics && <StatusFilter keyword="status" data={statistics} />}
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4} lg={4}>
                                         <div className="select">
-                                            <Select options={categoryOptions} onChange={handleSelect} />
+                                            <Select
+                                                value={categoryOptions.filter(
+                                                    (option) => option.value === searchParams.get("category")
+                                                )}
+                                                options={categoryOptions}
+                                                onChange={handleSelect}
+                                            />
                                         </div>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={4} lg={4}>

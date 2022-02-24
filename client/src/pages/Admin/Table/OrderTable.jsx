@@ -120,6 +120,9 @@ function OrderTable() {
                                     <Grid item xs={12} sm={6} md={8} lg={8}>
                                         <div className="select" style={{ marginLeft: 0 }}>
                                             <Select
+                                                value={ORDER_STATUS.filter(
+                                                    (option) => option.value === searchParams.get("status")
+                                                )}
                                                 options={[{ value: "all", label: "All" }, ...ORDER_STATUS]}
                                                 onChange={handleSelect}
                                             />

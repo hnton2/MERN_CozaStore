@@ -11,7 +11,6 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import Preloader from "components/Preloader";
 import StatusFilter from "components/StatusFilter";
-import { FILTER_STATUS } from "constants/Option";
 import { toastMessage } from "helpers/toastMessage";
 import parse from "html-react-parser";
 import React, { useEffect, useState } from "react";
@@ -36,6 +35,7 @@ function BlogCategoryTable() {
     const [categories, setCategories] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
+    const [statistics, setStatistics] = useState();
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -44,6 +44,7 @@ function BlogCategoryTable() {
                 const res = await blogCategoryServices.getBlogCategories(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
                     setCategories(res.data.categories);
+                    setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
                 setIsLoading(false);
@@ -125,9 +126,7 @@ function BlogCategoryTable() {
                             <div className="toolbar">
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6} md={8} lg={8}>
-                                        {categories && (
-                                            <StatusFilter keyword="status" options={FILTER_STATUS} data={categories} />
-                                        )}
+                                        {statistics && <StatusFilter keyword="status" data={statistics} />}
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4} lg={4}>
                                         <div className="search">

@@ -1,6 +1,8 @@
 @import "../../variables";
 
 .product-card {
+    padding-left: 8px;
+
     @include mobile {
         padding: 0 32px;
         margin-bottom: 16px;

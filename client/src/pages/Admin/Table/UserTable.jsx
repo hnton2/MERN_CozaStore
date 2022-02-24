@@ -1,22 +1,21 @@
+import { faCheck, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { Backdrop, CircularProgress, Container, Grid, Pagination } from "@mui/material";
-import moment from "moment";
+import Error404 from "components/404";
 import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import StatusFilter from "components/StatusFilter";
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import "./Table.scss";
-import userServices from "services/user";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { Helmet } from "react-helmet";
 import Preloader from "components/Preloader";
-import Error404 from "components/404";
+import StatusFilter from "components/StatusFilter";
 import { toastMessage } from "helpers/toastMessage";
-import { FILTER_USER_STATUS } from "constants/Option";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { useSearchParams } from "react-router-dom";
+import userServices from "services/user";
+import "./Table.scss";
 
 const linkData = [
     {
@@ -34,6 +33,7 @@ function UserTable() {
     const [users, setUsers] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
+    const [statistics, setStatistics] = useState();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -42,6 +42,7 @@ function UserTable() {
                 const res = await userServices.getUsers(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
                     setUsers(res.data.users);
+                    setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
                 setIsLoading(false);
@@ -123,9 +124,7 @@ function UserTable() {
                             <div className="toolbar">
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6} md={8} lg={8}>
-                                        {users && (
-                                            <StatusFilter keyword="isAdmin" options={FILTER_USER_STATUS} data={users} />
-                                        )}
+                                        {statistics && <StatusFilter keyword="isAdmin" data={statistics} />}
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4} lg={4}>
                                         <div className="search">

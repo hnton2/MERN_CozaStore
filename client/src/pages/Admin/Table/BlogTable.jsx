@@ -12,7 +12,6 @@ import Header from "components/Header";
 import Preloader from "components/Preloader";
 import StatusFilter from "components/StatusFilter";
 import { IMAGE_CLOUDINARY } from "constants/Config";
-import { FILTER_STATUS } from "constants/Option";
 import { createSummary } from "helpers/string";
 import { toastMessage } from "helpers/toastMessage";
 import parse from "html-react-parser";
@@ -41,6 +40,7 @@ function BlogTable() {
     const [blogs, setBlogs] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
+    const [statistics, setStatistics] = useState();
     const [categoryOptions, setCategoryOptions] = useState([{ value: "all", label: "All" }]);
 
     useEffect(() => {
@@ -60,6 +60,7 @@ function BlogTable() {
                 const res = await blogServices.getBlogs(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
                     setBlogs(res.data.blogs);
+                    setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
                 setIsLoading(false);
@@ -151,13 +152,17 @@ function BlogTable() {
                             <div className="toolbar">
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={4} md={4} lg={4}>
-                                        {blogs && (
-                                            <StatusFilter keyword="status" options={FILTER_STATUS} data={blogs} />
-                                        )}
+                                        {statistics && <StatusFilter keyword="status" data={statistics} />}
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4} lg={4}>
                                         <div className="select">
-                                            <Select options={categoryOptions} onChange={handleSelect} />
+                                            <Select
+                                                value={categoryOptions.filter(
+                                                    (option) => option.value === searchParams.get("category")
+                                                )}
+                                                options={categoryOptions}
+                                                onChange={handleSelect}
+                                            />
                                         </div>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={4} lg={4}>

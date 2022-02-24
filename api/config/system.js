@@ -1,9 +1,12 @@
 module.exports = {
-    orders_state_value: [
-        { value: "accepted", name: "Accepted" },
-        { value: "processing", name: "In processing" },
-        { value: "shipped", name: "Shipped" },
-        { value: "delivered", name: "Delivered" },
-        { value: "completed", name: "Completed" },
+    FILTER_STATUS: [
+        { value: "all", label: "All", count: 0 },
+        { value: "active", label: "Active", count: 0 },
+        { value: "inactive", label: "Inactive", count: 0 },
+    ],
+    USER_STATUS: [
+        { value: "all", label: "All", count: 0 },
+        { value: true, label: "Admin", count: 0 },
+        { value: false, label: "User", count: 0 },
     ],
 };

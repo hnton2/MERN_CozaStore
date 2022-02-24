@@ -1,11 +1,12 @@
 import { userRequest } from "helpers/requestMethod";
 import queryString from "query-string";
 
-const getUsers = ({ page = 1, search = "", status = null }) => {
+const getUsers = ({ page = 1, search = "", isAdmin = null }) => {
     let query = {};
     if (page !== 1) query.page = page;
     if (search !== "") query.search = search;
-    if (status) query.isAdmin = status;
+    if (isAdmin) query.isAdmin = isAdmin;
+
     return userRequest.get(`user?${queryString.stringify(query)}`);
 };
 

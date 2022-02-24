@@ -4,6 +4,8 @@ const Product = require("../models/Product");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
 const { getParam } = require("../helpers/params");
+const { countStatus } = require("../helpers/utils");
+const { FILTER_STATUS } = require("../config/system");
 
 // @DESC Create new product
 // @ROUTE POST /api/product/
@@ -133,10 +135,11 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     const status = getParam(req.query, "status", null);
     const search = getParam(req.query, "search", "");
 
-    if (category !== "all" || status || search !== "") page = 1;
     if (category !== "all") condition["category.slug"] = category;
     if (status) condition.status = status;
     if (search !== "") condition.$text = { $search: search };
+
+    const statistics = await countStatus({ search, category }, FILTER_STATUS, Product, "status");
 
     try {
         await Product.find(condition)
@@ -151,6 +154,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
                         products,
                         current: page,
                         pages: Math.ceil(count / perPage),
+                        statistics,
                     });
                 });
             });
@@ -160,16 +164,53 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// @DESC Get products by category
-// @ROUTE GET /api/product/:category
+// @DESC Get public products
+// @ROUTE GET /api/product/(:category)?
 // @ACCESS Public
 router.get("/:category", async (req, res) => {
+    let condition = { status: "active" };
+    let sortObj = { updatedAt: "desc" };
+    const perPage = 12;
+    let page = getParam(req.query, "page", 1);
+    const category = getParam(req.params, "category", "all");
+    const search = getParam(req.query, "search", "");
+    const sort = getParam(req.query, "sort", "all");
+    const price = getParam(req.query, "price", "all");
+    const color = getParam(req.query, "color", "all");
+    const size = getParam(req.query, "size", "all");
+    const tag = getParam(req.query, "tag", "all");
+
+    if (price !== "all") {
+        const priceObject = price.split("-");
+        condition.price = { $gt: priceObject[0], $lt: priceObject[1] };
+    }
+    if (category !== "all") condition["category.slug"] = category;
+    if (search !== "") condition.$text = { $search: search };
+    if (size !== "all") condition.size = { $in: [size] };
+    if (color !== "all") condition.color = { $in: [color.toLowerCase()] };
+    if (tag !== "all") condition.color = { $in: [tag.toLowerCase()] };
+    if (sort !== "all") {
+        const sortObject = sort.split("-");
+        sortObj = { [sortObject[0]]: sortObject[1] };
+    }
+
     try {
-        const product = await Product.find({ "category.slug": req.params.category }).select(
-            "id name slug images status category tag color size quantity price description"
-        );
-        if (!product) return res.status(401).json({ success: false, message: "Products not found" });
-        res.json({ success: true, message: "Get products successfully", product });
+        await Product.find(condition)
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .sort(sortObj)
+            .exec((err, products) => {
+                Product.countDocuments((err, count) => {
+                    if (err) return console.log(err);
+                    res.json({
+                        success: true,
+                        message: "Get products successfully",
+                        products,
+                        current: page,
+                        pages: Math.ceil(count / perPage),
+                    });
+                });
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

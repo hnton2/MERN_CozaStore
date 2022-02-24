@@ -2,7 +2,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import ClearIcon from "@mui/icons-material/Clear";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
-import { Container, Grid, Pagination } from "@mui/material";
+import { Backdrop, CircularProgress, Container, Grid, Pagination } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
 import Footer from "components/Footer";
 import Header from "components/Header";
@@ -10,7 +10,6 @@ import Preloader from "components/Preloader";
 import ProductCard from "components/ProductCard";
 import { PRICE, SORT } from "constants/Filter";
 import { COLOR_OPTIONS, SIZE_OPTIONS, TAG_OPTIONS } from "constants/Option";
-import { escapeRegExp } from "helpers/string";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
@@ -19,15 +18,19 @@ import productServices from "services/product";
 import "./Products.scss";
 
 function Products() {
-    const categoryProduct = useSelector((state) => state.category.categoryProduct);
     let [searchParams, setSearchParams] = useSearchParams();
+    const categoryProduct = useSelector((state) => state.category.categoryProduct);
 
     const { category: currentCategory } = useParams();
-    const [products, setProducts] = useState([]);
-    const [render, setRender] = useState([]);
+    const [products, setProducts] = useState();
+    const [isLoading, setIsLoading] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
+
     const [showSearch, setShowSearch] = useState(false);
-    const [filters, setFilters] = useState(Object.fromEntries([...searchParams]));
+    const [search, setSearch] = useState(searchParams.get("search") || "");
     const [showFilter, setShowFilter] = useState(false);
+    const [filters, setFilters] = useState(Object.fromEntries([...searchParams]));
+
     const [colorOptions, setColorOptions] = useState(COLOR_OPTIONS);
     const [sizeOptions, setSizeOptions] = useState(SIZE_OPTIONS);
     const [tagOptions, setTagOptions] = useState(TAG_OPTIONS);
@@ -35,22 +38,24 @@ function Products() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response =
-                    currentCategory === "all"
-                        ? await productServices.getAllProduct()
-                        : await productServices.getProductByCategory(currentCategory);
+                setIsLoading(true);
+                const response = await productServices.getProducstInCategory({
+                    category: currentCategory,
+                    ...Object.fromEntries([...searchParams]),
+                });
                 if (response.data.success) {
-                    setProducts(response.data.product);
-                    setRender(response.data.product);
+                    console.log(response.data.products);
+                    setProducts(response.data.products);
+                    setTotalPages(response.data.pages);
                 }
-                setFilters(Object.fromEntries([...searchParams]));
+                setIsLoading(false);
             } catch (error) {
                 console.log(error);
             }
         };
         fetchProducts();
         if (currentCategory !== "all") {
-            categoryProduct.map((item) => {
+            categoryProduct.forEach((item) => {
                 if (item.slug === currentCategory) {
                     setColorOptions(item.color);
                     setTagOptions(item.tag);
@@ -62,13 +67,12 @@ function Products() {
             setTagOptions(TAG_OPTIONS);
             setSizeOptions(SIZE_OPTIONS);
         }
-    }, [currentCategory]);
+    }, [currentCategory, categoryProduct, searchParams]);
 
     const handleToggleFilter = () => {
         if (showFilter) {
             setSearchParams({});
             setFilters({});
-            setRender(products);
         }
         setShowFilter(!showFilter);
         setShowSearch(false);
@@ -83,48 +87,27 @@ function Products() {
         }
     };
 
-    useEffect(() => {
-        if (Object.keys(filters).length > 0) {
-            let filteredProducts = products.filter((product) => {
-                if (filters.price) {
-                    const prices = filters.price.split("-");
-                    if (prices.length > 1)
-                        if (Number(prices[0]) > product.price || product.price > Number(prices[1])) return false;
-                        else if (product.price < Number(prices[0])) return false;
-                }
-                if (filters.color) if (!product.color.some((item) => item.value === filters.color)) return false;
-                if (filters.tag) if (!product.tag.some((item) => item.value === filters.tag)) return false;
-
-                return true;
-            });
-            if (filters.sort) {
-                const sort = filters.sort.split("-");
-                if (sort[0] === "price") {
-                    filteredProducts =
-                        sort[1] === "asc"
-                            ? filteredProducts.sort((a, b) => a.price - b.price)
-                            : filteredProducts.sort((a, b) => b.price - a.price);
-                } else {
-                    filteredProducts =
-                        sort[1] === "asc"
-                            ? filteredProducts.sort((a, b) => a.name.localeCompare(b.name))
-                            : filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
-                }
-            }
-            setRender(filteredProducts);
-        }
-    }, [filters]);
-
     const handleToggleSearch = () => {
         setShowSearch(!showSearch);
         setShowFilter(false);
     };
-    const handleSearch = (val) => {
-        const searchRegex = new RegExp(escapeRegExp(val), "i");
-        const filteredProducts = products.filter((product) =>
-            Object.keys(product).some((field) => searchRegex.test(product[field].toString()))
-        );
-        setRender(filteredProducts);
+    const handleSearch = (value) => {
+        setSearch(value);
+        if (value !== "") {
+            searchParams.delete("page");
+            setSearchParams({ ...Object.fromEntries([...searchParams]), search: value });
+        } else {
+            searchParams.delete("search");
+            setSearchParams(searchParams);
+        }
+    };
+
+    const handleChangePage = (event, value) => {
+        if (value !== 1) setSearchParams({ ...Object.fromEntries([...searchParams]), page: value });
+        else {
+            searchParams.delete("page");
+            setSearchParams(searchParams);
+        }
     };
 
     return (
@@ -133,7 +116,10 @@ function Products() {
                 <title>{currentCategory[0].toUpperCase() + currentCategory.slice(1)}</title>
             </Helmet>
             <Header />
-            <Preloader isHidden={products.length > 0} />
+            <Preloader isHidden={products} />
+            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <div className="main">
                 <Container fixed>
                     <div className="category">
@@ -180,6 +166,7 @@ function Products() {
                                 <SearchIcon sx={{ fontSize: 24 }} />
                             </button>
                             <input
+                                value={search}
                                 type="text"
                                 placeholder="Search"
                                 onChange={(event) => handleSearch(event.target.value)}
@@ -277,18 +264,27 @@ function Products() {
                             </div>
                         </div>
                         <div className="category__content">
-                            {render.length > 0 ? (
+                            {products && products.length > 0 ? (
                                 <>
                                     <Grid container spacing={1}>
-                                        {render.map((product) => (
+                                        {products.map((product) => (
                                             <Grid item xs={12} sm={6} md={3} key={product._id}>
                                                 <ProductCard product={product} />
                                             </Grid>
                                         ))}
                                     </Grid>
-                                    <div className="category__pagination">
-                                        <Pagination count={10} variant="outlined" size="large" color="secondary" />
-                                    </div>
+                                    {totalPages > 1 && (
+                                        <div className="category__pagination">
+                                            <Pagination
+                                                page={Number(searchParams.get("page") || 1)}
+                                                count={totalPages}
+                                                onChange={handleChangePage}
+                                                variant="outlined"
+                                                size="large"
+                                                color="secondary"
+                                            />
+                                        </div>
+                                    )}
                                 </>
                             ) : (
                                 <Skeleton variant="rectangular" width={1200} height={400} />

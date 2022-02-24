@@ -11,7 +11,6 @@ import Footer from "components/Footer";
 import Header from "components/Header";
 import Preloader from "components/Preloader";
 import StatusFilter from "components/StatusFilter";
-import { FILTER_STATUS } from "constants/Option";
 import { toastMessage } from "helpers/toastMessage";
 import parse from "html-react-parser";
 import moment from "moment";
@@ -37,6 +36,7 @@ function CouponTable() {
     const [coupons, setCoupons] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
+    const [statistics, setStatistics] = useState();
 
     useEffect(() => {
         const fetchCoupons = async () => {
@@ -45,6 +45,7 @@ function CouponTable() {
                 const res = await couponServices.getCoupons(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
                     setCoupons(res.data.coupons);
+                    setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
                 setIsLoading(false);
@@ -126,9 +127,7 @@ function CouponTable() {
                             <div className="toolbar">
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={4} md={8} lg={8}>
-                                        {coupons && (
-                                            <StatusFilter keyword="status" options={FILTER_STATUS} data={coupons} />
-                                        )}
+                                        {statistics && <StatusFilter keyword="status" data={statistics} />}
                                     </Grid>
                                     <Grid item xs={12} sm={4} md={4} lg={4}>
                                         <div className="search">

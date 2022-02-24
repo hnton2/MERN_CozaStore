@@ -29,8 +29,17 @@ const deleteProduct = (id) => {
     return userRequest.delete(`product/${id}`);
 };
 
-const getProductByCategory = (slugCategory) => {
-    return publicRequest.get(`product/${slugCategory}`);
+const getProducstInCategory = ({ category = "all", page = 1, search = "", sort, price, color, size, tag }) => {
+    let query = {};
+    if (page !== 1) query.page = page;
+    if (search !== "") query.search = search;
+    if (sort) query.sort = sort;
+    if (price) query.price = price;
+    if (color) query.color = color;
+    if (size) query.size = size;
+    if (tag) query.tag = tag;
+
+    return publicRequest.get(`product/${category}${queryString.stringify(query)}`);
 };
 
 const getProductDetailBySlug = (slug) => {
@@ -51,7 +60,7 @@ const productServices = {
     getOneProduct,
     updateProduct,
     deleteProduct,
-    getProductByCategory,
+    getProducstInCategory,
     getProductDetailBySlug,
     addReview,
     changeStatus,

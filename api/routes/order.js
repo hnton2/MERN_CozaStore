@@ -3,6 +3,7 @@ const Order = require("../models/Order");
 const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { randomString } = require("../helpers/string");
 const { getParam } = require("../helpers/params");
+const { countStatus } = require("../helpers/utils");
 
 // @DESC Create a order
 // @ROUTE POST /api/order/
@@ -42,7 +43,6 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     const status = getParam(req.query, "status", null);
     const search = getParam(req.query, "search", "");
 
-    if (status || search !== "") page = 1;
     if (search !== "") condition.$text = { $search: search };
     if (status) condition.status = status;
 

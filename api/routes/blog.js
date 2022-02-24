@@ -4,6 +4,8 @@ const Blog = require("../models/Blog");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
 const { getParam } = require("../helpers/params");
+const { countStatus } = require("../helpers/utils");
+const { FILTER_STATUS } = require("../config/system");
 
 // @DESC Create new blog
 // @ROUTE POST /api/blog/
@@ -133,10 +135,11 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     const status = getParam(req.query, "status", null);
     const search = getParam(req.query, "search", "");
 
-    if (category !== "all" || status || search !== "") page = 1;
     if (category !== "all") condition["category.slug"] = category;
     if (search !== "") condition.$text = { $search: search };
     if (status) condition.status = status;
+
+    const statistics = await countStatus({ search, category }, FILTER_STATUS, Blog, "status");
 
     try {
         await Blog.find(condition)
@@ -151,6 +154,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
                         blogs,
                         current: page,
                         pages: Math.ceil(count / perPage),
+                        statistics,
                     });
                 });
             });

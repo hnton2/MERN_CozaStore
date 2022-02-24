@@ -3,6 +3,8 @@ const { changeAlias } = require("../helpers/string");
 const BlogCategory = require("../models/BlogCategory");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { getParam } = require("../helpers/params");
+const { countStatus } = require("../helpers/utils");
+const { FILTER_STATUS } = require("../config/system");
 
 // @DESC Create new blog category
 // @ROUTE POST /api/blog-category/
@@ -96,9 +98,10 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     const status = getParam(req.query, "status", null);
     const search = getParam(req.query, "search", "");
 
-    if (status || search !== "") page = 1;
     if (search !== "") condition.$text = { $search: search };
     if (status) condition.status = status;
+
+    const statistics = await countStatus({ search }, FILTER_STATUS, BlogCategory, "status");
 
     try {
         await BlogCategory.find(condition)
@@ -113,6 +116,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
                         categories,
                         current: page,
                         pages: Math.ceil(count / perPage),
+                        statistics,
                     });
                 });
             });

@@ -2,16 +2,9 @@ import React from "react";
 import { useSearchParams } from "react-router-dom";
 import "./StatusFilter.scss";
 
-function StatusFilter({ keyword, options, data }) {
+function StatusFilter({ keyword, data }) {
     let [searchParams, setSearchParams] = useSearchParams();
-
-    let statusCount = options.map((option) => Object.assign({}, option));
-
-    data.forEach((item) => {
-        statusCount.forEach((option) => {
-            if (item[keyword] === option.value) option.count++;
-        });
-    });
+    const currentStatus = searchParams.get([keyword]) || "all";
 
     const handleFilter = (value) => {
         if (value !== "all") {
@@ -25,11 +18,12 @@ function StatusFilter({ keyword, options, data }) {
 
     return (
         <div className="filter">
-            <button onClick={() => handleFilter("all")} className="btn btn-success">
-                All <span>{data.length}</span>
-            </button>
-            {statusCount.map((option) => (
-                <button key={option.value} onClick={() => handleFilter(option.value)} className="btn btn-primary">
+            {data.map((option) => (
+                <button
+                    key={option.value}
+                    onClick={() => handleFilter(option.value)}
+                    className={`btn ${String(option.value) === currentStatus ? "btn-primary" : "btn-secondary"}`}
+                >
                     {option.label}
                     <span>{option.count}</span>
                 </button>
