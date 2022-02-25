@@ -1,31 +1,12 @@
-import React from "react";
-import "./BlogSidebar.scss";
-import Image from "constants/Image";
+import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
+import { IMAGE_CLOUDINARY } from "constants/Config";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-
-const dataProduct = [
-    {
-        path: "#",
-        name: "White Shirt With Pleat Detail Back",
-        image: Image.PRODUCT1,
-        price: "19.00",
-    },
-    {
-        path: "#",
-        name: "White Shirt With Pleat Detail Back",
-        image: Image.PRODUCT2,
-        price: "19.00",
-    },
-    {
-        path: "#",
-        name: "White Shirt With Pleat Detail Back",
-        image: Image.PRODUCT3,
-        price: "19.00",
-    },
-];
+import { Link, useSearchParams } from "react-router-dom";
+import productServices from "services/product";
+import styled from "styled-components";
+import "./BlogSidebar.scss";
 
 const CardContainer = styled.div`
     display: flex;
@@ -84,18 +65,60 @@ const SidebarCard = ({ path, image, name, price }) => (
 );
 
 function BlogSidebar() {
+    let [searchParams, setSearchParams] = useSearchParams();
     const categoryBlog = useSelector((state) => state.category.categoryBlog);
+
+    const [search, setSearch] = useState("");
+    const [products, setProducts] = useState();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await productServices.getProductsByTask("newest", { category: "shoes" });
+                if (res.data.success) setProducts(res.data.products);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
+    }, []);
+
+    const handleSearch = (value) => {
+        setSearch(value);
+        if (value !== "") {
+            searchParams.delete("page");
+            setSearchParams({ ...Object.fromEntries([...searchParams]), search: value });
+        } else {
+            searchParams.delete("search");
+            setSearchParams(searchParams);
+        }
+    };
 
     return (
         <div className="blog__menu">
             <form className="search">
-                <input type="text" placeholder="Search" />
-                <button>
-                    <SearchIcon fontSize="small" />
-                </button>
+                <SearchIcon fontSize="small" />
+                <input
+                    type="text"
+                    value={search}
+                    placeholder="Search"
+                    onChange={(event) => handleSearch(event.target.value)}
+                />
+                <CloseIcon
+                    className="search-icon delete"
+                    onClick={() => handleSearch("")}
+                    style={{
+                        visibility: search ? "visible" : "hidden",
+                    }}
+                />
             </form>
             <h3 className="title">Categories</h3>
             <ul className="blog-category">
+                <li>
+                    <Link to="/blog-category/all" className="category__link">
+                        All
+                    </Link>
+                </li>
                 {categoryBlog.map((item) => (
                     <li key={item._id}>
                         <Link to={`/blog-category/${item.slug}`} className="category__link">
@@ -104,28 +127,20 @@ function BlogSidebar() {
                     </li>
                 ))}
             </ul>
-            <h3 className="title">Featured Products</h3>
-            {dataProduct.map((item, index) => (
-                <SidebarCard path={item.path} image={item.image} name={item.name} price={item.price} key={index + 1} />
-            ))}
-            <h3 className="title">Tags</h3>
-            <div className="tags">
-                <Link to="#" className="tag">
-                    Fashion
-                </Link>
-                <Link to="#" className="tag">
-                    Lifestyle
-                </Link>
-                <Link to="#" className="tag">
-                    Sports
-                </Link>
-                <Link to="#" className="tag">
-                    Street style
-                </Link>
-                <Link to="#" className="tag">
-                    Crafts
-                </Link>
-            </div>
+            {products && (
+                <>
+                    <h3 className="title">Featured Products</h3>
+                    {products.map((item) => (
+                        <SidebarCard
+                            path={`/product/${item.slug}`}
+                            image={IMAGE_CLOUDINARY + item.images[0]}
+                            name={item.name}
+                            price={item.price}
+                            key={item._id}
+                        />
+                    ))}
+                </>
+            )}
         </div>
     );
 }

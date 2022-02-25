@@ -16,13 +16,16 @@
         border-radius: 25px;
         position: relative;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
 
         & > input {
             border: none;
             outline: none;
             height: 50px;
             width: 100%;
-            padding: 0 55px 0 28px;
+            padding: 0 40px 0 20px;
             font-size: 15px;
             font-weight: 400;
             color: $dark-color;
@@ -31,19 +34,6 @@
                 font-size: 15px;
                 font-weight: 400;
                 color: $dark-color;
-            }
-        }
-
-        & > button {
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            padding: 0 18px;
-            transition: all 0.4s;
-
-            &:hover {
-                color: $color-hover;
             }
         }
     }

@@ -2,11 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Banner.scss";
 
-function Banner({ title, subtitle, image, slug }) {
+function Banner({ title, subtitle, image, path }) {
     return (
         <div className="banner">
             <img src={image} alt={title} className="banner__img" />
-            <Link to={`/products/${slug}`} className="banner__link">
+            <Link to={path} className="banner__link">
                 <div className="banner__desc">
                     <h3>{title}</h3>
                     <span>{subtitle}</span>

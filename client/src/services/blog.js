@@ -29,9 +29,11 @@ const deleteBlog = (id) => {
     return userRequest.delete(`blog/${id}`);
 };
 
-const getBlogsInCategory = (slugCategory, page = 1) => {
-    const query = page !== 1 ? `?page=${page}` : "";
-    return publicRequest.get(`blog/${slugCategory}${query}`);
+const getBlogsInCategory = ({ category = "all", page = 1, search = "" }) => {
+    let query = {};
+    if (page !== 1) query.page = page;
+    if (search !== "") query.search = search;
+    return publicRequest.get(`blog/${category}?${queryString.stringify(query)}`);
 };
 
 const getNewBlogs = () => {

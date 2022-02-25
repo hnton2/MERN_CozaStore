@@ -171,7 +171,10 @@ router.get("(/:category)?", async (req, res) => {
     let condition = {};
     const perPage = 5;
     const page = getParam(req.query, "page", 1);
+    const search = getParam(req.query, "search", "");
     const category = getParam(req.params, "category", "all");
+
+    if (search !== "") condition.$text = { $search: search };
     if (category !== "all") condition["category.slug"] = category;
     try {
         await Blog.find(condition)
