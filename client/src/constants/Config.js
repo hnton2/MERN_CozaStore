@@ -1,4 +1,4 @@
-import { faShirt, faWallet } from "@fortawesome/free-solid-svg-icons";
+import { faPanorama, faShirt, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CategoryIcon from "@mui/icons-material/Category";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -85,5 +85,24 @@ export const ADMIN_SIDEBAR = [
         title: "Order List",
         path: "/admin/order",
         icon: <FontAwesomeIcon icon={faWallet} />,
+    },
+    {
+        title: "Slider",
+        path: "",
+        icon: <FontAwesomeIcon icon={faPanorama} />,
+        iconClosed: <KeyboardArrowLeftIcon fontSize="small" />,
+        iconOpened: <KeyboardArrowDownIcon fontSize="small" />,
+        SubMenu: [
+            {
+                title: "Slider List",
+                path: "/admin/slider",
+                icon: <ListAltIcon fontSize="small" />,
+            },
+            {
+                title: "Create New Slider",
+                path: "/admin/slider/form",
+                icon: <FiberNewIcon fontSize="small" />,
+            },
+        ],
     },
 ];

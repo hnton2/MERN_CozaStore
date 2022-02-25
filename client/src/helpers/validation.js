@@ -125,3 +125,19 @@ export const checkoutValidation = yup.object().shape({
 export const orderTrackingValidation = yup.object().shape({
     orderId: yup.string().max(100).required(),
 });
+
+export const sliderValidation = yup.object().shape({
+    name: yup.string().min(5).max(100).required(),
+    path: yup.string().required(),
+    status: yup.string().required(),
+    images: yup
+        .array()
+        .min(1)
+        .of(
+            yup.object().shape({
+                name: yup.mixed().required(),
+            })
+        )
+        .required(),
+    description: yup.string().max(10000).required(),
+});

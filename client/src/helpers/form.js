@@ -10,7 +10,7 @@ export const createFormData = (data) => {
     imageList.forEach((file) => {
         formData.append("images", file);
     });
-    data.category = { slug: data.category.value, name: data.category.label };
+    if (data.category) data.category = { slug: data.category.value, name: data.category.label };
     Object.keys(data).forEach((key) => {
         if (key !== "images") formData.append(key, JSON.stringify(data[key]));
     });

@@ -11,20 +11,32 @@ import Image from "constants/Image";
 import Preloader from "components/Preloader";
 import { Helmet } from "react-helmet";
 import blogServices from "services/blog";
+import sliderServices from "services/slider";
 
 function Home() {
     const [blogs, setBlogs] = useState();
+    const [sliders, setSliders] = useState();
+
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchBlogs = async () => {
             try {
                 const res = await blogServices.getNewBlogs();
-                console.log(res);
                 if (res.data.success) setBlogs(res.data.blogs);
             } catch (error) {
                 console.log(error);
             }
         };
-        fetchData();
+
+        const fetchSliders = async () => {
+            try {
+                const res = await sliderServices.getPublicSliders();
+                if (res.data.success) setSliders(res.data.sliders);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchBlogs();
+        fetchSliders();
     }, []);
 
     const overviewData = [
@@ -52,9 +64,9 @@ function Home() {
                 <title>Home</title>
             </Helmet>
             <Header />
-            <Preloader isHidden={blogs} />
+            <Preloader isHidden={sliders} />
             <div className="main">
-                <Carousel />
+                {sliders && <Carousel data={sliders} />}
                 <div className="home-banner">
                     <Banner
                         title="Women"

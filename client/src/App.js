@@ -35,6 +35,8 @@ import BlogForm from "pages/Admin/Form/BlogForm";
 import BlogCategoryTable from "pages/Admin/Table/BlogCategoryTable";
 import BlogCategoryForm from "pages/Admin/Form/BlogCategoryForm";
 import BlogTable from "pages/Admin/Table/BlogTable";
+import SliderTable from "pages/Admin/Table/SliderTable";
+import SliderForm from "pages/Admin/Form/SliderForm";
 
 const stripePromise = loadStripe(
     "pk_test_51KCL3uD7QIM7Pt3fDuSzusNuy4dl4oNXEkPM6KzS1rpHTE4S16mz1zNgFb96kPnFAA13uSofYqhnXGIJFLhxMQcA00HrG0u4LC"
@@ -117,6 +119,13 @@ function App() {
                             <Route path="order/">
                                 <Route exact path="" element={<OrderTable />} />
                                 <Route path="invoice/:id" element={<InvoicePage />} />
+                            </Route>
+                            <Route path="slider/">
+                                <Route exact path="" element={<SliderTable />} />
+                                <Route path="form/">
+                                    <Route path=":id" element={<SliderForm />} />
+                                    <Route path="" element={<SliderForm />} />
+                                </Route>
                             </Route>
                         </Route>
                     </>

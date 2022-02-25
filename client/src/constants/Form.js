@@ -61,3 +61,11 @@ export const DEFAULT_CHECKOUT = {
 export const DEFAULT_TRACKING = {
     orderId: "",
 };
+
+export const DEFAULT_SLIDER = {
+    name: "",
+    path: "",
+    status: "active",
+    images: [],
+    description: "",
+};
