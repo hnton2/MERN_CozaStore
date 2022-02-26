@@ -14,6 +14,7 @@ const orderRoute = require("./routes/order");
 const checkoutRoute = require("./routes/checkout");
 const couponRoute = require("./routes/coupon");
 const sliderRoute = require("./routes/slider");
+const contactRoute = require("./routes/contact");
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use("/api/order", orderRoute);
 app.use("/api/checkout", checkoutRoute);
 app.use("/api/coupon", couponRoute);
 app.use("/api/slider", sliderRoute);
+app.use("/api/contact", contactRoute);
 
 app.listen(process.env.PORT || 5000, () => {
     console.log("backend server is running");

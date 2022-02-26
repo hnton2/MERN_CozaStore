@@ -1,4 +1,4 @@
-import { faPanorama, faShirt, faWallet } from "@fortawesome/free-solid-svg-icons";
+import { faAddressCard, faPanorama, faShirt, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CategoryIcon from "@mui/icons-material/Category";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -104,5 +104,10 @@ export const ADMIN_SIDEBAR = [
                 icon: <FiberNewIcon fontSize="small" />,
             },
         ],
+    },
+    {
+        title: "Contact List",
+        path: "/admin/contact",
+        icon: <FontAwesomeIcon icon={faAddressCard} />,
     },
 ];

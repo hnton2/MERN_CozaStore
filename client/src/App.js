@@ -37,6 +37,7 @@ import BlogCategoryForm from "pages/Admin/Form/BlogCategoryForm";
 import BlogTable from "pages/Admin/Table/BlogTable";
 import SliderTable from "pages/Admin/Table/SliderTable";
 import SliderForm from "pages/Admin/Form/SliderForm";
+import ContactTable from "pages/Admin/Table/ContactTable";
 
 const stripePromise = loadStripe(
     "pk_test_51KCL3uD7QIM7Pt3fDuSzusNuy4dl4oNXEkPM6KzS1rpHTE4S16mz1zNgFb96kPnFAA13uSofYqhnXGIJFLhxMQcA00HrG0u4LC"
@@ -127,6 +128,7 @@ function App() {
                                     <Route path="" element={<SliderForm />} />
                                 </Route>
                             </Route>
+                            <Route path="contact" element={<ContactTable />} />
                         </Route>
                     </>
                 )}

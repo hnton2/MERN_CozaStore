@@ -141,3 +141,7 @@ export const sliderValidation = yup.object().shape({
         .required(),
     description: yup.string().max(10000).required(),
 });
+
+export const contactValidation = yup.object().shape({
+    email: yup.string().email().required(),
+});
