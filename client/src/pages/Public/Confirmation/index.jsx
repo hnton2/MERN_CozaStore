@@ -155,13 +155,15 @@ function Confirmation() {
                                                         <td>${item.price}</td>
                                                     </tr>
                                                 ))}
-                                                <tr>
-                                                    <td>
-                                                        <h4>DISCOUNT</h4>
-                                                    </td>
-                                                    <td></td>
-                                                    <td>${invoice.coupon.discount}</td>
-                                                </tr>
+                                                {invoice.coupon && (
+                                                    <tr>
+                                                        <td>
+                                                            <h4>DISCOUNT</h4>
+                                                        </td>
+                                                        <td></td>
+                                                        <td>${invoice.coupon.discount}</td>
+                                                    </tr>
+                                                )}
                                                 <tr>
                                                     <td>
                                                         <h4>TOTAL</h4>

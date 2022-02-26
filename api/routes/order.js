@@ -4,6 +4,7 @@ const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = requir
 const { randomString } = require("../helpers/string");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
+const EmailHelper = require("../helpers/email");
 
 // @DESC Create a order
 // @ROUTE POST /api/order/
@@ -12,7 +13,14 @@ router.post("/", verifyToken, async (req, res) => {
     const newOrder = new Order({ ...req.body, code: randomString(10) });
     try {
         const savedOrder = await newOrder.save();
-        res.status(200).json({ success: true, message: "Create order successfully", order: savedOrder });
+        if (savedOrder) {
+            EmailHelper.sendEmail(
+                savedOrder.user.email,
+                "COZA STORE - Thank you for your purchase",
+                `Your invoice code is #${savedOrder.code}`
+            );
+            res.status(200).json({ success: true, message: "Create order successfully", order: savedOrder });
+        } else res.status(400).json({ success: false, message: "Something wrong" });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

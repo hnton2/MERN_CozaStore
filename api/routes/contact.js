@@ -4,6 +4,7 @@ const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
 const { CONTACT_STATUS } = require("../config/system");
+const EmailHelper = require("../helpers/email");
 
 // @DESC Create new contact
 // @ROUTE POST /api/contact/
@@ -16,8 +17,10 @@ router.post("/", async (req, res) => {
     try {
         const existItem = await Contact.findOne({ email: item.email });
         if (existItem) return res.status(400).json({ success: false, message: "Email already exist" });
-        await item.save();
-        res.json({ success: true, message: "Contact created successfully" });
+        const savedItem = await item.save();
+        if (savedItem) {
+            res.json({ success: true, message: "Contact created successfully" });
+        } else res.status(400).json({ success: false, message: "Something wrong" });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Internal server error" });

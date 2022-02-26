@@ -28,7 +28,7 @@ function Footer() {
             else toastMessage({ type: "error", message: res.data.message });
             setIsLoading(false);
         } catch (error) {
-            toastMessage({ type: "error", message: error.data.message });
+            toastMessage({ type: "error", message: error });
         }
     };
 
