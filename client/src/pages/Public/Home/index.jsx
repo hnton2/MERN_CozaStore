@@ -12,6 +12,7 @@ import Preloader from "components/Preloader";
 import { Helmet } from "react-helmet";
 import blogServices from "services/blog";
 import sliderServices from "services/slider";
+import { toastMessage } from "helpers/toastMessage";
 
 function Home() {
     const [blogs, setBlogs] = useState();
@@ -23,7 +24,7 @@ function Home() {
                 const res = await blogServices.getNewBlogs();
                 if (res.data.success) setBlogs(res.data.blogs);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
 
@@ -32,7 +33,7 @@ function Home() {
                 const res = await sliderServices.getPublicSliders();
                 if (res.data.success) setSliders(res.data.sliders);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchBlogs();

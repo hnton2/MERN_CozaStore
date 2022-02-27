@@ -13,6 +13,7 @@ import { useState } from "react";
 import Preloader from "components/Preloader";
 import moment from "moment";
 import { Helmet } from "react-helmet";
+import { toastMessage } from "helpers/toastMessage";
 
 toast.configure();
 
@@ -32,7 +33,7 @@ const linkData = [
 ];
 
 function Confirmation() {
-    let [searchParams, setSearchParams] = useSearchParams();
+    let [searchParams] = useSearchParams();
     const invoiceCode = searchParams.get("invoice-code");
 
     const [invoice, setInvoice] = useState();
@@ -42,7 +43,7 @@ function Confirmation() {
                 const res = await orderServices.getOneOrder(invoiceCode);
                 res.data.success && setInvoice(res.data.order);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchInvoice();

@@ -50,7 +50,6 @@ export const DEFAULT_CHECKOUT = {
     lastname: "",
     email: "",
     phone: "",
-    country: "",
     province: "",
     district: "",
     ward: "",

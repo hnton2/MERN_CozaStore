@@ -1,4 +1,4 @@
-import { userRequest } from "helpers/requestMethod";
+import { publicRequest, userRequest } from "helpers/requestMethod";
 import queryString from "query-string";
 
 const createNewCoupon = (data) => {
@@ -29,6 +29,10 @@ const changeStatus = (id, currentStatus) => {
     return userRequest.put(`coupon/change-status/${id}`, { currentStatus: currentStatus });
 };
 
+const getPublicCoupons = () => {
+    return publicRequest.get("coupon/public/");
+};
+
 const couponServices = {
     createNewCoupon,
     getCoupons,
@@ -36,6 +40,7 @@ const couponServices = {
     updateCoupon,
     deleteCoupon,
     changeStatus,
+    getPublicCoupons,
 };
 
 export default couponServices;

@@ -7,6 +7,7 @@ import Preloader from "components/Preloader";
 import ProductDetail from "components/ProductDetail";
 import ProductsSlider from "components/ProductsSlider";
 import { stringAvatar } from "helpers/string";
+import { toastMessage } from "helpers/toastMessage";
 import { reviewValidation } from "helpers/validation";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -36,7 +37,7 @@ function Product() {
                 const response = await productServices.getDetailProduct(currentSlug);
                 if (response.data.success) setProductDetail(response.data.product);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchProductDetail();
@@ -48,7 +49,7 @@ function Product() {
             const res = await productServices.addReview(productDetail.slug, { ...data, rating });
             if (res.data.success) setProductDetail(res.data.product);
         } catch (error) {
-            console.log(error);
+            toastMessage({ type: "error", message: error.message });
         }
     };
 

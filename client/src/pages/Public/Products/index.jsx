@@ -10,6 +10,7 @@ import Preloader from "components/Preloader";
 import ProductCard from "components/ProductCard";
 import { PRICE, SORT } from "constants/Filter";
 import { COLOR_OPTIONS, SIZE_OPTIONS, TAG_OPTIONS } from "constants/Option";
+import { toastMessage } from "helpers/toastMessage";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
@@ -49,7 +50,7 @@ function Products() {
                 }
                 setIsLoading(false);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchProducts();

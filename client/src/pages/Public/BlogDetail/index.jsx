@@ -15,6 +15,7 @@ import moment from "moment";
 import { Form, InputField } from "components/CustomForm";
 import { reviewValidation } from "helpers/validation";
 import { stringAvatar } from "helpers/string";
+import { toastMessage } from "helpers/toastMessage";
 
 const linkData = [
     {
@@ -37,7 +38,7 @@ function BlogDetail() {
                 const response = await blogServices.getBlogDetailBySlug(currentSlug);
                 if (response.data.success) setBlog(response.data.blog);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchBlog();
@@ -49,7 +50,7 @@ function BlogDetail() {
             const res = await blogServices.addComment(blog.slug, data);
             if (res.data.success) setBlog(res.data.blog);
         } catch (error) {
-            console.log(error);
+            toastMessage({ type: "error", message: error.message });
         }
     };
     return (

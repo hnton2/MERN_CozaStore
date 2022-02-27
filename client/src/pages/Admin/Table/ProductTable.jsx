@@ -63,7 +63,7 @@ function ProductTable() {
                 }
                 setIsLoading(false);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchProducts();
@@ -109,7 +109,7 @@ function ProductTable() {
             } else toastMessage({ type: "error", message: res.data.message });
             setIsLoading(false);
         } catch (error) {
-            toastMessage({ type: "error", message: error.data.message });
+            toastMessage({ type: "error", message: error.message });
         }
     };
 
@@ -127,7 +127,7 @@ function ProductTable() {
                 toastMessage({ type: "success", message: res.data.message });
             } else toastMessage({ type: "error", message: res.data.message });
         } catch (error) {
-            toastMessage({ type: "error", message: error.data.message });
+            toastMessage({ type: "error", message: error.message });
         }
     };
 

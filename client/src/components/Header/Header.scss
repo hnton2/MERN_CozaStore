@@ -196,6 +196,10 @@
         border: 2px solid #e6e6e6;
         background: #fff;
 
+        &.error {
+            border-color: $danger-color !important;
+        }
+
         @include mobile {
             height: $search-modal-height-sm;
         }
@@ -206,6 +210,7 @@
     }
 
     &__button {
+        margin-right: 16px;
         color: $dark-color;
 
         &:hover {

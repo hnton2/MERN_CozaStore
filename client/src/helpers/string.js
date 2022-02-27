@@ -23,12 +23,13 @@ export const stringToColor = (string) => {
 };
 
 export const stringAvatar = (name, size = { width: 32, height: 32 }) => {
+    const splitName = name.split(" ");
     return {
         sx: {
             bgcolor: stringToColor(name),
             ...size,
         },
-        children: `${name.split(" ")[0][0]}${name.split(" ")[1] ? name.split(" ")[1][0] : ""}`,
+        children: `${splitName[0][0]}${splitName[splitName.length - 1] ? splitName[splitName.length - 1][0] : ""}`,
     };
 };
 

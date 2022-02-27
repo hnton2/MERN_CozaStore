@@ -148,4 +148,23 @@ router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
+// @DESC Get public coupons
+// @ROUTE GET /api/product/newest/:category
+// @ACCESS Public
+router.get("/public/", async (req, res) => {
+    try {
+        const items = await Coupon.find({ status: "active" }).sort({ updatedAt: -1 });
+        if (items)
+            res.json({
+                success: true,
+                message: "Get new coupons successfully",
+                coupons: items,
+            });
+        else res.status(404).json({ success: false, message: "Coupons not found" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
 module.exports = router;

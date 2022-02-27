@@ -4,24 +4,22 @@ import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import Breadcrumbs from "components/Breadcrumbs";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import { DEFAULT_CHECKOUT } from "constants/Form";
 import { publicRequest } from "helpers/requestMethod";
 import { checkoutValidation } from "helpers/validation";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
-import countryList from "react-select-country-list";
 import makeAnimated from "react-select/animated";
-import { toast } from "react-toastify";
 import { clearCart } from "redux/cartSlice";
 import orderServices from "services/order";
 import userServices from "services/user";
+import VietNamProvinces from "constants/provinces.json";
 import "./Checkout.scss";
-
-toast.configure();
+import { useEffect } from "react";
+import { toastMessage } from "helpers/toastMessage";
 
 const linkData = [
     {
@@ -46,21 +44,33 @@ const customStyles = {
 };
 
 function Checkout() {
-    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const stripe = useStripe();
     const elements = useElements();
     const dispatch = useDispatch();
 
-    const countryOptions = useMemo(() => countryList().getData(), []);
     const user = useSelector((state) => state.auth.currentUser);
     const { products, total, coupon } = useSelector((state) => state.cart);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+
     const {
         control,
         handleSubmit,
         register,
+        watch,
         formState: { errors },
-    } = useForm({ defaultValues: DEFAULT_CHECKOUT, resolver: yupResolver(checkoutValidation) });
+    } = useForm({ resolver: yupResolver(checkoutValidation) });
+
+    const provinceField = watch("province");
+    const districtField = watch("district");
+
+    useEffect(() => {
+        if (provinceField) setDistricts(provinceField.districts);
+        if (districtField) setWards(districtField.wards);
+    }, [provinceField, districtField]);
 
     const onSubmit = async (data) => {
         if (!stripe || !elements) return;
@@ -70,9 +80,9 @@ function Checkout() {
             email: data.email,
             phone: data.phone,
             address: {
-                country: data.country.value,
-                city: data.province,
-                state: `${data.district} district,  ${data.ward} ward`,
+                country: "VN",
+                city: data.province.name,
+                state: `${data.district.name},  ${data.ward.name}`,
                 line1: data.address,
             },
         };
@@ -91,15 +101,7 @@ function Checkout() {
         setIsLoading(false);
 
         if (result.error) {
-            toast.error(result.error.message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toastMessage({ type: "error", message: result.error.message });
         } else {
             if (result.paymentIntent.status === "succeeded") {
                 try {
@@ -109,10 +111,10 @@ function Checkout() {
                             email: data.email,
                             phone: data.phone,
                             address: {
-                                country: data.country.value,
-                                province: data.province,
-                                district: data.district,
-                                ward: data.ward,
+                                country: "Viet Nam",
+                                province: data.province.name,
+                                district: data.district.name,
+                                ward: data.ward.name,
                                 street: data.street,
                             },
                         },
@@ -123,17 +125,13 @@ function Checkout() {
                     });
                     if (res.data.success) {
                         await userServices.cleanCart(user._id);
-                        toast.success("The payment has been processed!", {
-                            position: "top-center",
-                        });
+                        toastMessage({ type: "success", message: "The payment has been processed!" });
+
                         navigate(`/confirmation?invoice-code=${res.data.order.code}`);
                         dispatch(clearCart());
                     }
                 } catch (error) {
-                    toast.error(error.message, {
-                        position: "top-center",
-                        autoClose: 5000,
-                    });
+                    toastMessage({ type: "error", message: error });
                 }
             }
         }
@@ -202,62 +200,82 @@ function Checkout() {
                                                 <div className="form-group">
                                                     <div style={{ width: "100%" }}>
                                                         <Controller
-                                                            name="country"
+                                                            name="province"
                                                             control={control}
                                                             render={({ field }) => (
                                                                 <Select
                                                                     {...field}
-                                                                    placeholder="Country..."
-                                                                    options={countryOptions}
+                                                                    placeholder="Province..."
+                                                                    options={VietNamProvinces}
                                                                     components={animatedComponents}
                                                                     styles={customStyles}
+                                                                    getOptionLabel={(option) => option.name}
+                                                                    getOptionValue={(option) => option.codename}
                                                                 />
                                                             )}
                                                         />
                                                     </div>
                                                 </div>
-                                                {errors.country && (
-                                                    <p className="error-message">*{errors.country.message}</p>
+                                                {errors.province && (
+                                                    <p className="error-message">*{errors.province.message}</p>
                                                 )}
                                             </Grid>
                                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                                 <div className="form-group">
-                                                    <input
-                                                        type="text"
-                                                        {...register("province")}
-                                                        placeholder="Province - City"
-                                                    />
+                                                    <div style={{ width: "100%" }}>
+                                                        <Controller
+                                                            name="district"
+                                                            control={control}
+                                                            render={({ field }) => (
+                                                                <Select
+                                                                    {...field}
+                                                                    placeholder="District..."
+                                                                    options={districts}
+                                                                    components={animatedComponents}
+                                                                    styles={customStyles}
+                                                                    getOptionLabel={(option) => option.name}
+                                                                    getOptionValue={(option) => option.codename}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </div>
                                                 </div>
-                                                {errors.province && (
-                                                    <p className="error-message">*{errors.province.message}</p>
+                                                {errors.district && (
+                                                    <p className="error-message">*{errors.district.message}</p>
                                                 )}
                                             </Grid>
                                         </Grid>
                                         <Grid container item xs={12} sm={12} md={12} lg={12} spacing={2}>
                                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                                 <div className="form-group">
-                                                    <input
-                                                        type="text"
-                                                        {...register("district")}
-                                                        placeholder="District"
-                                                    />
-                                                </div>
-                                                {errors.district && (
-                                                    <p className="error-message">*{errors.district.message}</p>
-                                                )}
-                                            </Grid>
-                                            <Grid item xs={12} sm={12} md={6} lg={6}>
-                                                <div className="form-group">
-                                                    <input type="text" {...register("ward")} placeholder="Ward" />
+                                                    <div style={{ width: "100%" }}>
+                                                        <Controller
+                                                            name="ward"
+                                                            control={control}
+                                                            render={({ field }) => (
+                                                                <Select
+                                                                    {...field}
+                                                                    placeholder="Ward..."
+                                                                    options={wards}
+                                                                    components={animatedComponents}
+                                                                    styles={customStyles}
+                                                                    getOptionLabel={(option) => option.name}
+                                                                    getOptionValue={(option) => option.codename}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </div>
                                                 </div>
                                                 {errors.ward && <p className="error-message">*{errors.ward.message}</p>}
                                             </Grid>
-                                        </Grid>
-                                        <Grid item xs={12} sm={12} md={12} lg={12}>
-                                            <div className="form-group">
-                                                <input type="text" {...register("street")} placeholder="Street" />
-                                            </div>
-                                            {errors.street && <p className="error-message">*{errors.street.message}</p>}
+                                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                                <div className="form-group">
+                                                    <input type="text" {...register("street")} placeholder="Street" />
+                                                </div>
+                                                {errors.street && (
+                                                    <p className="error-message">*{errors.street.message}</p>
+                                                )}
+                                            </Grid>
                                         </Grid>
                                         <h4 className="checkout__title">Addition Information</h4>
                                         <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -328,7 +346,7 @@ function Checkout() {
                                     <div className="payment">
                                         <label className="radio">
                                             <div className="radio-label">Check Payments</div>
-                                            <input type="radio" checked="checked" name="radio" />
+                                            <input type="radio" checked="checked" readOnly name="radio" />
                                             <span className="radio-checkmark"></span>
                                         </label>
                                         <div className="payment__note">

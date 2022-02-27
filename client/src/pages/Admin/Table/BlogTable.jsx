@@ -65,7 +65,7 @@ function BlogTable() {
                 }
                 setIsLoading(false);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchBlogs();

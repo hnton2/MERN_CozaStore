@@ -66,23 +66,21 @@ const Form = memo(function Form({ defaultValues, validation, children, onSubmit,
     );
 });
 
-const InputField = memo(function InputField({ hiddenLabel, register, errors, name, onSetValue, ...rest }) {
-    return (
-        <>
-            <div className="form-group">
-                {!hiddenLabel && (
-                    <label className="form-label" htmlFor={name}>
-                        {name}
-                    </label>
-                )}
-                <div className="form-control">
-                    <input type="text" {...register(name)} {...rest} id={name} className="form-input" />
-                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
-                </div>
+const InputField = ({ hiddenLabel, register, errors, name, onSetValue, ...rest }) => (
+    <>
+        <div className="form-group">
+            {!hiddenLabel && (
+                <label className="form-label" htmlFor={name}>
+                    {name}
+                </label>
+            )}
+            <div className="form-control">
+                <input type="text" {...register(name)} {...rest} id={name} className="form-input" />
+                {errors[name] && <p className="error-message">*{errors[name].message}</p>}
             </div>
-        </>
-    );
-});
+        </div>
+    </>
+);
 
 const animatedComponents = makeAnimated();
 const customStyles = {
@@ -98,93 +96,79 @@ const customStyles = {
         lineHeight: 1.4,
     }),
 };
-const SelectField = memo(function SelectField({ hiddenLabel, control, errors, options, name, isMultiple, ...rest }) {
-    return (
-        <>
-            <div className="form-group">
-                {!hiddenLabel && <label className="form-label">{name}</label>}
-                <div className="form-control">
-                    <Controller
-                        name={name}
-                        control={control}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                closeMenuOnSelect={isMultiple ? false : true}
-                                components={animatedComponents}
-                                isMulti={isMultiple}
-                                options={options}
-                                styles={customStyles}
-                                {...rest}
-                            />
-                        )}
-                    />
-                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
-                </div>
+const SelectField = ({ hiddenLabel, control, errors, options, name, isMultiple, ...rest }) => (
+    <>
+        <div className="form-group">
+            {!hiddenLabel && <label className="form-label">{name}</label>}
+            <div className="form-control">
+                <Controller
+                    name={name}
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                            {...field}
+                            closeMenuOnSelect={isMultiple ? false : true}
+                            components={animatedComponents}
+                            isMulti={isMultiple}
+                            options={options}
+                            styles={customStyles}
+                            {...rest}
+                        />
+                    )}
+                />
+                {errors[name] && <p className="error-message">*{errors[name].message}</p>}
             </div>
-        </>
-    );
-});
+        </div>
+    </>
+);
 
-const CreatableSelectField = memo(function CreatableSelectField({
-    hiddenLabel,
-    control,
-    errors,
-    options,
-    name,
-    isMultiple,
-    ...rest
-}) {
-    return (
-        <>
-            <div className="form-group">
-                {!hiddenLabel && <label className="form-label">{name}</label>}
-                <div className="form-control">
-                    <Controller
-                        name={name}
-                        control={control}
-                        render={({ field }) => (
-                            <CreatableSelect
-                                {...field}
-                                closeMenuOnSelect={isMultiple ? false : true}
-                                components={animatedComponents}
-                                isMulti={isMultiple}
-                                options={options}
-                                styles={customStyles}
-                                {...rest}
-                            />
-                        )}
-                    />
-                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
-                </div>
+const CreatableSelectField = ({ hiddenLabel, control, errors, options, name, isMultiple, ...rest }) => (
+    <>
+        <div className="form-group">
+            {!hiddenLabel && <label className="form-label">{name}</label>}
+            <div className="form-control">
+                <Controller
+                    name={name}
+                    control={control}
+                    render={({ field }) => (
+                        <CreatableSelect
+                            {...field}
+                            closeMenuOnSelect={isMultiple ? false : true}
+                            components={animatedComponents}
+                            isMulti={isMultiple}
+                            options={options}
+                            styles={customStyles}
+                            {...rest}
+                        />
+                    )}
+                />
+                {errors[name] && <p className="error-message">*{errors[name].message}</p>}
             </div>
-        </>
-    );
-});
+        </div>
+    </>
+);
 
-const RadioField = memo(function RadioField({ hiddenLabel, register, errors, options, name }) {
-    return (
-        <>
-            <div className="form-group">
-                {!hiddenLabel && <label className="form-label">{name}</label>}
-                <div className="form-control flex">
-                    {options.map((option) => (
-                        <div className="form-radio" key={option.label}>
-                            <label className="radio">
-                                <div className="radio-label">{option.label}</div>
-                                <input {...register(name)} type="radio" value={option.value} />
-                                <span className="radio-checkmark"></span>
-                            </label>
-                        </div>
-                    ))}
-                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
-                </div>
+const RadioField = ({ hiddenLabel, register, errors, options, name }) => (
+    <>
+        <div className="form-group">
+            {!hiddenLabel && <label className="form-label">{name}</label>}
+            <div className="form-control flex">
+                {options.map((option) => (
+                    <div className="form-radio" key={option.label}>
+                        <label className="radio">
+                            <div className="radio-label">{option.label}</div>
+                            <input {...register(name)} type="radio" value={option.value} />
+                            <span className="radio-checkmark"></span>
+                        </label>
+                    </div>
+                ))}
+                {errors[name] && <p className="error-message">*{errors[name].message}</p>}
             </div>
-        </>
-    );
-});
+        </div>
+    </>
+);
 
-const ImageField = memo(function ImageField({ hiddenLabel, control, register, errors, name }) {
+const ImageField = ({ hiddenLabel, control, register, errors, name }) => {
     const { fields, append, remove } = useFieldArray({
         control,
         name: "images",
@@ -263,50 +247,40 @@ const ImageField = memo(function ImageField({ hiddenLabel, control, register, er
             </div>
         </>
     );
-});
+};
 
-const TextEditorField = memo(function TextEditorField({
-    hiddenLabel,
-    control,
-    register,
-    errors,
-    name,
-    placeholder,
-    ...rest
-}) {
-    return (
-        <>
-            <div className="form-group">
-                {!hiddenLabel && (
-                    <label className="form-label" htmlFor={name}>
-                        {name}
-                    </label>
-                )}
-                <div className="form-control">
-                    <Controller
-                        name={name}
-                        control={control}
-                        render={({ field }) => (
-                            <CKEditor
-                                className="form-input"
-                                {...field}
-                                editor={ClassicEditor}
-                                data={field.value}
-                                {...register(name)}
-                                onChange={(event, editor) => {
-                                    const data = editor.getData();
-                                    field.onChange(data);
-                                }}
-                                onBlur={(event, editor) => field.onBlur()}
-                            />
-                        )}
-                    />
-                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
-                </div>
+const TextEditorField = ({ hiddenLabel, control, register, errors, name, placeholder, ...rest }) => (
+    <>
+        <div className="form-group">
+            {!hiddenLabel && (
+                <label className="form-label" htmlFor={name}>
+                    {name}
+                </label>
+            )}
+            <div className="form-control">
+                <Controller
+                    name={name}
+                    control={control}
+                    render={({ field }) => (
+                        <CKEditor
+                            className="form-input"
+                            {...field}
+                            editor={ClassicEditor}
+                            data={field.value}
+                            {...register(name)}
+                            onChange={(event, editor) => {
+                                const data = editor.getData();
+                                field.onChange(data);
+                            }}
+                            onBlur={(event, editor) => field.onBlur()}
+                        />
+                    )}
+                />
+                {errors[name] && <p className="error-message">*{errors[name].message}</p>}
             </div>
-        </>
-    );
-});
+        </div>
+    </>
+);
 
 const QuantityField = memo(function QuantityField({ hiddenLabel, register, errors, onSetValue, name, ...rest }) {
     const [quantity, setQuantity] = useState(1);
@@ -349,34 +323,32 @@ const QuantityField = memo(function QuantityField({ hiddenLabel, register, error
     );
 });
 
-const DatePickerField = memo(function DatePickerField({ hiddenLabel, control, errors, name, placeholder }) {
-    return (
-        <>
-            <div className="form-group">
-                {!hiddenLabel && (
-                    <label className="form-label" htmlFor={name}>
-                        {name}
-                    </label>
-                )}
-                <div className="form-control">
-                    <Controller
-                        name={name}
-                        control={control}
-                        render={({ field }) => (
-                            <ReactDatePicker
-                                className="form-input"
-                                placeholderText={placeholder}
-                                onChange={(date) => field.onChange(date)}
-                                selected={field.value}
-                            />
-                        )}
-                    />
-                    {errors[name] && <p className="error-message">*{errors[name].message}</p>}
-                </div>
+const DatePickerField = ({ hiddenLabel, control, errors, name, placeholder }) => (
+    <>
+        <div className="form-group">
+            {!hiddenLabel && (
+                <label className="form-label" htmlFor={name}>
+                    {name}
+                </label>
+            )}
+            <div className="form-control">
+                <Controller
+                    name={name}
+                    control={control}
+                    render={({ field }) => (
+                        <ReactDatePicker
+                            className="form-input"
+                            placeholderText={placeholder}
+                            onChange={(date) => field.onChange(date)}
+                            selected={field.value}
+                        />
+                    )}
+                />
+                {errors[name] && <p className="error-message">*{errors[name].message}</p>}
             </div>
-        </>
-    );
-});
+        </div>
+    </>
+);
 
 export {
     Form,

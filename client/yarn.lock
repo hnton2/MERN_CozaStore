@@ -10686,11 +10686,6 @@
   optionalDependencies:
     "fsevents" "^2.1.3"
 
-"react-select-country-list@^2.2.3":
-  "integrity" "sha512-eRgXL613dVyJiE99yKDYLvSBKDxvIlhkmvO2DVIjdKVyUQq6kBqoMUV/2zuRIAsbRXgBGmKjeL1dxjf7zTfszg=="
-  "resolved" "https://registry.npmjs.org/react-select-country-list/-/react-select-country-list-2.2.3.tgz"
-  "version" "2.2.3"
-
 "react-select@^5.2.1":
   "integrity" "sha512-OOyNzfKrhOcw/BlembyGWgdlJ2ObZRaqmQppPFut1RptJO423j+Y+JIsmxkvsZ4D/3CpOmwIlCvWbbAWEdh12A=="
   "resolved" "https://registry.npmjs.org/react-select/-/react-select-5.2.1.tgz"

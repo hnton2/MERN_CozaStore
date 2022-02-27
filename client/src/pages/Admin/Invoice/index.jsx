@@ -7,6 +7,7 @@ import Header from "components/Header";
 import Preloader from "components/Preloader";
 import { IMAGE_CLOUDINARY } from "constants/Config";
 import Image from "constants/Image";
+import { toastMessage } from "helpers/toastMessage";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -37,7 +38,7 @@ function Invoice() {
                     const res = await orderServices.getOneOrder(invoiceCode);
                     res.data.success && setInvoice(res.data.order);
                 } catch (error) {
-                    console.log(error);
+                    toastMessage({ type: "error", message: error.message });
                 }
         };
         fetchInvoice();

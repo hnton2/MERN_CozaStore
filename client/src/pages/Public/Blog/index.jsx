@@ -7,6 +7,7 @@ import Header from "components/Header";
 import Preloader from "components/Preloader";
 import TitlePage from "components/TitlePage";
 import Image from "constants/Image";
+import { toastMessage } from "helpers/toastMessage";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -38,7 +39,7 @@ function Blog() {
                 }
                 setIsLoading(false);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchBlogs();

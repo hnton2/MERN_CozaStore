@@ -8,6 +8,7 @@ import Header from "components/Header";
 import { IMAGE_CLOUDINARY } from "constants/Config";
 import { DEFAULT_TRACKING } from "constants/Form";
 import { orderTrackingStatus } from "helpers/string";
+import { toastMessage } from "helpers/toastMessage";
 import { orderTrackingValidation } from "helpers/validation";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -36,7 +37,7 @@ function OrderTracking() {
                     const res = await orderServices.getOneOrder(invoiceCode);
                     res.data.success && setInvoice(res.data.order);
                 } catch (error) {
-                    console.log(error);
+                    toastMessage({ type: "error", message: error.message });
                 }
         };
         fetchInvoice();

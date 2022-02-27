@@ -3,10 +3,10 @@ import Breadcrumbs from "components/Breadcrumbs";
 import { Form, InputField, RadioField, TextEditorField } from "components/CustomForm";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Message from "components/Message";
 import Preloader from "components/Preloader";
 import { DEFAULT_CATEGORY_BLOG } from "constants/Form";
 import { STATUS_RADIO } from "constants/Option";
+import { toastMessage } from "helpers/toastMessage";
 import { blogCategoryValidation } from "helpers/validation";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -35,7 +35,6 @@ function BlogCategoryForm() {
     const navigate = useNavigate();
     const { id: currentId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState();
     const [initialValue, setInitialValue] = useState(DEFAULT_CATEGORY_BLOG);
 
     useEffect(() => {
@@ -43,34 +42,34 @@ function BlogCategoryForm() {
             try {
                 if (currentId) {
                     const res = await blogCategoryServices.getOneBlogCategory(currentId);
-                    const categoryDetail = res.data.category;
-                    setInitialValue({
-                        name: categoryDetail.name,
-                        status: categoryDetail.status,
-                        description: categoryDetail.description,
-                    });
+                    if (res.data.success) {
+                        const categoryDetail = res.data.category;
+                        setInitialValue({
+                            name: categoryDetail.name,
+                            status: categoryDetail.status,
+                            description: categoryDetail.description,
+                        });
+                    } else toastMessage({ type: "error", message: res.data.message });
                 }
             } catch (error) {
-                console.log(error);
-                setMessage({ type: "error", content: error.response.data.message });
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchData();
     }, [currentId]);
 
     const onSubmit = async (data) => {
-        setIsLoading(true);
-        setMessage("");
         try {
+            setIsLoading(true);
             const response = currentId
                 ? await blogCategoryServices.updateBlogCategory(currentId, data)
                 : await blogCategoryServices.createNewBlogCategory(data);
-            setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/blog-category");
+            if (response.data.success) {
+                navigate("/admin/blog-category");
+            } else toastMessage({ type: "error", message: response.data.message });
         } catch (error) {
-            setIsLoading(false);
-            setMessage({ type: "error", content: error.response.data.message });
+            toastMessage({ type: "error", message: error.message });
         }
     };
 
@@ -90,7 +89,6 @@ function BlogCategoryForm() {
                         </Backdrop>
                         <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
-                            {message && <Message type={message.type}>{message.content}</Message>}
                             <Form onSubmit={onSubmit} defaultValues={initialValue} validation={blogCategoryValidation}>
                                 <InputField name="name" placeholder="Name" />
                                 <RadioField name="status" options={STATUS_RADIO} />

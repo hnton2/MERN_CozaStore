@@ -3,7 +3,6 @@ import { publicRequest, userRequest } from "helpers/requestMethod";
 import queryString from "query-string";
 
 const createNewSlider = (items) => {
-    console.log(items);
     const formData = createFormData(items);
     return userRequest.post("slider", formData, { headers: { "Content-Type": "multipart/form-data" } });
 };

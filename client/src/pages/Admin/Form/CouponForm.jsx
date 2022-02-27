@@ -3,10 +3,10 @@ import Breadcrumbs from "components/Breadcrumbs";
 import { DatePickerField, Form, InputField, RadioField, TextEditorField } from "components/CustomForm";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Message from "components/Message";
 import Preloader from "components/Preloader";
 import { DEFAULT_COUPON } from "constants/Form";
 import { STATUS_RADIO } from "constants/Option";
+import { toastMessage } from "helpers/toastMessage";
 import { couponValidation } from "helpers/validation";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -30,7 +30,6 @@ function CouponForm() {
     const navigate = useNavigate();
     const { id: currentId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState();
     const [initialValue, setInitialValue] = useState(DEFAULT_COUPON);
 
     useEffect(() => {
@@ -38,20 +37,21 @@ function CouponForm() {
             try {
                 if (currentId) {
                     const res = await couponServices.getOneCoupon(currentId);
-                    const couponDetail = res.data.coupon;
-                    setInitialValue({
-                        name: couponDetail.name,
-                        code: couponDetail.code,
-                        status: couponDetail.status,
-                        quantity: couponDetail.quantity,
-                        discount: couponDetail.discount,
-                        expiredTime: Date.parse(couponDetail.expiredTime),
-                        description: couponDetail.description,
-                    });
+                    if (res.data.success) {
+                        const couponDetail = res.data.coupon;
+                        setInitialValue({
+                            name: couponDetail.name,
+                            code: couponDetail.code,
+                            status: couponDetail.status,
+                            quantity: couponDetail.quantity,
+                            discount: couponDetail.discount,
+                            expiredTime: Date.parse(couponDetail.expiredTime),
+                            description: couponDetail.description,
+                        });
+                    } else toastMessage({ type: "error", message: res.data.message });
                 }
             } catch (error) {
-                console.log(error);
-                setMessage({ type: "error", content: error.response.data.message });
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchData();
@@ -59,17 +59,16 @@ function CouponForm() {
 
     const onSubmit = async (data) => {
         setIsLoading(true);
-        setMessage();
         try {
             const response = currentId
                 ? await couponServices.updateCoupon(currentId, data)
                 : await couponServices.createNewCoupon(data);
-            setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/coupon");
+            if (response.data.success) {
+                navigate("/admin/coupon");
+            } else toastMessage({ type: "error", message: response.data.message });
         } catch (error) {
-            setIsLoading(false);
-            setMessage({ type: "error", content: error.response.data.message });
+            toastMessage({ type: "error", message: error.message });
         }
     };
 
@@ -89,7 +88,6 @@ function CouponForm() {
                         </Backdrop>
                         <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
-                            {message && <Message type={message.type}>{message.content}</Message>}
                             <Form onSubmit={onSubmit} defaultValues={initialValue} validation={couponValidation}>
                                 <InputField name="name" placeholder="Name" />
                                 <InputField name="code" placeholder="Coupon Code" />

@@ -3,10 +3,10 @@ import Breadcrumbs from "components/Breadcrumbs";
 import { Form, ImageField, InputField, RadioField, SelectField, TextEditorField } from "components/CustomForm";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Message from "components/Message";
 import Preloader from "components/Preloader";
 import { DEFAULT_PRODUCT } from "constants/Form";
 import { STATUS_RADIO } from "constants/Option";
+import { toastMessage } from "helpers/toastMessage";
 import { productValidation } from "helpers/validation";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -32,7 +32,6 @@ function ProductForm() {
     const { id: currentId } = useParams();
     const categoryProduct = useSelector((state) => state.category.categoryProduct);
     const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState();
     const [initialValue, setInitialValue] = useState(DEFAULT_PRODUCT);
     const [oldImages, setOldImages] = useState();
     const [categoryOptions, setCategoryOptions] = useState([]);
@@ -44,25 +43,26 @@ function ProductForm() {
             try {
                 if (currentId) {
                     const res = await productServices.getOneProduct(currentId);
-                    const productDetail = res.data.product;
-                    setOldImages(productDetail.images);
-                    setInitialValue({
-                        name: productDetail.name,
-                        status: productDetail.status,
-                        images: productDetail.images.map((item) => ({ name: item })),
-                        category: { value: productDetail.category.slug, label: productDetail.category.name },
-                        color: productDetail.color,
-                        tag: productDetail.tag,
-                        size: productDetail.size,
-                        quantity: productDetail.quantity,
-                        price: productDetail.price,
-                        discount: productDetail.discount,
-                        description: productDetail.description,
-                    });
+                    if (res.data.success) {
+                        const productDetail = res.data.product;
+                        setOldImages(productDetail.images);
+                        setInitialValue({
+                            name: productDetail.name,
+                            status: productDetail.status,
+                            images: productDetail.images.map((item) => ({ name: item })),
+                            category: { value: productDetail.category.slug, label: productDetail.category.name },
+                            color: productDetail.color,
+                            tag: productDetail.tag,
+                            size: productDetail.size,
+                            quantity: productDetail.quantity,
+                            price: productDetail.price,
+                            discount: productDetail.discount,
+                            description: productDetail.description,
+                        });
+                    } else toastMessage({ type: "error", message: res.data.message });
                 }
             } catch (error) {
-                console.log(error);
-                setMessage({ type: "error", content: error.response.data.message });
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchData();
@@ -92,17 +92,16 @@ function ProductForm() {
     const onSubmit = async (data) => {
         if (oldImages) data.oldImages = oldImages;
         setIsLoading(true);
-        setMessage();
         try {
             const response = currentId
                 ? await productServices.updateProduct(currentId, data)
                 : await productServices.createNewProduct(data);
-            setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/product");
+            if (response.data.success) {
+                navigate("/admin/product");
+            } else toastMessage({ type: "error", message: response.data.message });
         } catch (error) {
-            setIsLoading(false);
-            setMessage({ type: "error", content: error.response.data.message });
+            toastMessage({ type: "error", message: error.message });
         }
     };
 
@@ -122,7 +121,6 @@ function ProductForm() {
                         </Backdrop>
                         <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
-                            {message && <Message type={message.type}>{message.content}</Message>}
                             <Form
                                 onSubmit={onSubmit}
                                 defaultValues={initialValue}

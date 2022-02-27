@@ -19,6 +19,7 @@ import { Helmet } from "react-helmet";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { toastMessage } from "helpers/toastMessage";
 
 const linkData = [
     {
@@ -35,10 +36,10 @@ function Cart() {
     useEffect(() => {
         const fetchAllCoupons = async () => {
             try {
-                const res = await couponServices.getAllCoupon();
-                if (res.data.success) setCoupons(res.data.coupon);
+                const res = await couponServices.getPublicCoupons();
+                if (res.data.success) setCoupons(res.data.coupons);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchAllCoupons();

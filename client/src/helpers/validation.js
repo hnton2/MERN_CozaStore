@@ -115,10 +115,9 @@ export const checkoutValidation = yup.object().shape({
     lastname: yup.string().max(100).required(),
     email: yup.string().email().required(),
     phone: yup.number().typeError("phone must be a number").required(),
-    country: yup.object().nullable().required(),
-    province: yup.string().max(100).required(),
-    district: yup.string().max(100).required(),
-    ward: yup.string().max(100).required(),
+    province: yup.object().nullable().required(),
+    district: yup.object().nullable().required(),
+    ward: yup.object().nullable().required(),
     street: yup.string().min(5).max(100).required(),
 });
 
@@ -144,4 +143,8 @@ export const sliderValidation = yup.object().shape({
 
 export const contactValidation = yup.object().shape({
     email: yup.string().email().required(),
+});
+
+export const searchValidation = yup.object().shape({
+    keyword: yup.string().required(),
 });

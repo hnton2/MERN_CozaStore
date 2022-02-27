@@ -3,10 +3,10 @@ import Breadcrumbs from "components/Breadcrumbs";
 import { CreatableSelectField, Form, InputField, RadioField, TextEditorField } from "components/CustomForm";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Message from "components/Message";
 import Preloader from "components/Preloader";
 import { DEFAULT_CATEGORY_PRODUCT } from "constants/Form";
 import { COLOR_OPTIONS, SIZE_OPTIONS, STATUS_RADIO, TAG_OPTIONS } from "constants/Option";
+import { toastMessage } from "helpers/toastMessage";
 import { productCategoryValidation } from "helpers/validation";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -35,7 +35,6 @@ function ProductCategoryForm() {
     const navigate = useNavigate();
     const { id: currentId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState();
     const [initialValue, setInitialValue] = useState(DEFAULT_CATEGORY_PRODUCT);
 
     useEffect(() => {
@@ -43,19 +42,20 @@ function ProductCategoryForm() {
             try {
                 if (currentId) {
                     const res = await productCategoryServices.getOneProductCategory(currentId);
-                    const categoryDetail = res.data.category;
-                    setInitialValue({
-                        name: categoryDetail.name,
-                        status: categoryDetail.status,
-                        color: categoryDetail.color,
-                        tag: categoryDetail.tag,
-                        size: categoryDetail.size,
-                        description: categoryDetail.description,
-                    });
+                    if (res.data.success) {
+                        const categoryDetail = res.data.category;
+                        setInitialValue({
+                            name: categoryDetail.name,
+                            status: categoryDetail.status,
+                            color: categoryDetail.color,
+                            tag: categoryDetail.tag,
+                            size: categoryDetail.size,
+                            description: categoryDetail.description,
+                        });
+                    } else toastMessage({ type: "error", message: res.data.message });
                 }
             } catch (error) {
-                console.log(error);
-                setMessage({ type: "error", content: error.response.data.message });
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchData();
@@ -63,17 +63,16 @@ function ProductCategoryForm() {
 
     const onSubmit = async (data) => {
         setIsLoading(true);
-        setMessage("");
         try {
             const response = currentId
                 ? await productCategoryServices.updateProductCategory(currentId, data)
                 : await productCategoryServices.createNewProductCategory(data);
-            setMessage({ type: "success", content: response.data.message });
             setIsLoading(false);
-            navigate("/admin/product-category");
+            if (response.data.success) {
+                navigate("/admin/product-category");
+            } else toastMessage({ type: "error", message: response.data.message });
         } catch (error) {
-            setIsLoading(false);
-            setMessage({ type: "error", content: error.response.data.message });
+            toastMessage({ type: "error", message: error.message });
         }
     };
 
@@ -93,7 +92,6 @@ function ProductCategoryForm() {
                         </Backdrop>
                         <h3 className="card-header">{TITLE_PAGE}</h3>
                         <div className="card-body">
-                            {message && <Message type={message.type}>{message.content}</Message>}
                             <Form
                                 onSubmit={onSubmit}
                                 defaultValues={initialValue}

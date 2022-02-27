@@ -5,6 +5,7 @@ import ProductCard from "../ProductCard";
 import { SlickArrowRight } from "components/SlickArrow";
 import { SlickArrowLeft } from "components/SlickArrow";
 import productServices from "services/product";
+import { toastMessage } from "helpers/toastMessage";
 
 const settings = {
     infinite: true,
@@ -40,7 +41,7 @@ function ProductsSlider({ task, params }) {
                     setItems(res.data.products);
                 }
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchData();

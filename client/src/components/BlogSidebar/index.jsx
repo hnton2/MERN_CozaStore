@@ -1,6 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { IMAGE_CLOUDINARY } from "constants/Config";
+import { toastMessage } from "helpers/toastMessage";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
@@ -77,7 +78,7 @@ function BlogSidebar() {
                 const res = await productServices.getProductsByTask("newest", { category: "shoes" });
                 if (res.data.success) setProducts(res.data.products);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         };
         fetchData();

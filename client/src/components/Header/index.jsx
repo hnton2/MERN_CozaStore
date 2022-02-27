@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import HelpIcon from "@mui/icons-material/Help";
@@ -13,9 +14,12 @@ import Dropdown from "components/Dropdown";
 import { ADMIN_SIDEBAR, IMAGE_CLOUDINARY } from "constants/Config";
 import Image from "constants/Image";
 import { stringAvatar } from "helpers/string";
+import { toastMessage } from "helpers/toastMessage";
+import { searchValidation } from "helpers/validation";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LogOut } from "redux/authSlice";
 import { clearCart, removeProduct } from "redux/cartSlice";
 import userServices from "services/user";
@@ -37,6 +41,14 @@ const Backdrop = styled.div`
 function Header() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { pathname } = useLocation();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({ resolver: yupResolver(searchValidation) });
+
+    const currentPath = pathname.split("/")[1];
 
     const user = useSelector((state) => state.auth.currentUser);
     const { categoryProduct, categoryBlog } = useSelector((state) => state.category);
@@ -60,13 +72,13 @@ function Header() {
             try {
                 await userServices.saveCart(user._id, { products, quantity, total, coupon });
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         } else {
             try {
                 await userServices.cleanCart(user._id);
             } catch (error) {
-                console.log(error);
+                toastMessage({ type: "error", message: error.message });
             }
         }
         dispatch(LogOut());
@@ -75,6 +87,8 @@ function Header() {
     };
 
     const handleRemoveFromCart = (product) => dispatch(removeProduct(product));
+
+    const onSubmit = (data) => navigate(`/product-category/all?search=${data.keyword}`);
 
     return (
         <header className="header">
@@ -85,12 +99,15 @@ function Header() {
                 <div className="nav">
                     <ul className="nav__items">
                         <li className="nav__item">
-                            <Link to="/" className="nav__item-link active">
+                            <Link to="/" className={`nav__item-link ${currentPath === "" ? "active" : ""}`}>
                                 Home
                             </Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="/product-category/all" className="nav__item-link">
+                            <Link
+                                to="/product-category/all"
+                                className={`nav__item-link ${currentPath === "product-category" ? "active" : ""}`}
+                            >
                                 Category
                             </Link>
                             <ul className="sub-nav">
@@ -105,7 +122,10 @@ function Header() {
                             </ul>
                         </li>
                         <li className="nav__item">
-                            <Link to="/blog-category/all" className="nav__item-link">
+                            <Link
+                                to="/blog-category/all"
+                                className={`nav__item-link ${currentPath === "blog-category" ? "active" : ""}`}
+                            >
                                 Blog
                             </Link>
                             <ul className="sub-nav">
@@ -120,12 +140,15 @@ function Header() {
                             </ul>
                         </li>
                         <li className="nav__item">
-                            <Link to="/about" className="nav__item-link">
+                            <Link to="/about" className={`nav__item-link ${currentPath === "about" ? "active" : ""}`}>
                                 About
                             </Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="/contact" className="nav__item-link">
+                            <Link
+                                to="/contact"
+                                className={`nav__item-link ${currentPath === "contact" ? "active" : ""}`}
+                            >
                                 Contact
                             </Link>
                         </li>
@@ -159,11 +182,19 @@ function Header() {
                         <button variant="text" className="button-close" onClick={handleCloseSearch}>
                             <CloseIcon sx={{ fontSize: 36, color: "#333" }} />
                         </button>
-                        <form className="search-modal__form">
+                        <form
+                            onSubmit={handleSubmit(onSubmit)}
+                            className={`search-modal__form ${errors["keyword"] ? "error" : ""}`}
+                        >
                             <button className="search-modal__button">
                                 <SearchIcon sx={{ fontSize: 52 }} />
                             </button>
-                            <input type="text" className="search-modal__input" placeholder="Search..." />
+                            <input
+                                {...register("keyword")}
+                                type="text"
+                                className="search-modal__input"
+                                placeholder="Search..."
+                            />
                         </form>
                     </div>
                 </Slide>
@@ -256,7 +287,7 @@ function Header() {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="#" className="sidebar-link">
+                                    <Link to="/order-tracking" className="sidebar-link">
                                         <LocalShippingIcon /> &nbsp; Track Order
                                     </Link>
                                 </li>
