@@ -2,11 +2,14 @@ const router = require("express").Router();
 const util = require("util");
 
 const Order = require("../models/Order");
+const Product = require("../models/Product");
+const Coupon = require("../models/Coupon");
 const { verifyToken, verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { randomString } = require("../helpers/string");
 const { getParam } = require("../helpers/params");
 const EmailHelper = require("../helpers/email");
 const Notify = require("../config/notify");
+const { decreaseQuantity } = require("../helpers/utils");
 
 const controller = "order";
 
@@ -23,6 +26,8 @@ router.post("/", verifyToken, async (req, res) => {
                 "COZA STORE - Thank you for your purchase",
                 `Your invoice code is #${savedItem.code}`
             );
+            decreaseQuantity(Coupon, savedItem.coupon._id);
+            savedItem.products.forEach((item) => decreaseQuantity(Product, item._id, item.quantity));
             res.status(200).json({
                 success: true,
                 message: util.format(Notify.SUCCESS_CREATE, controller),

@@ -142,7 +142,9 @@ function OrderTracking() {
                                                         <Link to={`product/${item.slug}`} className="product-title">
                                                             {item.name}
                                                         </Link>
-                                                        <p>${item.price}</p>
+                                                        <p>
+                                                            {item.quantity} x ${item.price}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             ))}

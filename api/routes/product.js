@@ -179,7 +179,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 // @ROUTE GET /api/product/public
 // @ACCESS Public
 router.get("/public", async (req, res) => {
-    let condition = { status: "active" };
+    let condition = { status: "active", quantity: { $gt: 0 } };
     let sortObj = { updatedAt: "desc" };
     const perPage = 12;
     let page = getParam(req.query, "page", 1);
@@ -232,7 +232,7 @@ router.get("/public", async (req, res) => {
 // @ROUTE GET /api/product/public/newest/:category
 // @ACCESS Public
 router.get("/public/newest/:category", async (req, res) => {
-    let condition = { status: "active" };
+    let condition = { status: "active", quantity: { $gt: 0 } };
     const category = getParam(req.params, "category", "all");
     if (category !== "all") condition["category.slug"] = category;
 
@@ -255,7 +255,7 @@ router.get("/public/newest/:category", async (req, res) => {
 // @ROUTE POST /api/product/public/related/:category
 // @ACCESS Public
 router.post("/public/related/:category", async (req, res) => {
-    let condition = { status: "active" };
+    let condition = { status: "active", quantity: { $gt: 0 } };
     const category = getParam(req.params, "category", "all");
     const id = getParam(req.body, "id", "");
     if (category !== "all") condition["category.slug"] = category;

@@ -15,6 +15,11 @@ const countStatus = async (params, statusOptions, model, keyword) => {
     return statusCount;
 };
 
+const decreaseQuantity = async (model, id, quantity = -1) => {
+    await model.findOneAndUpdate({ _id: id }, { $inc: { quantity: quantity } });
+};
+
 module.exports = {
     countStatus,
+    decreaseQuantity,
 };

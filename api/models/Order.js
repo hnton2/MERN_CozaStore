@@ -19,6 +19,7 @@ var OrderSchema = new mongoose.Schema(
         status: { type: String, default: "accepted" },
         products: [
             {
+                _id: { type: String, required: true },
                 name: { type: String, required: true },
                 slug: { type: String, required: true },
                 images: { type: Array, required: true },
