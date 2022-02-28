@@ -135,7 +135,11 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 // @ACCESS Public
 router.get("/public", async (req, res) => {
     try {
-        const items = await Coupon.find({ status: "active" }).sort({ updatedAt: -1 });
+        const items = await Coupon.find({
+            status: "active",
+            quantity: { $gt: 0 },
+            expiredTime: { $gte: Date.now() },
+        }).sort({ updatedAt: -1 });
         if (items)
             res.json({
                 success: true,

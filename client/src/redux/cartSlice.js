@@ -64,12 +64,6 @@ const cartSlice = createSlice({
             state.coupon = action.payload;
             state.total -= action.payload.discount;
         },
-        removeDiscount: (state, action) => {
-            state.coupon = null;
-            let currentTotal = 0;
-            state.products.forEach((item) => (currentTotal += item.price * item.quantity));
-            state.total = currentTotal;
-        },
         clearCart: (state, action) => {
             state.products = [];
             state.quantity = 0;

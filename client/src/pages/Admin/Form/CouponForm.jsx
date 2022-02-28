@@ -91,6 +91,7 @@ function CouponForm() {
                             <Form onSubmit={onSubmit} defaultValues={initialValue} validation={couponValidation}>
                                 <InputField name="name" placeholder="Name" />
                                 <InputField name="code" placeholder="Coupon Code" />
+                                <InputField name="condition" placeholder="Condition" />
                                 <DatePickerField name="expiredTime" placeholder="Expired time" />
                                 <RadioField name="status" options={STATUS_RADIO} />
                                 <InputField name="quantity" placeholder="Quantity" />

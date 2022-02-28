@@ -100,6 +100,12 @@ export const couponValidation = yup.object().shape({
         .typeError("quantity must be a number")
         .positive("quantity must be greater than zero")
         .required(),
+    condition: yup
+        .number()
+        .min(1)
+        .typeError("quantity must be a number")
+        .positive("quantity must be greater than zero")
+        .required(),
     discount: yup
         .number()
         .min(1)

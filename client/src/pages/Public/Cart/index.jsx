@@ -16,7 +16,6 @@ import Image from "constants/Image";
 import couponServices from "services/coupon";
 import { applyDiscount } from "redux/cartSlice";
 import { Helmet } from "react-helmet";
-import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { toastMessage } from "helpers/toastMessage";
@@ -49,8 +48,10 @@ function Cart() {
     const handleChangeQuantity = (product, value) =>
         dispatch(changeQuantityProduct({ ...product, value: Number(value) }));
     const handleChangeCoupon = (coupon) => {
-        if (products.length > 0) dispatch(applyDiscount(coupon));
-        else toastMessage({ type: "warn", message: "Please add least one product to the cart!" });
+        console.log("coupon:", coupon);
+        if (products.length > 0) {
+            dispatch(applyDiscount(coupon));
+        } else toastMessage({ type: "warn", message: "Please add least one product to the cart!" });
     };
 
     return (
@@ -136,7 +137,7 @@ function Cart() {
                                     <h3>Cart Total</h3>
                                     <div className="cart-prices border-bot">
                                         <h5 className="title">Subtotal</h5>
-                                        <span className="price">${total}</span>
+                                        <span className="price">${coupon ? total + coupon.discount : total}</span>
                                     </div>
                                     <div className="coupon border-bot">
                                         <div className="coupon__content">
@@ -152,9 +153,10 @@ function Cart() {
                                         </div>
                                         <button className="coupon__button" onClick={() => setShowCoupons(true)}>
                                             <img src={Image.COUPON_ICON} alt="Coupon Icon" />
-                                            <span>Select coupons</span>
+                                            <span>Select or enter coupon</span>
                                         </button>
                                         <CouponsModal
+                                            prices={total}
                                             coupons={coupons}
                                             isOpen={showCoupons}
                                             onClose={() => setShowCoupons(false)}
@@ -170,12 +172,7 @@ function Cart() {
                                     <div className="totals">
                                         <div className="cart-prices">
                                             <h5 className="title">Totals</h5>
-                                            <span className="price">
-                                                $
-                                                {coupon && Object.keys(coupon).length !== 0
-                                                    ? total - coupon.discount
-                                                    : total}
-                                            </span>
+                                            <span className="price">${total}</span>
                                         </div>
                                     </div>
                                     <Link to="/checkout" className="btn btn-lg btn-dark text-uppercase">

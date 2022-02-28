@@ -1,4 +1,4 @@
-import { faCheck, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faGreaterThanEqual, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -174,9 +174,10 @@ function CouponTable() {
                                             <th>Status</th>
                                             <th>Discount</th>
                                             <th>Quantity</th>
+                                            <th>Condition</th>
                                             <th>Expired Time</th>
                                             <th>Desciption</th>
-                                            <th>Action</th>
+                                            <th style={{ width: "100px" }}>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -199,6 +200,9 @@ function CouponTable() {
                                                 </td>
                                                 <td className="text-center">${item.discount}</td>
                                                 <td className="text-center">{item.quantity}</td>
+                                                <td className="text-center">
+                                                    <FontAwesomeIcon icon={faGreaterThanEqual} /> ${item.condition}
+                                                </td>
                                                 <td className="text-center">
                                                     {moment(item.expiredTime).format("MMM Do YY")}
                                                 </td>

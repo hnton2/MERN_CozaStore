@@ -142,6 +142,7 @@ function Confirmation() {
                                             <thead>
                                                 <tr>
                                                     <th>Product</th>
+                                                    <th>Price</th>
                                                     <th>Quantity</th>
                                                     <th>Total</th>
                                                 </tr>
@@ -152,8 +153,9 @@ function Confirmation() {
                                                         <td>
                                                             <Link to={`/product/${item.slug}`}>{item.name}</Link>
                                                         </td>
-                                                        <td>X {item.quantity}</td>
                                                         <td>${item.price}</td>
+                                                        <td>X {item.quantity}</td>
+                                                        <td>{item.quantity * item.price}</td>
                                                     </tr>
                                                 ))}
                                                 {invoice.coupon && (
@@ -162,6 +164,7 @@ function Confirmation() {
                                                             <h4>DISCOUNT</h4>
                                                         </td>
                                                         <td></td>
+                                                        <td></td>
                                                         <td>${invoice.coupon.discount}</td>
                                                     </tr>
                                                 )}
@@ -169,6 +172,7 @@ function Confirmation() {
                                                     <td>
                                                         <h4>TOTAL</h4>
                                                     </td>
+                                                    <td></td>
                                                     <td></td>
                                                     <td>
                                                         <h4>${invoice.total}</h4>

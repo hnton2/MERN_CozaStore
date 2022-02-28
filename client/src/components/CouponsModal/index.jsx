@@ -6,7 +6,7 @@ import "./CouponsModal.scss";
 import { useForm } from "react-hook-form";
 import Message from "components/Message";
 
-function CouponsModal({ coupons, isOpen, onClose, onChangeCoupon }) {
+function CouponsModal({ prices, coupons, isOpen, onClose, onChangeCoupon }) {
     const [message, setMessage] = useState();
 
     const {
@@ -62,9 +62,17 @@ function CouponsModal({ coupons, isOpen, onClose, onChangeCoupon }) {
                                                 <span>Only for website</span>
                                             </div>
                                             <h4 className="coupon-discount">Discount ${item.discount}</h4>
+                                            <span className="coupon-condition">
+                                                Applicable for orders from ${item.condition} or more
+                                            </span>
                                             <div className="coupon-footer">
-                                                <span>Expired: {moment(item.expiredTime).format("MMM Do YY")}</span>
-                                                <button onClick={() => handleApplyCoupon(item)}>Apply</button>
+                                                <span>Expiring: {moment(item.expiredTime).format("MMM Do YY")}</span>
+                                                <button
+                                                    disabled={prices < item.condition}
+                                                    onClick={() => handleApplyCoupon(item)}
+                                                >
+                                                    Apply
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

@@ -317,7 +317,7 @@ function Checkout() {
                                     <ul className="price-list">
                                         <li>
                                             <h4 className="price-title">Subtotal</h4>
-                                            <span>${total}</span>
+                                            <span>${coupon ? total + coupon.discount : total}</span>
                                         </li>
                                         <li className="shipping">
                                             <h4 className="price-title">Shipping</h4>
@@ -334,12 +334,7 @@ function Checkout() {
                                         )}
                                         <li>
                                             <h4 className="price-title">Total</h4>
-                                            <span className="totals">
-                                                $
-                                                {coupon && Object.keys(coupon).length !== 0
-                                                    ? total - coupon.discount
-                                                    : total}
-                                            </span>
+                                            <span className="totals">${total}</span>
                                         </li>
                                     </ul>
 

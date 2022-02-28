@@ -143,9 +143,15 @@
                         }
 
                         & .coupon-discount {
-                            color: $black-color;
+                            color: $grey-color;
                             font-size: 18px;
                             font-weight: 600;
+                        }
+
+                        & .coupon-condition {
+                            font-size: 13px;
+                            font-weight: 300;
+                            color: $grey-color;
                         }
 
                         & .coupon-footer {
@@ -173,6 +179,11 @@
                                 align-items: center;
                                 justify-content: center;
                                 cursor: pointer;
+
+                                &:disabled {
+                                    background-color: #ccc;
+                                    cursor: not-allowed;
+                                }
                             }
                         }
                     }

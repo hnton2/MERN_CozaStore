@@ -38,6 +38,7 @@ var OrderSchema = new mongoose.Schema(
             name: { type: String },
             code: { type: String },
             discount: { type: Number },
+            condition: { type: Number },
         },
         total: { type: Number, required: true },
         checkPayment: { type: Boolean, default: true },

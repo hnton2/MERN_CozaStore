@@ -41,6 +41,7 @@ export const DEFAULT_COUPON = {
     status: "active",
     discount: 0,
     quantity: 0,
+    condition: 10,
     expiredTime: "",
     description: "",
 };

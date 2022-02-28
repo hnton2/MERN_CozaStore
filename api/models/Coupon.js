@@ -7,6 +7,7 @@ var CouponSchema = new mongoose.Schema(
         status: { type: String, default: "active" },
         discount: { type: Number, required: true },
         quantity: { type: Number, default: 100 },
+        condition: { type: Number, default: 10 }, // can apply if the order is greater than or equal to 10
         expiredTime: { type: Date, required: true, default: Date.now() },
         description: { type: String, required: true },
     },
