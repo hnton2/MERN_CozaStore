@@ -1,126 +1,137 @@
 const router = require("express").Router();
-const { changeAlias, changeToJson } = require("../helpers/string");
+const util = require("util");
+
 const Blog = require("../models/Blog");
+const { changeAlias, changeToJson } = require("../helpers/string");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
 const { FILTER_STATUS } = require("../config/system");
+const Notify = require("../config/notify");
 
-// @DESC Create new blog
+const controller = "blog";
+
+// @DESC Create blog
 // @ROUTE POST /api/blog/
 // @ACCESS Private
 router.post("/", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
-    const newBlog = new Blog(changeToJson(req.body));
+    const newItem = new Blog(changeToJson(req.body));
     const images = req.files;
 
-    if (!newBlog.name || !newBlog.description || !images) {
+    if (!newItem.name || !newItem.description || !images) {
         if (images) images.map((item) => RemoveFile(item.filename));
-        return res.status(401).json({ success: false, message: "Missing necessary information" });
+        return res.status(401).json({ success: false, message: Notify.ERROR_MISSING });
     }
 
     try {
-        newBlog.slug = changeAlias(newBlog.name);
-        const existBlog = await Blog.findOne({ name: newBlog.name });
-        if (existBlog) {
+        newItem.slug = changeAlias(newItem.name);
+        const existItem = await Blog.findOne({ name: newItem.name });
+        if (existItem) {
             if (images) images.map((item) => RemoveFile(item.filename));
-            return res.status(400).json({ success: false, message: "Blog already exist" });
+            return res.status(400).json({ success: false, message: util.format(Notify.ERROR_EXIST, controller) });
         }
         if (images.length > 0) {
             let imagesName = [];
             images.map((item) => imagesName.push(item.filename));
-            newBlog.images = imagesName;
+            newItem.images = imagesName;
         }
-        const savedBlog = await newBlog.save();
-        res.json({ success: true, message: "Blog created successfully", blog: savedBlog });
+        const savedItem = await newItem.save();
+        res.json({ success: true, message: util.format(Notify.SUCCESS_CREATE, controller), item: savedItem });
     } catch (error) {
         console.log(error);
         if (images) images.map((item) => RemoveFile(item.filename));
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Update a blog
+// @DESC Update blog
 // @ROUTE PUT /api/blog/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.put("/:id", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
     const images = req.files;
-    const updateBlog = changeToJson(req.body);
-    updateBlog.images = [];
+    const updateItem = changeToJson(req.body);
+    updateItem.images = [];
     try {
         if (images.length > 0) {
             let imagesName = [];
             images.map((item) => imagesName.push(item.filename));
-            updateBlog.images = imagesName;
+            updateItem.images = imagesName;
         }
 
-        const oldBlog = await Blog.findById(req.params.id);
-        if (oldBlog) {
+        const oldItem = await Blog.findById(req.params.id);
+        if (oldItem) {
             // remove old images and update
-            updateBlog.oldImages.map((oldImage) => {
-                if (updateBlog.remainImages.length > 0) {
-                    if (updateBlog.remainImages.includes(oldImage)) updateBlog.images.push(oldImage);
+            updateItem.oldImages.map((oldImage) => {
+                if (updateItem.remainImages.length > 0) {
+                    if (updateItem.remainImages.includes(oldImage)) updateItem.images.push(oldImage);
                     else RemoveFile(oldImage);
                 } else RemoveFile(oldImage);
             });
             // change slug value if alternative name
-            updateBlog.slug = changeAlias(updateBlog.name);
-            const updatedBlog = await Blog.findByIdAndUpdate({ _id: req.params.id }, updateBlog, {
+            updateItem.slug = changeAlias(updateItem.name);
+            const updatedItem = await Blog.findByIdAndUpdate({ _id: req.params.id }, updateItem, {
                 new: true,
             });
-            return res.json({ success: true, message: "Update blog successfully", blog: updatedBlog });
+            return res.json({
+                success: true,
+                message: util.format(Notify.SUCCESS_UPDATE, controller),
+                item: updatedItem,
+            });
         } else {
-            return res.status(401).json({ success: false, message: "Blog is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
-        if (images) images.map((item) => RemoveFile(item.filename));
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        if (images) images.map((item) => RemoveFile(item.filename));
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });
 
-// @DESC Delete a blog
+// @DESC Delete blog
 // @ROUTE DELETE /api/blog/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedBlog = await Blog.findOneAndDelete({ _id: req.params.id });
-        if (!deletedBlog) return res.status(401).json({ success: false, message: "Blog not found" });
-        else deletedBlog.images.map((item) => RemoveFile(item));
-        res.json({ success: true, message: "Blog has been deleted" });
+        const deletedItem = await Blog.findOneAndDelete({ _id: req.params.id });
+        if (!deletedItem)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        else deletedItem.images.map((item) => RemoveFile(item));
+        res.json({ success: true, message: util.format(Notify.SUCCESS_DELETE, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Find a blog
+// @DESC Find blog
 // @ROUTE GET /api/blog/find/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params.id);
-        if (!blog) return res.status(401).json({ success: false, message: "Blog not found" });
-        res.json({ success: true, message: "Get blog successfully", blog });
+        const item = await Blog.findById(req.params.id);
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_GET, controller), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Find a blog by slug
-// @ROUTE GET /api/blog/find-by-slug/:slug
+// @DESC Find public blog
+// @ROUTE GET /api/blog/public/find/:slug
 // @ACCESS Public
-router.get("/find-by-slug/:slug", async (req, res) => {
+router.get("/public/find/:slug", async (req, res) => {
     try {
-        const blog = await Blog.findOne({ slug: req.params.slug });
-        if (!blog) return res.status(401).json({ success: false, message: "Blog not found" });
-        res.json({ success: true, message: "Get blog successfully", blog });
+        const item = await Blog.findOne({ slug: req.params.slug });
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_GET, controller), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -145,13 +156,13 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
         await Blog.find(condition)
             .skip(perPage * page - perPage)
             .limit(perPage)
-            .exec((err, blogs) => {
+            .exec((err, items) => {
                 Blog.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get blogs successfully",
-                        blogs,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                         statistics,
@@ -160,34 +171,36 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Get blog list
-// @ROUTE GET /api/blog/(:slugCategory)?
+// @DESC Get public blogs
+// @ROUTE GET /api/blog/public
 // @ACCESS Public
-router.get("(/:category)?", async (req, res) => {
-    let condition = {};
+router.get("/public", async (req, res) => {
+    let condition = { status: "active" };
     const perPage = 5;
     const page = getParam(req.query, "page", 1);
     const search = getParam(req.query, "search", "");
-    const category = getParam(req.params, "category", "all");
+    const category = getParam(req.query, "category", "all");
 
     if (search !== "") condition.$text = { $search: search };
     if (category !== "all") condition["category.slug"] = category;
+
     try {
         await Blog.find(condition)
             .select("id name slug images status category tag description reviews")
             .skip(perPage * page - perPage)
             .limit(perPage)
-            .exec((err, blogs) => {
+            .sort({ updatedAt: "desc" })
+            .exec((err, items) => {
                 Blog.countDocuments((err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get blogs successfully",
-                        blogs,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                     });
@@ -195,70 +208,67 @@ router.get("(/:category)?", async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Get public new blogs
-// @ROUTE GET /api/blog/find/newest
+// @ROUTE GET /api/blog/public/newest
 // @ACCESS Public
-router.get("/get/newest", async (req, res) => {
+router.get("/public/newest", async (req, res) => {
     try {
-        const blogs = await Blog.find().limit(3).sort({ updatedAt: -1 });
-        if (blogs)
+        const items = await Blog.find().limit(3).sort({ updatedAt: -1 });
+        if (items)
             res.json({
                 success: true,
-                message: "Get new blogs successfully",
-                blogs,
+                message: util.format(Notify.SUCCESS_GET, controller),
+                items,
             });
-        else res.status(404).json({ success: false, message: "Blogs not found" });
+        else res.status(404).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Update comment for blog
+// @DESC Add comment
 // @ROUTE POST /api/blog/comment/:slug
 // @ACCESS Public
 router.post("/comment/:slug", async (req, res) => {
     try {
-        const blog = await Blog.findOneAndUpdate(
+        const item = await Blog.findOneAndUpdate(
             { slug: req.params.slug },
             { $push: { comment: req.body } },
             {
                 new: true,
             }
         );
-        if (!blog) return res.status(401).json({ success: false, message: "Blog not found" });
-        res.json({ success: true, message: "Update review of blog successfully", blog });
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.ERROR_NOTFOUND, "blog's review"), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Change blog's status
 // @ROUTE PUT /api/blog/change-status/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
     const { currentStatus } = req.body;
     const statusValue = currentStatus === "active" ? "inactive" : "active";
     try {
-        const oldBlog = await Blog.findById(req.params.id);
-        if (oldBlog) {
+        const oldItem = await Blog.findById(req.params.id);
+        if (oldItem) {
             await Blog.updateOne({ _id: req.params.id }, { status: statusValue });
-            res.json({
-                success: true,
-                message: "Update blog's status successfully",
-            });
+            res.json({ success: true, message: util.format(Notify.SUCCESS_UPDATE, "status") });
         } else {
-            return res.status(401).json({ success: false, message: "Blog is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });

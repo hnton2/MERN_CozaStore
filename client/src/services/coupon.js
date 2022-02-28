@@ -1,46 +1,48 @@
 import { publicRequest, userRequest } from "helpers/requestMethod";
 import queryString from "query-string";
 
-const createNewCoupon = (data) => {
-    return userRequest.post("coupon", data);
+const LINK_PREFIX = "coupon";
+
+const createItem = (item) => {
+    return userRequest.post(LINK_PREFIX, item);
 };
 
-const getCoupons = ({ page = 1, search = "", status = null }) => {
+const updateItem = (currentId, product) => {
+    return userRequest.put(`${LINK_PREFIX}/${currentId}`, product);
+};
+
+const deleteItem = (id) => {
+    return userRequest.delete(`${LINK_PREFIX}/${id}`);
+};
+
+const getItem = (currentId) => {
+    return userRequest.get(`${LINK_PREFIX}/find/${currentId}`);
+};
+
+const getItems = ({ page = 1, search = "", status = null }) => {
     let query = {};
     if (page !== 1) query.page = page;
     if (search !== "") query.search = search;
     if (status) query.status = status;
-    return userRequest.get(`coupon?${queryString.stringify(query)}`);
+    return userRequest.get(`${LINK_PREFIX}?${queryString.stringify(query)}`);
 };
 
-const getOneCoupon = (currentId) => {
-    return userRequest.get(`coupon/find/${currentId}`);
-};
-
-const updateCoupon = (currentId, product) => {
-    return userRequest.put(`coupon/${currentId}`, product);
-};
-
-const deleteCoupon = (id) => {
-    return userRequest.delete(`coupon/${id}`);
+const getPublicItems = () => {
+    return publicRequest.get(`${LINK_PREFIX}/public`);
 };
 
 const changeStatus = (id, currentStatus) => {
-    return userRequest.put(`coupon/change-status/${id}`, { currentStatus: currentStatus });
-};
-
-const getPublicCoupons = () => {
-    return publicRequest.get("coupon/public/");
+    return userRequest.put(`${LINK_PREFIX}/change-status/${id}`, { currentStatus: currentStatus });
 };
 
 const couponServices = {
-    createNewCoupon,
-    getCoupons,
-    getOneCoupon,
-    updateCoupon,
-    deleteCoupon,
+    createItem,
+    updateItem,
+    deleteItem,
+    getItem,
+    getItems,
+    getPublicItems,
     changeStatus,
-    getPublicCoupons,
 };
 
 export default couponServices;

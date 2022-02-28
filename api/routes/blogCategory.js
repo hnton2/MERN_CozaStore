@@ -1,90 +1,95 @@
 const router = require("express").Router();
-const { changeAlias } = require("../helpers/string");
+const util = require("util");
+
 const BlogCategory = require("../models/BlogCategory");
+const { changeAlias } = require("../helpers/string");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
 const { FILTER_STATUS } = require("../config/system");
+const Notify = require("../config/notify");
 
-// @DESC Create new blog category
+const controller = "category";
+
+// @DESC Create blog category
 // @ROUTE POST /api/blog-category/
 // @ACCESS Private
 router.post("/", verifyTokenAndAdmin, async (req, res) => {
-    const newCategory = new BlogCategory(req.body);
+    const newItem = new BlogCategory(req.body);
 
-    if (!newCategory.name) return res.status(401).json({ success: false, message: "Missing necessary information" });
+    if (!newItem.name) return res.status(401).json({ success: false, message: Notify.ERROR_MISSING });
 
     try {
-        newCategory.slug = changeAlias(newCategory.name);
-        const existCategory = await BlogCategory.findOne({
-            name: newCategory.name,
-        });
-        if (existCategory) return res.status(400).json({ success: false, message: "Blog category already exist" });
-        const savedCategory = await newCategory.save();
+        newItem.slug = changeAlias(newItem.name);
+        const existItem = await BlogCategory.findOne({ name: newItem.name });
+        if (existItem)
+            return res.status(400).json({ success: false, message: util.format(Notify.ERROR_EXIST, controller) });
+        const savedItem = await newItem.save();
         res.json({
             success: true,
-            message: "Blog category created successfully",
-            category: savedCategory,
+            message: util.format(Notify.SUCCESS_CREATE, controller),
+            item: savedItem,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Update a blog
+// @DESC Update blog category
 // @ROUTE PUT /api/blog-category/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
-    const updateCategory = req.body;
+    const updateItem = req.body;
     try {
-        const oldCategory = await BlogCategory.findById(req.params.id);
-        if (oldCategory) {
-            updateCategory.slug = changeAlias(updateCategory.name);
-            const updatedCategory = await BlogCategory.findByIdAndUpdate({ _id: req.params.id }, updateCategory, {
+        const oldItem = await BlogCategory.findById(req.params.id);
+        if (oldItem) {
+            updateItem.slug = changeAlias(updateItem.name);
+            const updatedItem = await BlogCategory.findByIdAndUpdate({ _id: req.params.id }, updateCategory, {
                 new: true,
             });
             res.json({
                 success: true,
-                message: "Update blog category successfully",
-                category: updatedCategory,
+                message: util.format(Notify.SUCCESS_UPDATE, controller),
+                item: updatedItem,
             });
         } else {
-            return res.status(401).json({ success: false, message: "Product Category is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });
 
-// @DESC Delete a blog
+// @DESC Delete blog
 // @ROUTE DELETE /api/blog-category/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedCategory = await BlogCategory.findOneAndDelete({ _id: req.params.id });
-        if (!deletedCategory) return res.status(401).json({ success: false, message: "Blog category not found" });
-        res.json({ success: true, message: "Blog category has been deleted" });
+        const deletedItem = await BlogCategory.findOneAndDelete({ _id: req.params.id });
+        if (!deletedItem)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_DELETE, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Find a blog
+// @DESC Find  blog category
 // @ROUTE GET /api/blog-category/find/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const category = await BlogCategory.findById(req.params.id);
-        if (!category) return res.status(401).json({ success: false, message: "Blog category not found" });
-        res.json({ success: true, message: "Get blog category successfully", category });
+        const item = await BlogCategory.findById(req.params.id);
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_GET, controller), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -107,13 +112,13 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
         await BlogCategory.find(condition)
             .skip(perPage * page - perPage)
             .limit(perPage)
-            .exec((err, categories) => {
+            .exec((err, items) => {
                 BlogCategory.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get categories successfully",
-                        categories,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                         statistics,
@@ -122,31 +127,27 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Change blog-category's status
+// @DESC Change status
 // @ROUTE PUT /api/blog-cateogry/change-status/:id
 // @ACCESS Privates
 router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
     const { currentStatus } = req.body;
     const statusValue = currentStatus === "active" ? "inactive" : "active";
     try {
-        const oldCategory = await BlogCategory.findById(req.params.id);
-        if (oldCategory) {
+        const oldItem = await BlogCategory.findById(req.params.id);
+        if (oldItem) {
             await BlogCategory.updateOne({ _id: req.params.id }, { status: statusValue });
-            res.json({
-                success: true,
-                message: "Update blog-category's status successfully",
-            });
+            res.json({ success: true, message: util.format(Notify.SUCCESS_UPDATE, "status") });
         } else {
-            return res.status(401).json({ success: false, message: "Blog category is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });

@@ -42,9 +42,9 @@ function ProductForm() {
         const fetchData = async () => {
             try {
                 if (currentId) {
-                    const res = await productServices.getOneProduct(currentId);
+                    const res = await productServices.getItem(currentId);
                     if (res.data.success) {
-                        const productDetail = res.data.product;
+                        const productDetail = res.data.item;
                         setOldImages(productDetail.images);
                         setInitialValue({
                             name: productDetail.name,
@@ -94,8 +94,8 @@ function ProductForm() {
         setIsLoading(true);
         try {
             const response = currentId
-                ? await productServices.updateProduct(currentId, data)
-                : await productServices.createNewProduct(data);
+                ? await productServices.updateItem(currentId, data)
+                : await productServices.createItem(data);
             setIsLoading(false);
             if (response.data.success) {
                 navigate("/admin/product");

@@ -1,111 +1,121 @@
 const router = require("express").Router();
-const { changeAlias, changeToJson } = require("../helpers/string");
+const util = require("util");
+
 const Slider = require("../models/Slider");
+const { changeAlias, changeToJson } = require("../helpers/string");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
 const { FILTER_STATUS } = require("../config/system");
+const Notify = require("../config/notify");
 
-// @DESC Create new slider
+const controller = "slider";
+
+// @DESC Create slider
 // @ROUTE POST /api/slider/
 // @ACCESS Private
 router.post("/", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
-    const newSlider = new Slider(changeToJson(req.body));
+    const newItem = new Slider(changeToJson(req.body));
     const images = req.files;
 
-    if (!newSlider.name || !newSlider.description || !images) {
+    if (!newItem.name || !newItem.description || !images) {
         if (images) images.map((item) => RemoveFile(item.filename));
-        return res.status(401).json({ success: false, message: "Missing necessary information" });
+        return res.status(401).json({ success: false, message: Notify.ERROR_MISSING });
     }
 
     try {
-        const existSlider = await Slider.findOne({ name: newSlider.name });
-        if (existSlider) {
+        const existItem = await Slider.findOne({ name: newItem.name });
+        if (existItem) {
             if (images) images.map((item) => RemoveFile(item.filename));
-            return res.status(400).json({ success: false, message: "Slider already exist" });
+            return res.status(400).json({ success: false, message: util.format(Notify.ERROR_EXIST, controller) });
         }
         if (images.length > 0) {
             let imagesName = [];
             images.map((item) => imagesName.push(item.filename));
-            newSlider.images = imagesName;
+            newItem.images = imagesName;
         }
-        const savedSlider = await newSlider.save();
-        res.json({ success: true, message: "Slider created successfully", slider: savedSlider });
+        const savedItem = await newItem.save();
+        res.json({ success: true, message: util.format(Notify.SUCCESS_CREATE, controller), item: savedItem });
     } catch (error) {
         console.log(error);
         if (images) images.map((item) => RemoveFile(item.filename));
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Update a slider
+// @DESC Update slider
 // @ROUTE PUT /api/slider/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.put("/:id", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
     const images = req.files;
-    const updateSlider = changeToJson(req.body);
-    updateSlider.images = [];
+    const updateItem = changeToJson(req.body);
+    updateItem.images = [];
     try {
         if (images.length > 0) {
             let imagesName = [];
             images.map((item) => imagesName.push(item.filename));
-            updateSlider.images = imagesName;
+            updateItem.images = imagesName;
         }
 
-        const oldSlider = await Slider.findById(req.params.id);
-        if (oldSlider) {
+        const oldItem = await Slider.findById(req.params.id);
+        if (oldItem) {
             // remove old images and update
-            updateSlider.oldImages.map((oldImage) => {
-                if (updateSlider.remainImages.length > 0) {
-                    if (updateSlider.remainImages.includes(oldImage)) updateSlider.images.push(oldImage);
+            updateItem.oldImages.map((oldImage) => {
+                if (updateItem.remainImages.length > 0) {
+                    if (updateItem.remainImages.includes(oldImage)) updateItem.images.push(oldImage);
                     else RemoveFile(oldImage);
                 } else RemoveFile(oldImage);
             });
             // change slug value if alternative name
-            updateSlider.slug = changeAlias(updateSlider.name);
-            const updatedSlider = await Slider.findByIdAndUpdate({ _id: req.params.id }, updateSlider, {
+            updateItem.slug = changeAlias(updateItem.name);
+            const updatedItem = await Slider.findByIdAndUpdate({ _id: req.params.id }, updateSlider, {
                 new: true,
             });
-            return res.json({ success: true, message: "Update slider successfully", slider: updatedSlider });
+            return res.json({
+                success: true,
+                message: util.format(Notify.SUCCESS_UPDATE, controller),
+                item: updatedItem,
+            });
         } else {
-            return res.status(401).json({ success: false, message: "Slider is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         if (images) images.map((item) => RemoveFile(item.filename));
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });
 
-// @DESC Delete a slider
+// @DESC Delete slider
 // @ROUTE DELETE /api/slider/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedSlider = await Slider.findOneAndDelete({ _id: req.params.id });
-        if (!deletedSlider) return res.status(401).json({ success: false, message: "Slider not found" });
-        else deletedSlider.images.map((item) => RemoveFile(item));
-        res.json({ success: true, message: "Slider has been deleted" });
+        const deletedItem = await Slider.findOneAndDelete({ _id: req.params.id });
+        if (!deletedItem)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        else deletedItem.images.map((item) => RemoveFile(item));
+        res.json({ success: true, message: util.format(Notify.SUCCESS_DELETE, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Find a slider
+// @DESC Find slider
 // @ROUTE GET /api/slider/find/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const slider = await Slider.findById(req.params.id);
-        if (!slider) return res.status(401).json({ success: false, message: "Slider not found" });
-        res.json({ success: true, message: "Get slider successfully", slider });
+        const item = await Slider.findById(req.params.id);
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_GET, controller), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -128,13 +138,13 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
         await Slider.find(condition)
             .skip(perPage * page - perPage)
             .limit(perPage)
-            .exec((err, sliders) => {
+            .exec((err, items) => {
                 Slider.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get sliders successfully",
-                        sliders,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                         statistics,
@@ -143,50 +153,46 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Get slider list
 // @ROUTE GET /api/slider
 // @ACCESS Public
-router.get("/public-sliders", async (req, res) => {
+router.get("/public", async (req, res) => {
     try {
-        const sliders = await Slider.find().sort({ updatedAt: -1 });
-        if (sliders)
+        const items = await Slider.find().sort({ updatedAt: -1 });
+        if (items)
             res.json({
                 success: true,
-                message: "Get sliders successfully",
-                sliders,
+                message: util.format(Notify.SUCCESS_GET, controller),
+                items,
             });
-        else res.status(400).json({ success: false, message: "Sliders not found" });
+        else res.status(400).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Change slider's status
 // @ROUTE PUT /api/slider/change-status/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
     const { currentStatus } = req.body;
     const statusValue = currentStatus === "active" ? "inactive" : "active";
     try {
-        const oldSlider = await Slider.findById(req.params.id);
-        if (oldSlider) {
+        const oldItem = await Slider.findById(req.params.id);
+        if (oldItem) {
             await Slider.updateOne({ _id: req.params.id }, { status: statusValue });
-            res.json({
-                success: true,
-                message: "Update slider's status successfully",
-            });
+            res.json({ success: true, message: util.format(Notify.SUCCESS_UPDATE, "status") });
         } else {
-            return res.status(401).json({ success: false, message: "Slider is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });

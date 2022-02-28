@@ -14,6 +14,25 @@ import blogServices from "services/blog";
 import sliderServices from "services/slider";
 import { toastMessage } from "helpers/toastMessage";
 
+const overviewData = [
+    {
+        label: "Shoes",
+        content: <ProductsSlider task="newest" params={{ category: "shoes" }} />,
+    },
+    {
+        label: "Clothing",
+        content: <ProductsSlider task="newest" params={{ category: "clothing" }} />,
+    },
+    {
+        label: "Caps",
+        content: <ProductsSlider task="newest" params={{ category: "caps" }} />,
+    },
+    {
+        label: "Socks",
+        content: <ProductsSlider task="newest" params={{ category: "socks" }} />,
+    },
+];
+
 function Home() {
     const [blogs, setBlogs] = useState();
     const [sliders, setSliders] = useState();
@@ -21,8 +40,12 @@ function Home() {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const res = await blogServices.getNewBlogs();
-                if (res.data.success) setBlogs(res.data.blogs);
+                const res = await blogServices.getPublicNewItems();
+                if (res.data.success) setBlogs(res.data.items);
+                else {
+                    toastMessage({ type: "error", message: res.data.message });
+                    window.location.reload();
+                }
             } catch (error) {
                 toastMessage({ type: "error", message: error.message });
             }
@@ -30,8 +53,12 @@ function Home() {
 
         const fetchSliders = async () => {
             try {
-                const res = await sliderServices.getPublicSliders();
-                if (res.data.success) setSliders(res.data.sliders);
+                const res = await sliderServices.getPublicItems();
+                if (res.data.success) setSliders(res.data.items);
+                else {
+                    toastMessage({ type: "error", message: res.data.message });
+                    window.location.reload();
+                }
             } catch (error) {
                 toastMessage({ type: "error", message: error.message });
             }
@@ -39,25 +66,6 @@ function Home() {
         fetchBlogs();
         fetchSliders();
     }, []);
-
-    const overviewData = [
-        {
-            label: "Shoes",
-            content: <ProductsSlider task="newest" params={{ category: "shoes" }} />,
-        },
-        {
-            label: "Clothing",
-            content: <ProductsSlider task="newest" params={{ category: "clothing" }} />,
-        },
-        {
-            label: "Caps",
-            content: <ProductsSlider task="newest" params={{ category: "caps" }} />,
-        },
-        {
-            label: "Socks",
-            content: <ProductsSlider task="newest" params={{ category: "socks" }} />,
-        },
-    ];
 
     return (
         <>

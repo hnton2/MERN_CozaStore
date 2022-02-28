@@ -40,8 +40,8 @@ function Confirmation() {
     useEffect(() => {
         const fetchInvoice = async () => {
             try {
-                const res = await orderServices.getOneOrder(invoiceCode);
-                res.data.success && setInvoice(res.data.order);
+                const res = await orderServices.getItem(invoiceCode);
+                res.data.success && setInvoice(res.data.item);
             } catch (error) {
                 toastMessage({ type: "error", message: error.message });
             }

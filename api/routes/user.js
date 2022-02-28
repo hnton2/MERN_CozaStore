@@ -1,51 +1,55 @@
 const router = require("express").Router();
 const cryptoJS = require("crypto-js");
+const util = require("util");
 
 const User = require("../models/User");
 const { verifyTokenAndAdmin, verifyTokenAndAuthorization, verifyToken } = require("../middleware/verifyToken");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
 const { USER_STATUS } = require("../config/system");
+const Notify = require("../config/notify");
+
+const controller = "user";
 
 // UPDATE
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
-    if (req.body.password) {
-        req.body.password = cryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString();
-    }
+    if (req.body.password) req.body.password = cryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString();
 
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
-        res.json({ success: true, message: "Update user successfully", user: updatedUser });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_UPDATE, controller), user: updatedUser });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Delete a user
 // @ROUTE DELETE /api/user/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedUser = await User.findOneAndDelete({ _id: req.params.id });
-        if (!deletedUser) return res.status(401).json({ success: false, message: "User not found" });
-        res.json({ success: true, message: "User has been deleted" });
+        const deletedItem = await User.findOneAndDelete({ _id: req.params.id });
+        if (!deletedItem)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_DELETE, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // GET USER
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
-        if (!user) return res.status(401).json({ success: false, message: "User not found" });
-        const { password, ...others } = user._doc;
-        res.json({ success: true, message: "Get user successfully", user: others });
+        const item = await User.findById(req.params.id);
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        const { password, ...others } = item._doc;
+        res.json({ success: true, message: util.format(Notify.SUCCESS_GET, controller), item: others });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -68,13 +72,13 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
         await User.find(condition)
             .skip(perPage * page - perPage)
             .limit(perPage)
-            .exec((err, users) => {
+            .exec((err, items) => {
                 User.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get users successfully",
-                        users,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                         statistics,
@@ -83,7 +87,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -96,7 +100,7 @@ router.post("/save-cart/:id", verifyTokenAndAuthorization, async (req, res) => {
         res.end();
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -109,30 +113,26 @@ router.post("/clean-cart/:id", verifyTokenAndAuthorization, async (req, res) => 
         res.end();
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Change user's role
 // @ROUTE PUT /api/product/change-role/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.put("/change-role/:id", verifyTokenAndAdmin, async (req, res) => {
     const { currentRole } = req.body;
     try {
-        const oldUser = await User.findById(req.params.id);
-        if (oldUser) {
+        const oldItem = await User.findById(req.params.id);
+        if (oldItem) {
             await User.updateOne({ _id: req.params.id }, { isAdmin: !currentRole });
-            res.json({
-                success: true,
-                message: "Update user's role successfully",
-            });
+            res.json({ success: true, message: util.format(Notify.SUCCESS_UPDATE, "status") });
         } else {
-            return res.status(401).json({ success: false, message: "User is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });

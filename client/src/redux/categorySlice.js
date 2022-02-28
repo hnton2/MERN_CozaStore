@@ -4,16 +4,16 @@ import productCategoryService from "../services/productCategory";
 
 export const GetALlCategoryProduct = createAsyncThunk("category/GetALlCategoryProduct", async (thunkAPI) => {
     try {
-        const response = await productCategoryService.getProductCategories();
-        return response.data.categories;
+        const response = await productCategoryService.getPublicItems();
+        return response.data.items;
     } catch (error) {
         return thunkAPI.rejectWithValue();
     }
 });
 export const GetALlCategoryBlog = createAsyncThunk("category/GetALlCategoryBlog", async (thunkAPI) => {
     try {
-        const response = await blogCategoryServices.getBlogCategories();
-        return response.data.categories;
+        const response = await blogCategoryServices.getPublicItems();
+        return response.data.items;
     } catch (error) {
         return thunkAPI.rejectWithValue();
     }

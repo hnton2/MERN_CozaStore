@@ -37,9 +37,9 @@ function SliderForm() {
         const fetchData = async () => {
             try {
                 if (currentId) {
-                    const res = await sliderServices.getOneSlider(currentId);
+                    const res = await sliderServices.getItem(currentId);
                     if (res.data.success) {
-                        const sliderDetail = res.data.slider;
+                        const sliderDetail = res.data.item;
                         setOldImages(sliderDetail.images);
                         setInitialValue({
                             name: sliderDetail.name,
@@ -62,8 +62,8 @@ function SliderForm() {
         setIsLoading(true);
         try {
             const response = currentId
-                ? await sliderServices.updateSlider(currentId, data)
-                : await sliderServices.createNewSlider(data);
+                ? await sliderServices.updateItem(currentId, data)
+                : await sliderServices.createItem(data);
             setIsLoading(false);
             if (response.data.success) {
                 navigate("/admin/slider");

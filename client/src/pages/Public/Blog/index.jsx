@@ -29,12 +29,12 @@ function Blog() {
         const fetchBlogs = async () => {
             try {
                 setIsLoading(true);
-                const response = await blogServices.getBlogsInCategory({
+                const response = await blogServices.getPublicItems({
                     category: currentCategory,
                     ...Object.fromEntries([...searchParams]),
                 });
                 if (response.data.success) {
-                    setBlogs(response.data.blogs);
+                    setBlogs(response.data.items);
                     setTotalPages(response.data.pages);
                 }
                 setIsLoading(false);

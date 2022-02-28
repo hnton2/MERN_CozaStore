@@ -41,9 +41,9 @@ function BlogCategoryTable() {
         const fetchBlogs = async () => {
             try {
                 setIsLoading(true);
-                const res = await blogCategoryServices.getBlogCategories(Object.fromEntries([...searchParams]));
+                const res = await blogCategoryServices.getItems(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
-                    setCategories(res.data.categories);
+                    setCategories(res.data.items);
                     setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
@@ -77,7 +77,7 @@ function BlogCategoryTable() {
     const handleDelete = async (id) => {
         try {
             setIsLoading(true);
-            const res = await blogCategoryServices.deleteBlogCategory(id);
+            const res = await blogCategoryServices.deleteItem(id);
             if (res.data.success) {
                 const updateCategories = categories.filter((user) => user._id !== id);
                 setCategories(updateCategories);

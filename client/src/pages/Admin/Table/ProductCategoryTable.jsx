@@ -41,9 +41,9 @@ function ProductCategoryTable() {
         const fetchCategories = async () => {
             try {
                 setIsLoading(true);
-                const res = await productCategoryServices.getProductCategories(Object.fromEntries([...searchParams]));
+                const res = await productCategoryServices.getItems(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
-                    setCategories(res.data.categories);
+                    setCategories(res.data.items);
                     setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
@@ -77,7 +77,7 @@ function ProductCategoryTable() {
     const handleDelete = async (id) => {
         try {
             setIsLoading(true);
-            const res = await productCategoryServices.deleteProductCategory(id);
+            const res = await productCategoryServices.deleteItem(id);
             if (res.data.success) {
                 const updateCategories = categories.filter((user) => user._id !== id);
                 setCategories(updateCategories);

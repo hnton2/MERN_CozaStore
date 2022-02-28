@@ -2,48 +2,52 @@ import { createFormData } from "helpers/form";
 import { publicRequest, userRequest } from "helpers/requestMethod";
 import queryString from "query-string";
 
-const createNewSlider = (items) => {
+const LINK_PREFIX = "slider";
+
+const createItem = (items) => {
     const formData = createFormData(items);
-    return userRequest.post("slider", formData, { headers: { "Content-Type": "multipart/form-data" } });
+    return userRequest.post(LINK_PREFIX, formData, { headers: { "Content-Type": "multipart/form-data" } });
 };
 
-const getSliders = ({ category = "all", page = 1, search = "", status = null }) => {
+const updateItem = (currentId, slider) => {
+    const formData = createFormData(slider);
+    return userRequest.put(`${LINK_PREFIX}/${currentId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+};
+
+const deleteItem = (id) => {
+    return userRequest.delete(`${LINK_PREFIX}/${id}`);
+};
+
+const getItem = (currentId) => {
+    return userRequest.get(`${LINK_PREFIX}/find/${currentId}`);
+};
+
+const getItems = ({ category = "all", page = 1, search = "", status = null }) => {
     let query = {};
     if (category !== "all") query.category = category;
     if (page !== 1) query.page = page;
     if (search !== "") query.search = search;
     if (status) query.status = status;
-    return userRequest.get(`slider?${queryString.stringify(query)}`);
+    return userRequest.get(`${LINK_PREFIX}?${queryString.stringify(query)}`);
 };
 
-const getOneSlider = (currentId) => {
-    return userRequest.get(`slider/find/${currentId}`);
-};
-
-const updateSlider = (currentId, slider) => {
-    const formData = createFormData(slider);
-    return userRequest.put(`slider/${currentId}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
-};
-
-const deleteSlider = (id) => {
-    return userRequest.delete(`slider/${id}`);
-};
-
-const getPublicSliders = () => {
-    return publicRequest.get("slider/public-sliders");
+const getPublicItems = () => {
+    return publicRequest.get(`${LINK_PREFIX}/public`);
 };
 
 const changeStatus = (id, currentStatus) => {
-    return userRequest.put(`slider/change-status/${id}`, { currentStatus: currentStatus });
+    return userRequest.put(`${LINK_PREFIX}/change-status/${id}`, { currentStatus: currentStatus });
 };
 
 const sliderServices = {
-    createNewSlider,
-    getSliders,
-    getOneSlider,
-    updateSlider,
-    deleteSlider,
-    getPublicSliders,
+    createItem,
+    updateItem,
+    deleteItem,
+    getItem,
+    getItems,
+    getPublicItems,
     changeStatus,
 };
 

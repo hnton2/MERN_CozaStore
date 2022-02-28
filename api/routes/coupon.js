@@ -1,87 +1,94 @@
 const router = require("express").Router();
-const { changeAlias } = require("../helpers/string");
+const util = require("util");
+
 const Coupon = require("../models/Coupon");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
 const { FILTER_STATUS } = require("../config/system");
+const Notify = require("../config/notify");
 
-// @DESC Create new coupon
+const controller = "coupon";
+
+// @DESC Create coupon
 // @ROUTE POST /api/coupon/
 // @ACCESS Private
 router.post("/", verifyTokenAndAdmin, async (req, res) => {
-    const newCoupon = new Coupon(req.body);
-    if (!newCoupon.name) return res.status(401).json({ success: false, message: "Missing necessary information" });
+    const newItem = new Coupon(req.body);
+    if (!newItem.name) return res.status(401).json({ success: false, message: Notify.ERROR_MISSING });
     try {
-        const existName = await Coupon.findOne({ name: newCoupon.name });
-        if (existName) return res.status(400).json({ success: false, message: "Coupon name already exist" });
-        const existCode = await Coupon.findOne({ code: newCoupon.code });
-        if (existCode) return res.status(400).json({ success: false, message: "Coupon code already exist" });
+        const existName = await Coupon.findOne({ name: newItem.name });
+        if (existName)
+            return res.status(400).json({ success: false, message: util.format(Notify.ERROR_EXIST, controller) });
+        const existCode = await Coupon.findOne({ code: newItem.code });
+        if (existCode)
+            return res.status(400).json({ success: false, message: util.format(Notify.ERROR_EXIST, controller) });
 
-        const savedCoupon = await newCoupon.save();
+        const savedItem = await newItem.save();
         res.json({
             success: true,
-            message: "Coupon created successfully",
-            coupon: savedCoupon,
+            message: util.format(Notify.SUCCESS_CREATE, controller),
+            item: savedItem,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Update a coupon
+// @DESC Update coupon
 // @ROUTE PUT /api/coupon/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
-    const updateCoupon = req.body;
+    const updateItem = req.body;
     try {
-        const oldCoupon = await Coupon.findById(req.params.id);
-        if (oldCoupon) {
-            const updatedCoupon = await Coupon.findByIdAndUpdate({ _id: req.params.id }, updateCoupon, {
+        const oldItem = await Coupon.findById(req.params.id);
+        if (oldItem) {
+            const updatedItem = await Coupon.findByIdAndUpdate({ _id: req.params.id }, updateItem, {
                 new: true,
             });
             res.json({
                 success: true,
-                message: "Update Coupon successfully",
-                coupon: updatedCoupon,
+                message: util.format(Notify.SUCCESS_UPDATE, controller),
+                item: updatedItem,
             });
         } else {
-            return res.status(401).json({ success: false, message: "Coupon is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });
 
-// @DESC Delete a coupon
+// @DESC Delete coupon
 // @ROUTE DELETE /api/coupon/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedCoupon = await Coupon.findOneAndDelete({ _id: req.params.id });
-        if (!deletedCoupon) return res.status(401).json({ success: false, message: "Coupon not found" });
-        res.json({ success: true, message: "Coupon has been deleted" });
+        const deletedItem = await Coupon.findOneAndDelete({ _id: req.params.id });
+        if (!deletedItem)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_DELETE, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Find a coupon
+// @DESC Find coupon
 // @ROUTE GET /api/coupon/find/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const coupon = await Coupon.findById(req.params.id);
-        if (!coupon) return res.status(401).json({ success: false, message: "Coupon not found" });
-        res.json({ success: true, message: "Get Coupon successfully", coupon });
+        const item = await Coupon.findById(req.params.id);
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: "Get Coupon successfully", item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -104,13 +111,13 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
         await Coupon.find(condition)
             .skip(perPage * page - perPage)
             .limit(perPage)
-            .exec((err, coupons) => {
+            .exec((err, items) => {
                 Coupon.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get coupons successfully",
-                        coupons,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                         statistics,
@@ -119,51 +126,47 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
-    }
-});
-
-// @DESC Change coupon's status
-// @ROUTE PUT /api/coupon/change-status/:id
-// @ACCESS Privates
-router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
-    const { currentStatus } = req.body;
-    const statusValue = currentStatus === "active" ? "inactive" : "active";
-    try {
-        const oldCoupon = await Coupon.findById(req.params.id);
-        if (oldCoupon) {
-            await Coupon.updateOne({ _id: req.params.id }, { status: statusValue });
-            res.json({
-                success: true,
-                message: "Update coupon's status successfully",
-            });
-        } else {
-            return res.status(401).json({ success: false, message: "Coupon is invalid" });
-        }
-    } catch (error) {
-        console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
-        res.status(500).json({ success: false, message: msg });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Get public coupons
 // @ROUTE GET /api/product/newest/:category
 // @ACCESS Public
-router.get("/public/", async (req, res) => {
+router.get("/public", async (req, res) => {
     try {
         const items = await Coupon.find({ status: "active" }).sort({ updatedAt: -1 });
         if (items)
             res.json({
                 success: true,
-                message: "Get new coupons successfully",
-                coupons: items,
+                message: util.format(Notify.SUCCESS_GET, controller),
+                items,
             });
-        else res.status(404).json({ success: false, message: "Coupons not found" });
+        else res.status(404).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
+    }
+});
+
+// @DESC Change coupon's status
+// @ROUTE PUT /api/coupon/change-status/:id
+// @ACCESS Private
+router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
+    const { currentStatus } = req.body;
+    const statusValue = currentStatus === "active" ? "inactive" : "active";
+    try {
+        const oldItem = await Coupon.findById(req.params.id);
+        if (oldItem) {
+            await Coupon.updateOne({ _id: req.params.id }, { status: statusValue });
+            res.json({ success: true, message: util.format(Notify.SUCCESS_UPDATE, "status") });
+        } else {
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        }
+    } catch (error) {
+        console.log(error);
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
+        res.status(500).json({ success: false, message: msg });
     }
 });
 

@@ -41,9 +41,9 @@ function ProductCategoryForm() {
         const fetchData = async () => {
             try {
                 if (currentId) {
-                    const res = await productCategoryServices.getOneProductCategory(currentId);
+                    const res = await productCategoryServices.getItem(currentId);
                     if (res.data.success) {
-                        const categoryDetail = res.data.category;
+                        const categoryDetail = res.data.item;
                         setInitialValue({
                             name: categoryDetail.name,
                             status: categoryDetail.status,
@@ -65,8 +65,8 @@ function ProductCategoryForm() {
         setIsLoading(true);
         try {
             const response = currentId
-                ? await productCategoryServices.updateProductCategory(currentId, data)
-                : await productCategoryServices.createNewProductCategory(data);
+                ? await productCategoryServices.updateItem(currentId, data)
+                : await productCategoryServices.createItem(data);
             setIsLoading(false);
             if (response.data.success) {
                 navigate("/admin/product-category");

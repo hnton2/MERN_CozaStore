@@ -35,7 +35,7 @@ List major frameworks/libraries used to build the project:
 
 ### Prerequisites
 
-Use the package manager [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm to install project
+Use the package manager [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) to install project
 
 ### Installation
 
@@ -48,9 +48,11 @@ Use the package manager [npm](https://docs.npmjs.com/downloading-and-installing-
 2. Install NPM packages
 
 -   API:
-    ```bash
-        cd api & npm install
-    ```
+
+```bash
+    cd api & npm install
+```
+
 -   Client UI:
 
 ```bash
@@ -70,4 +72,5 @@ When using the Payment with Strip, you must ensure that card number is _4242 424
 ## Contact
 
 Facebook: [Ho Ngoc Ton](https://www.facebook.com/ton.ho.545/)
+
 Email: [Ho Ngoc Ton](mailto:hongocton0406@gmail.com?subject=[Github])

@@ -34,8 +34,8 @@ function Product() {
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
-                const response = await productServices.getDetailProduct(currentSlug);
-                if (response.data.success) setProductDetail(response.data.product);
+                const response = await productServices.getPublicItem(currentSlug);
+                if (response.data.success) setProductDetail(response.data.item);
             } catch (error) {
                 toastMessage({ type: "error", message: error.message });
             }

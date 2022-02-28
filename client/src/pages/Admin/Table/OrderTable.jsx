@@ -39,9 +39,9 @@ function OrderTable() {
         const fetchOrders = async () => {
             try {
                 setIsLoading(true);
-                const res = await orderServices.getOrders(Object.fromEntries([...searchParams]));
+                const res = await orderServices.getItems(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
-                    setOrders(res.data.orders);
+                    setOrders(res.data.items);
                     setTotalPages(res.data.pages);
                 }
                 setIsLoading(false);

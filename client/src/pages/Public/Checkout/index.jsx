@@ -105,7 +105,7 @@ function Checkout() {
         } else {
             if (result.paymentIntent.status === "succeeded") {
                 try {
-                    const res = await orderServices.createOrder({
+                    const res = await orderServices.createItem({
                         user: {
                             name: `${data.firstname} ${data.lastname}`,
                             email: data.email,
@@ -127,7 +127,7 @@ function Checkout() {
                         await userServices.cleanCart(user._id);
                         toastMessage({ type: "success", message: "The payment has been processed!" });
 
-                        navigate(`/confirmation?invoice-code=${res.data.order.code}`);
+                        navigate(`/confirmation?invoice-code=${res.data.item.code}`);
                         dispatch(clearCart());
                     }
                 } catch (error) {

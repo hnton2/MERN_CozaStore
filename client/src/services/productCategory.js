@@ -1,40 +1,42 @@
 import { userRequest } from "helpers/requestMethod";
 import queryString from "query-string";
 
-const createNewProductCategory = (cate) => {
-    return userRequest.post("product-category", cate);
+const LINK_PREFIX = "product-category";
+
+const createItem = (item) => {
+    return userRequest.post(LINK_PREFIX, item);
 };
 
-const getProductCategories = ({ page = 1, search = "", status = null }) => {
+const updateItem = (currentId, product) => {
+    return userRequest.put(`${LINK_PREFIX}/${currentId}`, product);
+};
+
+const deleteItem = (id) => {
+    return userRequest.delete(`${LINK_PREFIX}/${id}`);
+};
+
+const getItem = (currentId) => {
+    return userRequest.get(`${LINK_PREFIX}/find/${currentId}`);
+};
+
+const getItems = ({ page = 1, search = "", status = null }) => {
     let query = {};
     if (page !== 1) query.page = page;
     if (search !== "") query.search = search;
     if (status) query.status = status;
-    return userRequest.get(`product-category?${queryString.stringify(query)}`);
-};
-
-const getOneProductCategory = (currentId) => {
-    return userRequest.get(`product-category/find/${currentId}`);
-};
-
-const updateProductCategory = (currentId, product) => {
-    return userRequest.put(`product-category/${currentId}`, product);
-};
-
-const deleteProductCategory = (id) => {
-    return userRequest.delete(`product-category/${id}`);
+    return userRequest.get(`${LINK_PREFIX}?${queryString.stringify(query)}`);
 };
 
 const changeStatus = (id, currentStatus) => {
-    return userRequest.put(`product-category/change-status/${id}`, { currentStatus: currentStatus });
+    return userRequest.put(`${LINK_PREFIX}/change-status/${id}`, { currentStatus: currentStatus });
 };
 
 const productCategoryServices = {
-    createNewProductCategory,
-    getProductCategories,
-    getOneProductCategory,
-    updateProductCategory,
-    deleteProductCategory,
+    createItem,
+    updateItem,
+    deleteItem,
+    getItem,
+    getItems,
     changeStatus,
 };
 

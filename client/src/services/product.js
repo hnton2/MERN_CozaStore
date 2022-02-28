@@ -2,34 +2,42 @@ import { createFormData } from "helpers/form";
 import { publicRequest, userRequest } from "helpers/requestMethod";
 import queryString from "query-string";
 
-const createNewProduct = (product) => {
-    const formData = createFormData(product);
-    return userRequest.post("product", formData, { headers: { "Content-Type": "multipart/form-data" } });
+const LINK_PREFIX = "product";
+
+const createItem = (item) => {
+    const formData = createFormData(item);
+    return userRequest.post(LINK_PREFIX, formData, { headers: { "Content-Type": "multipart/form-data" } });
 };
 
-const getProducts = ({ category = "all", page = 1, search = "", status = null }) => {
+const updateItem = (currentId, item) => {
+    const formData = createFormData(item);
+    return userRequest.put(`${LINK_PREFIX}/${currentId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+};
+
+const deleteItem = (id) => {
+    return userRequest.delete(`${LINK_PREFIX}/${id}`);
+};
+
+const getItem = (currentId) => {
+    return userRequest.get(`${LINK_PREFIX}/find/${currentId}`);
+};
+
+const getPublicItem = (slug) => {
+    return publicRequest.get(`${LINK_PREFIX}/public/find/${slug}`);
+};
+
+const getItems = ({ category = "all", page = 1, search = "", status = null }) => {
     let query = {};
     if (category !== "all") query.category = category;
     if (page !== 1) query.page = page;
     if (search !== "") query.search = search;
     if (status) query.status = status;
-    return userRequest.get(`product?${queryString.stringify(query)}`);
+    return userRequest.get(`${LINK_PREFIX}?${queryString.stringify(query)}`);
 };
 
-const getOneProduct = (currentId) => {
-    return userRequest.get(`product/find/${currentId}`);
-};
-
-const updateProduct = (currentId, product) => {
-    const formData = createFormData(product);
-    return userRequest.put(`product/${currentId}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
-};
-
-const deleteProduct = (id) => {
-    return userRequest.delete(`product/${id}`);
-};
-
-const getProducstInCategory = ({ category = "all", page = 1, search = "", sort, price, color, size, tag }) => {
+const getPublicItems = ({ category = "all", page = 1, search = "", sort, price, color, size, tag }) => {
     let query = {};
     if (page !== 1) query.page = page;
     if (search !== "") query.search = search;
@@ -38,38 +46,35 @@ const getProducstInCategory = ({ category = "all", page = 1, search = "", sort, 
     if (color) query.color = color;
     if (size) query.size = size;
     if (tag) query.tag = tag;
-
-    return publicRequest.get(`product/${category}?${queryString.stringify(query)}`);
+    if (category !== "all") query.category = category;
+    return publicRequest.get(`${LINK_PREFIX}/public?${queryString.stringify(query)}`);
 };
 
-const getProductsByTask = (task, params) => {
-    if (task === "newest") return publicRequest.get(`product/newest/${params.category}`);
-    if (task === "related") return publicRequest.post(`product/related/${params.category}`, { id: params.id });
-};
-
-const getDetailProduct = (slug) => {
-    return publicRequest.get(`product/find-by-slug/${slug}`);
+const getItemsByTask = (task, params) => {
+    if (task === "newest") return publicRequest.get(`${LINK_PREFIX}/public/newest/${params.category}`);
+    if (task === "related")
+        return publicRequest.post(`${LINK_PREFIX}/public/related/${params.category}`, { id: params.id });
 };
 
 const addReview = (slug, data) => {
-    return publicRequest.post(`product/review/${slug}`, data);
+    return publicRequest.post(`${LINK_PREFIX}/review/${slug}`, data);
 };
 
 const changeStatus = (id, currentStatus) => {
-    return userRequest.put(`product/change-status/${id}`, { currentStatus: currentStatus });
+    return userRequest.put(`${LINK_PREFIX}/change-status/${id}`, { currentStatus: currentStatus });
 };
 
 const productServices = {
-    createNewProduct,
-    getProducts,
-    getOneProduct,
-    updateProduct,
-    deleteProduct,
-    getProducstInCategory,
-    getDetailProduct,
+    createItem,
+    updateItem,
+    deleteItem,
+    getItem,
+    getPublicItem,
+    getItems,
+    getPublicItems,
     addReview,
     changeStatus,
-    getProductsByTask,
+    getItemsByTask,
 };
 
 export default productServices;

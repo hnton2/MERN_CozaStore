@@ -36,8 +36,8 @@ function Cart() {
     useEffect(() => {
         const fetchAllCoupons = async () => {
             try {
-                const res = await couponServices.getPublicCoupons();
-                if (res.data.success) setCoupons(res.data.coupons);
+                const res = await couponServices.getPublicItems();
+                if (res.data.success) setCoupons(res.data.items);
             } catch (error) {
                 toastMessage({ type: "error", message: error.message });
             }
@@ -50,16 +50,7 @@ function Cart() {
         dispatch(changeQuantityProduct({ ...product, value: Number(value) }));
     const handleChangeCoupon = (coupon) => {
         if (products.length > 0) dispatch(applyDiscount(coupon));
-        else
-            toast.warn("Please add least one product to the cart!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+        else toastMessage({ type: "warn", message: "Please add least one product to the cart!" });
     };
 
     return (

@@ -39,9 +39,9 @@ function UserTable() {
         const fetchUsers = async () => {
             try {
                 setIsLoading(true);
-                const res = await userServices.getUsers(Object.fromEntries([...searchParams]));
+                const res = await userServices.getItems(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
-                    setUsers(res.data.users);
+                    setUsers(res.data.items);
                     setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
@@ -75,7 +75,7 @@ function UserTable() {
     const handleDelete = async (id) => {
         try {
             setIsLoading(true);
-            const res = await userServices.deleteUser(id);
+            const res = await userServices.deleteItem(id);
             if (res.data.success) {
                 const updateUsers = users.filter((user) => user._id !== id);
                 setUsers(updateUsers);

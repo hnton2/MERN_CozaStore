@@ -36,9 +36,9 @@ function CouponForm() {
         const fetchData = async () => {
             try {
                 if (currentId) {
-                    const res = await couponServices.getOneCoupon(currentId);
+                    const res = await couponServices.getItem(currentId);
                     if (res.data.success) {
-                        const couponDetail = res.data.coupon;
+                        const couponDetail = res.data.item;
                         setInitialValue({
                             name: couponDetail.name,
                             code: couponDetail.code,
@@ -61,8 +61,8 @@ function CouponForm() {
         setIsLoading(true);
         try {
             const response = currentId
-                ? await couponServices.updateCoupon(currentId, data)
-                : await couponServices.createNewCoupon(data);
+                ? await couponServices.updateItem(currentId, data)
+                : await couponServices.createItem(data);
             setIsLoading(false);
             if (response.data.success) {
                 navigate("/admin/coupon");

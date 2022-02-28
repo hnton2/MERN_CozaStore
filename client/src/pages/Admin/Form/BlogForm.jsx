@@ -40,9 +40,9 @@ function BlogForm() {
         const fetchData = async () => {
             try {
                 if (currentId) {
-                    const res = await blogServices.getOneBlog(currentId);
+                    const res = await blogServices.getItem(currentId);
                     if (res.data.success) {
-                        const blogDetail = res.data.blog;
+                        const blogDetail = res.data.item;
                         setOldImages(blogDetail.images);
                         setInitialValue({
                             name: blogDetail.name,
@@ -72,8 +72,8 @@ function BlogForm() {
         setIsLoading(true);
         try {
             const response = currentId
-                ? await blogServices.updateBlog(currentId, data)
-                : await blogServices.createNewBlog(data);
+                ? await blogServices.updateItem(currentId, data)
+                : await blogServices.createItem(data);
             setIsLoading(false);
             if (response.data.success) {
                 navigate("/admin/blog");

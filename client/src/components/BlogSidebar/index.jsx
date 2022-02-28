@@ -75,8 +75,8 @@ function BlogSidebar() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await productServices.getProductsByTask("newest", { category: "shoes" });
-                if (res.data.success) setProducts(res.data.products);
+                const res = await productServices.getItemsByTask("newest", { category: "shoes" });
+                if (res.data.success) setProducts(res.data.items);
             } catch (error) {
                 toastMessage({ type: "error", message: error.message });
             }

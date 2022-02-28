@@ -43,9 +43,9 @@ function SliderTable() {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                const res = await sliderServices.getSliders(Object.fromEntries([...searchParams]));
+                const res = await sliderServices.getItems(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
-                    setSliders(res.data.sliders);
+                    setSliders(res.data.items);
                     setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
@@ -79,7 +79,7 @@ function SliderTable() {
     const handleDelete = async (id) => {
         try {
             setIsLoading(true);
-            const res = await sliderServices.deleteSlider(id);
+            const res = await sliderServices.deleteItem(id);
             if (res.data.success) {
                 const updateSliders = sliders.filter((slider) => slider._id !== id);
                 setSliders(updateSliders);

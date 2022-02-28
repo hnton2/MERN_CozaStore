@@ -1,43 +1,52 @@
 const router = require("express").Router();
+const util = require("util");
+
 const Order = require("../models/Order");
-const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("../middleware/verifyToken");
+const { verifyToken, verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { randomString } = require("../helpers/string");
 const { getParam } = require("../helpers/params");
-const { countStatus } = require("../helpers/utils");
 const EmailHelper = require("../helpers/email");
+const Notify = require("../config/notify");
 
-// @DESC Create a order
+const controller = "order";
+
+// @DESC Create order
 // @ROUTE POST /api/order/
 // @ACCESS Public
 router.post("/", verifyToken, async (req, res) => {
-    const newOrder = new Order({ ...req.body, code: randomString(10) });
+    const newItem = new Order({ ...req.body, code: randomString(10) });
     try {
-        const savedOrder = await newOrder.save();
-        if (savedOrder) {
+        const savedItem = await newItem.save();
+        if (savedItem) {
             EmailHelper.sendEmail(
-                savedOrder.user.email,
+                savedItem.user.email,
                 "COZA STORE - Thank you for your purchase",
-                `Your invoice code is #${savedOrder.code}`
+                `Your invoice code is #${savedItem.code}`
             );
-            res.status(200).json({ success: true, message: "Create order successfully", order: savedOrder });
-        } else res.status(400).json({ success: false, message: "Something wrong" });
+            res.status(200).json({
+                success: true,
+                message: util.format(Notify.SUCCESS_CREATE, controller),
+                item: savedItem,
+            });
+        } else res.status(400).json({ success: false, message: Notify.ERROR_SERVER });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Get a order
+// @DESC Get order
 // @ROUTE GET /api/order/find/:code
 // @ACCESS Public
 router.get("/find/:invoiceCode", verifyToken, async (req, res) => {
     try {
-        const order = await Order.findOne({ code: req.params.invoiceCode });
-        if (!order) return res.status(401).json({ success: false, message: "Order not found" });
-        res.json({ success: true, message: "Get order successfully", order });
+        const item = await Order.findOne({ code: req.params.invoiceCode });
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_GET, controller), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -58,13 +67,13 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
         await Order.find(condition)
             .skip(perPage * page - perPage)
             .limit(perPage)
-            .exec((err, orders) => {
+            .exec((err, items) => {
                 Order.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get orders successfully",
-                        orders,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                     });
@@ -72,7 +81,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -82,20 +91,16 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
     const { statusChange } = req.body;
     try {
-        const oldOrder = await Order.findById(req.params.id);
-        if (oldOrder) {
+        const oldItem = await Order.findById(req.params.id);
+        if (oldItem) {
             await Order.updateOne({ _id: req.params.id }, { status: statusChange });
-            res.json({
-                success: true,
-                message: "Update order's status successfully",
-            });
+            res.json({ success: true, message: util.format(Notify.SUCCESS_UPDATE, "status") });
         } else {
-            return res.status(401).json({ success: false, message: "Order is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });

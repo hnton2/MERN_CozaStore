@@ -35,8 +35,8 @@ function BlogDetail() {
     useEffect(() => {
         const fetchBlog = async () => {
             try {
-                const response = await blogServices.getBlogDetailBySlug(currentSlug);
-                if (response.data.success) setBlog(response.data.blog);
+                const response = await blogServices.getPublicItem(currentSlug);
+                if (response.data.success) setBlog(response.data.item);
             } catch (error) {
                 toastMessage({ type: "error", message: error.message });
             }
@@ -48,7 +48,7 @@ function BlogDetail() {
     const onSubmit = async (data) => {
         try {
             const res = await blogServices.addComment(blog.slug, data);
-            if (res.data.success) setBlog(res.data.blog);
+            if (res.data.success) setBlog(res.data.item);
         } catch (error) {
             toastMessage({ type: "error", message: error.message });
         }

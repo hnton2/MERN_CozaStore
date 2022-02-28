@@ -41,9 +41,9 @@ function BlogCategoryForm() {
         const fetchData = async () => {
             try {
                 if (currentId) {
-                    const res = await blogCategoryServices.getOneBlogCategory(currentId);
+                    const res = await blogCategoryServices.getItem(currentId);
                     if (res.data.success) {
-                        const categoryDetail = res.data.category;
+                        const categoryDetail = res.data.item;
                         setInitialValue({
                             name: categoryDetail.name,
                             status: categoryDetail.status,
@@ -62,8 +62,8 @@ function BlogCategoryForm() {
         try {
             setIsLoading(true);
             const response = currentId
-                ? await blogCategoryServices.updateBlogCategory(currentId, data)
-                : await blogCategoryServices.createNewBlogCategory(data);
+                ? await blogCategoryServices.updateItem(currentId, data)
+                : await blogCategoryServices.createItem(data);
             setIsLoading(false);
             if (response.data.success) {
                 navigate("/admin/blog-category");

@@ -36,9 +36,11 @@ function ProductsSlider({ task, params }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await productServices.getProductsByTask(task, params);
+                const res = await productServices.getItemsByTask(task, params);
                 if (res.data.success) {
-                    setItems(res.data.products);
+                    setItems(res.data.items);
+                } else {
+                    toastMessage({ type: "error", message: res.data.message });
                 }
             } catch (error) {
                 toastMessage({ type: "error", message: error.message });

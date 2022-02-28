@@ -1,29 +1,32 @@
 const router = require("express").Router();
+const util = require("util");
+
 const Contact = require("../models/Contact");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
 const { CONTACT_STATUS } = require("../config/system");
-const EmailHelper = require("../helpers/email");
+const Notify = require("../config/notify");
 
-// @DESC Create new contact
+const controller = "contact";
+
+// @DESC Create contact
 // @ROUTE POST /api/contact/
 // @ACCESS Public
 router.post("/", async (req, res) => {
     const item = new Contact(req.body);
 
-    if (!item.email) return res.status(401).json({ success: false, message: "Missing necessary information" });
+    if (!item.email) return res.status(401).json({ success: false, message: Notify.ERROR_MISSING });
 
     try {
         const existItem = await Contact.findOne({ email: item.email });
-        if (existItem) return res.status(400).json({ success: false, message: "Email already exist" });
+        if (existItem)
+            return res.status(400).json({ success: false, message: util.format(Notify.ERROR_EXIST, controller) });
         const savedItem = await item.save();
-        if (savedItem) {
-            res.json({ success: true, message: "Contact created successfully" });
-        } else res.status(400).json({ success: false, message: "Something wrong" });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_CREATE, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -50,7 +53,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get contact list successfully",
+                        message: util.format(Notify.SUCCESS_GET, controller),
                         items,
                         current: page,
                         pages: Math.ceil(count / perPage),
@@ -60,11 +63,11 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Change contact's status
+// @DESC Change status
 // @ROUTE PUT /api/contact/change-status/:id
 // @ACCESS Privates
 router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
@@ -74,17 +77,13 @@ router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
         const oldItem = await Contact.findById(req.params.id);
         if (oldItem) {
             await Contact.updateOne({ _id: req.params.id }, { status: statusValue });
-            res.json({
-                success: true,
-                message: "Update contact's status successfully",
-            });
+            res.json({ success: true, message: util.format(Notify.SUCCESS_UPDATE, "status") });
         } else {
-            return res.status(401).json({ success: false, message: "Contact is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });

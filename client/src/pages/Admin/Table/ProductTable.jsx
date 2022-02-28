@@ -55,9 +55,9 @@ function ProductTable() {
         const fetchProducts = async () => {
             try {
                 setIsLoading(true);
-                const res = await productServices.getProducts(Object.fromEntries([...searchParams]));
+                const res = await productServices.getItems(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
-                    setProducts(res.data.products);
+                    setProducts(res.data.items);
                     setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }

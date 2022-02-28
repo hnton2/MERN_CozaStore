@@ -42,9 +42,9 @@ function CouponTable() {
         const fetchCoupons = async () => {
             try {
                 setIsLoading(true);
-                const res = await couponServices.getCoupons(Object.fromEntries([...searchParams]));
+                const res = await couponServices.getItems(Object.fromEntries([...searchParams]));
                 if (res.data.success) {
-                    setCoupons(res.data.coupons);
+                    setCoupons(res.data.items);
                     setStatistics(res.data.statistics);
                     setTotalPages(res.data.pages);
                 }
@@ -78,7 +78,7 @@ function CouponTable() {
     const handleDelete = async (id) => {
         try {
             setIsLoading(true);
-            const res = await couponServices.deleteCoupon(id);
+            const res = await couponServices.deleteItem(id);
             if (res.data.success) {
                 const updateCoupons = coupons.filter((coupon) => coupon._id !== id);
                 setCoupons(updateCoupons);

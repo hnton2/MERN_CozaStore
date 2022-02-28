@@ -26,7 +26,7 @@ function Contact() {
     const onSubmit = async (data) => {
         try {
             setIsLoading(true);
-            const res = await contactServices.createNewItem(data);
+            const res = await contactServices.createItem(data);
             if (res.data.success) toastMessage({ type: "success", message: res.data.message });
             else toastMessage({ type: "error", message: res.data.message });
             setIsLoading(false);

@@ -1,126 +1,137 @@
 const router = require("express").Router();
-const { changeAlias, changeToJson } = require("../helpers/string");
+const util = require("util");
+
 const Product = require("../models/Product");
+const { changeAlias, changeToJson } = require("../helpers/string");
 const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 const { UploadFile, RemoveFile } = require("../helpers/file");
 const { getParam } = require("../helpers/params");
 const { countStatus } = require("../helpers/utils");
 const { FILTER_STATUS } = require("../config/system");
+const Notify = require("../config/notify");
+
+const controller = "product";
 
 // @DESC Create new product
 // @ROUTE POST /api/product/
 // @ACCESS Private
 router.post("/", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
-    const newProduct = new Product(changeToJson(req.body));
+    const newItem = new Product(changeToJson(req.body));
     const images = req.files;
 
-    if (!newProduct.name || !newProduct.description || !newProduct.price || !images) {
+    if (!newItem.name || !newItem.description || !newItem.price || !images) {
         if (images) images.map((item) => RemoveFile(item.filename));
-        return res.status(401).json({ success: false, message: "Missing necessary information" });
+        return res.status(401).json({ success: false, message: Notify.ERROR_MISSING });
     }
 
     try {
-        newProduct.slug = changeAlias(newProduct.name);
-        const existProduct = await Product.findOne({ name: newProduct.name });
-        if (existProduct) {
+        newItem.slug = changeAlias(newItem.name);
+        const existItem = await Product.findOne({ name: newItem.name });
+        if (existItem) {
             if (images) images.map((item) => RemoveFile(item.filename));
-            return res.status(400).json({ success: false, message: "Product already exist" });
+            return res.status(400).json({ success: false, message: util.format(Notify.ERROR_EXIST, controller) });
         }
         if (images.length > 0) {
             let imagesName = [];
             images.map((item) => imagesName.push(item.filename));
-            newProduct.images = imagesName;
+            newItem.images = imagesName;
         }
-        const savedProduct = await newProduct.save();
-        res.json({ success: true, message: "Product created successfully", product: savedProduct });
+        const savedItem = await newItem.save();
+        res.json({ success: true, message: util.format(Notify.SUCCESS_CREATE, controller), item: savedItem });
     } catch (error) {
         console.log(error);
         if (images) images.map((item) => RemoveFile(item.filename));
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Update a product
 // @ROUTE PUT /api/product/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.put("/:id", verifyTokenAndAdmin, UploadFile.array("images", 20), async (req, res) => {
     const images = req.files;
-    const updateProduct = changeToJson(req.body);
-    updateProduct.images = [];
+    const updateItem = changeToJson(req.body);
+    updateItem.images = [];
     try {
         if (images.length > 0) {
             let imagesName = [];
             images.map((item) => imagesName.push(item.filename));
-            updateProduct.images = imagesName;
+            updateItem.images = imagesName;
         }
 
-        const oldProduct = await Product.findById(req.params.id);
-        if (oldProduct) {
+        const oldItem = await Product.findById(req.params.id);
+        if (oldItem) {
             // remove old images and update
-            updateProduct.oldImages.map((oldImage) => {
-                if (updateProduct.remainImages.length > 0) {
-                    if (updateProduct.remainImages.includes(oldImage)) updateProduct.images.push(oldImage);
+            updateItem.oldImages.map((oldImage) => {
+                if (updateItem.remainImages.length > 0) {
+                    if (updateItem.remainImages.includes(oldImage)) updateItem.images.push(oldImage);
                     else RemoveFile(oldImage);
                 } else RemoveFile(oldImage);
             });
             // change slug value if alternative name
-            updateProduct.slug = changeAlias(updateProduct.name);
-            const updatedProduct = await Product.findByIdAndUpdate({ _id: req.params.id }, updateProduct, {
+            updateItem.slug = changeAlias(updateItem.name);
+            const updatedItem = await Product.findByIdAndUpdate({ _id: req.params.id }, updateProduct, {
                 new: true,
             });
-            return res.json({ success: true, message: "Update product successfully", product: updatedProduct });
+            return res.json({
+                success: true,
+                message: util.format(Notify.SUCCESS_UPDATE, controller),
+                product: updatedItem,
+            });
         } else {
-            return res.status(401).json({ success: false, message: "Product is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         if (images) images.map((item) => RemoveFile(item.filename));
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });
 
 // @DESC Delete a product
 // @ROUTE DELETE /api/product/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const deletedProduct = await Product.findOneAndDelete({ _id: req.params.id });
-        if (!deletedProduct) return res.status(401).json({ success: false, message: "Product not found" });
-        else deletedProduct.images.map((item) => RemoveFile(item));
-        res.json({ success: true, message: "Product has been deleted" });
+        const deletedItem = await Product.findOneAndDelete({ _id: req.params.id });
+        if (!deletedItem)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        else deletedItem.images.map((item) => RemoveFile(item));
+        res.json({ success: true, message: util.format(Notify.SUCCESS_DELETE, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Find a product
 // @ROUTE GET /api/product/find/:id
-// @ACCESS Privates
+// @ACCESS Private
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
-        if (!product) return res.status(401).json({ success: false, message: "Product not found" });
-        res.json({ success: true, message: "Get product successfully", product });
+        const item = await Product.findById(req.params.id);
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_GET, controller), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
-// @DESC Find a product by slug
-// @ROUTE GET /api/product/find-by-slug/:slug
+// @DESC Find public one slug
+// @ROUTE GET /api/product/public/find/:slug
 // @ACCESS Public
-router.get("/find-by-slug/:slug", async (req, res) => {
+router.get("/public/find/:slug", async (req, res) => {
     try {
-        const product = await Product.findOne({ slug: req.params.slug });
-        if (!product) return res.status(401).json({ success: false, message: "Product not found" });
-        res.json({ success: true, message: "Get product successfully", product });
+        const item = await Product.findOne({ slug: req.params.slug });
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.SUCCESS_GET, controller), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -145,13 +156,13 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
         await Product.find(condition)
             .skip(perPage * page - perPage)
             .limit(perPage)
-            .exec((err, products) => {
+            .exec((err, items) => {
                 Product.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get products successfully",
-                        products,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                         statistics,
@@ -160,19 +171,19 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Get public products
-// @ROUTE GET /api/product/(:category)?
+// @ROUTE GET /api/product/public
 // @ACCESS Public
-router.get("/:category", async (req, res) => {
+router.get("/public", async (req, res) => {
     let condition = { status: "active" };
     let sortObj = { updatedAt: "desc" };
     const perPage = 12;
     let page = getParam(req.query, "page", 1);
-    const category = getParam(req.params, "category", "all");
+    const category = getParam(req.query, "category", "all");
     const search = getParam(req.query, "search", "");
     const sort = getParam(req.query, "sort", "all");
     const price = getParam(req.query, "price", "all");
@@ -199,13 +210,13 @@ router.get("/:category", async (req, res) => {
             .skip(perPage * page - perPage)
             .limit(perPage)
             .sort(sortObj)
-            .exec((err, products) => {
+            .exec((err, items) => {
                 Product.countDocuments(condition, (err, count) => {
                     if (err) return console.log(err);
                     res.json({
                         success: true,
-                        message: "Get products successfully",
-                        products,
+                        message: util.format(Notify.SUCCESS_GET, controller),
+                        items,
                         current: page,
                         pages: Math.ceil(count / perPage),
                     });
@@ -213,59 +224,59 @@ router.get("/:category", async (req, res) => {
             });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Get public new products
-// @ROUTE GET /api/product/newest/:category
+// @ROUTE GET /api/product/public/newest/:category
 // @ACCESS Public
-router.get("/newest/:category", async (req, res) => {
+router.get("/public/newest/:category", async (req, res) => {
     let condition = { status: "active" };
     const category = getParam(req.params, "category", "all");
     if (category !== "all") condition["category.slug"] = category;
 
     try {
-        const products = await Product.find(condition).limit(8).sort({ updatedAt: -1 });
-        if (products)
+        const items = await Product.find(condition).limit(8).sort({ updatedAt: -1 });
+        if (items)
             res.json({
                 success: true,
-                message: "Get new products successfully",
-                products,
+                message: util.format(Notify.SUCCESS_GET, controller),
+                items,
             });
-        else res.status(404).json({ success: false, message: "Products not found" });
+        else res.status(404).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
 // @DESC Get related products
-// @ROUTE POST /api/product/related/:category
+// @ROUTE POST /api/product/public/related/:category
 // @ACCESS Public
-router.post("/related/:category", async (req, res) => {
+router.post("/public/related/:category", async (req, res) => {
     let condition = { status: "active" };
     const category = getParam(req.params, "category", "all");
-    const id = getParam(req.body, "id", "all");
+    const id = getParam(req.body, "id", "");
     if (category !== "all") condition["category.slug"] = category;
 
     try {
-        const products = await Product.find({
+        const items = await Product.find({
             status: "active",
             "category.slug": category,
             _id: { $ne: id },
         }).limit(8);
 
-        if (products)
+        if (items)
             res.json({
                 success: true,
-                message: "Get related products successfully",
-                products,
+                message: util.format(Notify.SUCCESS_GET, controller),
+                items,
             });
-        else res.status(404).json({ success: false, message: "Products not found" });
+        else res.status(404).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -274,18 +285,19 @@ router.post("/related/:category", async (req, res) => {
 // @ACCESS Public
 router.post("/review/:slug", async (req, res) => {
     try {
-        const product = await Product.findOneAndUpdate(
+        const item = await Product.findOneAndUpdate(
             { slug: req.params.slug },
             { $push: { reviews: req.body } },
             {
                 new: true,
             }
         );
-        if (!product) return res.status(401).json({ success: false, message: "Product not found" });
-        res.json({ success: true, message: "Update review of product successfully", product });
+        if (!item)
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+        res.json({ success: true, message: util.format(Notify.ERROR_NOTFOUND, "blog's review"), item });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
     }
 });
 
@@ -296,20 +308,19 @@ router.put("/change-status/:id", verifyTokenAndAdmin, async (req, res) => {
     const { currentStatus } = req.body;
     const statusValue = currentStatus === "active" ? "inactive" : "active";
     try {
-        const oldProduct = await Product.findById(req.params.id);
-        if (oldProduct) {
+        const oldItem = await Product.findById(req.params.id);
+        if (oldItem) {
             await Product.updateOne({ _id: req.params.id }, { status: statusValue });
             res.json({
                 success: true,
-                message: "Update product's status successfully",
+                message: util.format(Notify.SUCCESS_UPDATE, "status"),
             });
         } else {
-            return res.status(401).json({ success: false, message: "Product is invalid" });
+            return res.status(401).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
         }
     } catch (error) {
         console.log(error);
-        let msg = "Internal server error";
-        if (error.code === 11000) msg = "Invalid data";
+        const msg = error.code === 11000 ? "Invalid data" : Notify.ERROR_SERVER;
         res.status(500).json({ success: false, message: msg });
     }
 });

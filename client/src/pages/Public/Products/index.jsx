@@ -3,7 +3,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import { Backdrop, CircularProgress, Container, Grid, Pagination } from "@mui/material";
-import Skeleton from "@mui/material/Skeleton";
+import Error404 from "components/404";
 import Footer from "components/Footer";
 import Header from "components/Header";
 import Preloader from "components/Preloader";
@@ -40,12 +40,12 @@ function Products() {
         const fetchProducts = async () => {
             try {
                 setIsLoading(true);
-                const response = await productServices.getProducstInCategory({
+                const response = await productServices.getPublicItems({
                     category: currentCategory,
                     ...Object.fromEntries([...searchParams]),
                 });
                 if (response.data.success) {
-                    setProducts(response.data.products);
+                    setProducts(response.data.items);
                     setTotalPages(response.data.pages);
                 }
                 setIsLoading(false);
@@ -287,7 +287,7 @@ function Products() {
                                     )}
                                 </>
                             ) : (
-                                <Skeleton variant="rectangular" width={1200} height={400} />
+                                <Error404 />
                             )}
                         </div>
                     </div>
