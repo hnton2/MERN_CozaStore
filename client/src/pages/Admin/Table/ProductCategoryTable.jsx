@@ -15,7 +15,9 @@ import { toastMessage } from "helpers/toastMessage";
 import parse from "html-react-parser";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useDispatch } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
+import { GetALlCategoryProduct } from "redux/categorySlice";
 import productCategoryServices from "services/productCategory";
 import "./Table.scss";
 
@@ -29,6 +31,7 @@ const linkData = [
 const TITLE_PAGE = "Product Category List";
 
 function ProductCategoryTable() {
+    const dispatch = useDispatch();
     let [searchParams, setSearchParams] = useSearchParams();
 
     const [search, setSearch] = useState(searchParams.get("search") || "");
@@ -79,6 +82,7 @@ function ProductCategoryTable() {
             setIsLoading(true);
             const res = await productCategoryServices.deleteItem(id);
             if (res.data.success) {
+                dispatch(GetALlCategoryProduct());
                 const updateCategories = categories.filter((user) => user._id !== id);
                 setCategories(updateCategories);
                 toastMessage({ type: "success", message: res.data.message });

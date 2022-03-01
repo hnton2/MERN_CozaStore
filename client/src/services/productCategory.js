@@ -1,4 +1,4 @@
-import { userRequest } from "helpers/requestMethod";
+import { publicRequest, userRequest } from "helpers/requestMethod";
 import queryString from "query-string";
 
 const LINK_PREFIX = "product-category";
@@ -27,6 +27,10 @@ const getItems = ({ page = 1, search = "", status = null }) => {
     return userRequest.get(`${LINK_PREFIX}?${queryString.stringify(query)}`);
 };
 
+const getPublicItems = () => {
+    return publicRequest.get(`${LINK_PREFIX}/public`);
+};
+
 const changeStatus = (id, currentStatus) => {
     return userRequest.put(`${LINK_PREFIX}/change-status/${id}`, { currentStatus: currentStatus });
 };
@@ -37,6 +41,7 @@ const productCategoryServices = {
     deleteItem,
     getItem,
     getItems,
+    getPublicItems,
     changeStatus,
 };
 

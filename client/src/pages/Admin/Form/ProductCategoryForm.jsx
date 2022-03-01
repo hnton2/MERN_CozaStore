@@ -69,6 +69,7 @@ function ProductCategoryForm() {
                 : await productCategoryServices.createItem(data);
             setIsLoading(false);
             if (response.data.success) {
+                dispatch(GetALlCategoryProduct());
                 navigate("/admin/product-category");
             } else toastMessage({ type: "error", message: response.data.message });
         } catch (error) {

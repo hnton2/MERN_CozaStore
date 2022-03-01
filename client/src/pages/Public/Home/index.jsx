@@ -31,6 +31,10 @@ const overviewData = [
         label: "Socks",
         content: <ProductsSlider task="newest" params={{ category: "socks" }} />,
     },
+    {
+        label: "Bags",
+        content: <ProductsSlider task="newest" params={{ category: "bags" }} />,
+    },
 ];
 
 function Home() {

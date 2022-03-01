@@ -157,12 +157,12 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
-// @DESC Get slider list
-// @ROUTE GET /api/slider
+// @DESC Get public sliders
+// @ROUTE GET /api/slider/public
 // @ACCESS Public
 router.get("/public", async (req, res) => {
     try {
-        const items = await Slider.find().sort({ updatedAt: -1 });
+        const items = await Slider.find({ status: "active" }).sort({ updatedAt: -1 });
         if (items)
             res.json({
                 success: true,

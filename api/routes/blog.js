@@ -190,7 +190,7 @@ router.get("/public", async (req, res) => {
 
     try {
         await Blog.find(condition)
-            .select("id name slug images status category tag description reviews")
+            .select("id name slug images status category tag description comment")
             .skip(perPage * page - perPage)
             .limit(perPage)
             .sort({ updatedAt: "desc" })

@@ -10,7 +10,7 @@ import moment from "moment";
 // prop 'primary': blog card has big size
 function BlogCard({ blog, primary }) {
     return (
-        <div className="blog-card">
+        <div className={`blog-card ${primary && "primary"}`}>
             <div className="blog-card__image">
                 <Link to={`/blog/${blog.slug}`}>
                     <img src={IMAGE_CLOUDINARY + blog.images[0]} alt={blog.name} />
@@ -20,7 +20,7 @@ function BlogCard({ blog, primary }) {
                     </div>
                 </Link>
             </div>
-            <div className={`desc ${primary && "card-lg"}`}>
+            <div className="blog-card__desc">
                 <Link to={`/blog/${blog.slug}`} className="desc__title">
                     {blog.name}
                 </Link>
@@ -33,7 +33,7 @@ function BlogCard({ blog, primary }) {
                             <Link to={`/blog-category/${blog.category.slug}`}>{blog.category.name}</Link>
                         </span>
                         <span className="border">|</span>
-                        <span className="content">{blog.reviews.length} comments</span>
+                        <span className="content">{blog.comment.length} comments</span>
                     </div>
                     <Link to={`/blog/${blog.slug}`} className="link-detail">
                         <span>Continue Reading</span>

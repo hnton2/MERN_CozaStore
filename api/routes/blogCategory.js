@@ -131,6 +131,25 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     }
 });
 
+// @DESC Get public categories
+// @ROUTE GET /api/blog-cateogry/public
+// @ACCESS Public
+router.get("/public", async (req, res) => {
+    try {
+        const items = await BlogCategory.find({ status: "active" }).sort({ updatedAt: -1 });
+        if (items)
+            res.json({
+                success: true,
+                message: util.format(Notify.SUCCESS_GET, controller),
+                items,
+            });
+        else res.status(400).json({ success: false, message: util.format(Notify.ERROR_NOTFOUND, controller) });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: Notify.ERROR_SERVER });
+    }
+});
+
 // @DESC Change status
 // @ROUTE PUT /api/blog-cateogry/change-status/:id
 // @ACCESS Privates

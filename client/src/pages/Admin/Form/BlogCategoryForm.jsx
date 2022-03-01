@@ -66,6 +66,7 @@ function BlogCategoryForm() {
                 : await blogCategoryServices.createItem(data);
             setIsLoading(false);
             if (response.data.success) {
+                dispatch(GetALlCategoryBlog());
                 navigate("/admin/blog-category");
             } else toastMessage({ type: "error", message: response.data.message });
         } catch (error) {
